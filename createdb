@@ -1,0 +1,187 @@
+#!/bin/sh
+#set -x
+
+DATABASE_NAME=sau
+
+###########################################################
+## Function to call when error is encountered
+###########################################################
+ExitWithError () {
+  echo
+  echo #####
+  echo Error encountered trying to create ${DATABASE_NAME} db.
+  echo See ./log/$SQLINPUTFILE.log for more details...
+  echo #####
+  SQLINPUTFILE=
+  exit 1            
+}
+
+###########################################################
+## Process command line parameter(s)
+###########################################################
+if [ -z "$1" ]; then
+  DbHost=localhost
+else
+  DbHost=$1
+fi
+
+if [ -z "$2" ]; then
+  DbPort=5432
+else
+  DbPort=$2
+fi
+
+if [ -z "$3" ]; then
+  RestoreThreadCount=8
+else
+  RestoreThreadCount=$3
+fi
+
+if [ -z "$4" ]; then
+  RestoreCellCatch=false
+else
+  RestoreCellCatch=$4
+fi
+
+###########################################################
+## Deleting any previous log files
+###########################################################
+if [ ! -d log ]; then
+  mkdir log
+fi
+
+rm -f log/*.log
+
+PSQL="psql -U postgres -h $DbHost -p $DbPort"
+PSQLWEB="psql -U web -h $DbHost -p $DbPort"
+PSQLSAU="psql -U sau -h $DbHost -p $DbPort"
+RESTORE="pg_restore -h $DbHost -p $DbPort -Fc -a -j $RestoreThreadCount"
+
+###########################################################
+## Check if there's already a "${DATABASE_NAME}" database present. 
+##   If not, create the "${DATABASE_NAME}" database and the requisite db users, 
+##           then proceed to invoke the initialize.sql script.
+##   If yes, proceed to invoke initialize.sql script only.
+###########################################################
+STIME=$(date '+%s')
+ExistingDB=$($PSQL -A -t -c "select datname from pg_database where datname = '${DATABASE_NAME}'")
+if [ -z "$ExistingDB" ]; then
+  if ! $PSQL -f $SQLINPUTFILE.sql -L log/$SQLINPUTFILE.log -c "CREATE DATABASE sau"; then
+    ExitWithError
+  fi
+fi
+
+SQLINPUTFILE=create_user
+if ! $PSQL -f $SQLINPUTFILE.sql -L log/$SQLINPUTFILE.log; then
+   ExitWithError
+fi
+
+SQLINPUTFILE=set_users_search_path
+if ! $PSQL -f $SQLINPUTFILE.sql -L log/$SQLINPUTFILE.log; then
+   ExitWithError
+fi
+
+SQLINPUTFILE=initialize
+if ! $PSQL -d ${DATABASE_NAME} -f $SQLINPUTFILE.sql -L log/$SQLINPUTFILE.log; then
+  ExitWithError
+fi
+
+RdsAdmin=$($PSQL -A -t -c "select usename from pg_user where usename = 'rdsadmin'")
+if [ -n "$RdsAdmin" ]; then
+  echo Amazon RDS environment detected. Re-configuring postgis environment appropriately...
+  SQLINPUTFILE=rds_postgis_setup
+  if ! $PSQL -d ${DATABASE_NAME} -f $SQLINPUTFILE.sql -L log/$SQLINPUTFILE.log; then
+    ExitWithError
+  fi
+fi
+
+ETIME=$(date '+%s')
+echo "Empty SAU db and users created in $(($ETIME - $STIME)) seconds."
+
+STIME=$(date '+%s')
+echo Restoring admin schema. Please enter password for user sau
+if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/admin.schema; then 
+  ExitWithError
+fi
+
+echo Restoring web schema. Please enter password for user sau
+if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/web.schema; then 
+  ExitWithError
+fi
+
+echo Restoring geo schema. Please enter password for user sau
+if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/geo.schema; then 
+  ExitWithError
+fi
+
+echo Restoring feru schema. Please enter password for user sau
+if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/feru.schema; then
+  ExitWithError
+fi
+
+echo Restoring expedition schema. Please enter password for user sau
+if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/expedition.schema; then
+  ExitWithError
+fi
+
+echo Restoring fao schema. Please enter password for user sau
+if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/fao.schema; then
+  ExitWithError
+fi
+
+if [ "$RestoreCellCatch" = "true" ]; then
+ echo Restoring web_partition schema. Please enter password for user sau
+ if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/web_partition.schema; then
+   ExitWithError
+ fi
+fi
+
+#echo Restoring allocation schema. Please enter password for user allocation
+if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/allocation.schema; then
+  ExitWithError
+fi
+
+ETIME=$(date '+%s')
+echo "Schema data restored in $(($ETIME - $STIME)) seconds"
+
+STIME=$(date '+%s')
+# Clear previous content of rmv.sql or create anew
+echo "vacuum analyze;" > rmv.sql
+echo "select * from web_partition.maintain_cell_catch_partition();" >> rmv.sql
+
+## Adding foreign keys
+cat index_web.sql >> rmv.sql
+cat foreign_key_web.sql >> rmv.sql
+
+cat index_geo.sql >> rmv.sql
+cat foreign_key_geo.sql >> rmv.sql
+
+cat index_allocation.sql >> rmv.sql
+cat foreign_key_allocation.sql >> rmv.sql
+
+cat index_feru.sql >> rmv.sql
+cat index_expedition.sql >> rmv.sql
+cat index_admin.sql >> rmv.sql
+
+## Adding commands to refresh materialized views
+if ! $PSQLSAU -d ${DATABASE_NAME} -f refresh_mv.sql -t >> rmv.sql; then
+  ExitWithError
+fi
+
+if ! $PSQLSAU -d ${DATABASE_NAME} -f rmv.sql; then
+  ExitWithError
+fi
+
+ETIME=$(date '+%s')
+echo "Vacuuming, Indexing, Foreign Key Creations and Refreshing of Materialized Views completed in $(($ETIME - $STIME)) seconds"
+
+#
+# Success: print message and exit with successful return code
+#
+echo
+echo #####
+echo Successfully created ${DATABASE_NAME} database!
+echo #####
+SQLINPUTFILE=
+exit 0                 
+

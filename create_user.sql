@@ -1,0 +1,22 @@
+\echo
+\echo Creating SAU Database users...
+\echo
+
+DO 
+$$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_user WHERE usename = 'sau' LIMIT 1) THEN
+    CREATE USER sau WITH PASSWORD 'sau';
+    ALTER DATABASE sau OWNER TO sau;
+    GRANT postgres TO sau;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM pg_user WHERE usename = 'allocation' LIMIT 1) THEN
+    CREATE USER allocation WITH PASSWORD 'allocation' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM pg_user WHERE usename = 'web' LIMIT 1) THEN
+    CREATE USER web WITH PASSWORD 'web' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION;
+  END IF;
+END
+$$;

@@ -1,0 +1,1 @@
+select 'update statistics ' + table_catalog + '.' + table_schema + '.' + TABLE_NAME + ';' from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE' and table_name != 'sysdiagrams' order by table_name;
