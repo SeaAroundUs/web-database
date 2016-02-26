@@ -238,7 +238,7 @@ begin
     order by d.year, d.entity_layer_id, d.entity_id
   )
   union all
-  -- All other entity layers
+  -- All other entity layers 
   (select concat_ws(',', csv_escape(el.name), el.layer_name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
@@ -249,8 +249,23 @@ begin
      join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
      join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
      join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
-    where i_entity_layer_id not in (6, 100, 300)
-    order by c.year, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status);
+    where i_entity_layer_id not in (1, 6, 100, 300)
+    order by c.year, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status)
+   union all 
+   -- EEZ (or any other spatial entity which needs to return Data_layer_id as well)
+  (select concat_ws(',', csv_escape(el.name), el.layer_name, l.name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
+     from catch c
+     join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
+     join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
+     join web.commercial_groups cg on (cg.commercial_group_id = t.commercial_group_id)
+     join web.fishing_entity fe on (fe.fishing_entity_id = c.fishing_entity)
+     join web.sector_type st on (st.sector_type_id = c.fishing_sector)
+     join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
+     join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
+     join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
+     join web.data_layer l on l.data_layer_id = c.data_layer_id
+    where i_entity_layer_id in (1)
+    order by c.year, l.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status);
 end
 $body$
 language plpgsql;
