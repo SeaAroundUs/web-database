@@ -476,11 +476,12 @@ $body$
 $body$
 language sql;
 
-create or replace function web.f_stock_status(i_entity_id int, i_entity_layer_id int default 1, i_sub_area_id int[] default null::int[])
+create or replace function web.f_stock_status(i_entity_id int, i_entity_layer_id int default 1, i_sub_area_id int[] default null::int[], i_other_params json default null)
 returns table(data_set char(3), main_area_id integer, marine_layer_id integer, year integer, developing numeric(8,2), exploited numeric(8,2), rebuilding numeric(8,2), overexploited numeric(8,2), collapsed numeric(8,2)) 
 as
 $body$
-  select * from web.f_stock_status(array[i_entity_id], i_entity_layer_id, i_sub_area_id);
+  select f.data_set, 0, 0, f.year, f.developing, f.exploited, f.rebuilding, f.overexploited, f.collapsed 
+    from web.f_stock_status(array[i_entity_id], i_entity_layer_id, i_sub_area_id, i_other_params) as f;
 $body$
 language sql;
 
