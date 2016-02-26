@@ -27,6 +27,7 @@ $body$
   select 'f.year,' || 
          case when i_entity_layer_id is distinct from 6 then 'f.taxon_key,' else 'null::int,' end ||
          case when i_entity_layer_id is distinct from 100 then 'f.fishing_entity_id,' else 'null::smallint,' end || 
+         case when i_entity_layer_id = 1 then 'f.data_layer_id,' else 'null::int,' end ||
          'f.sector_type_id,f.catch_status,f.reporting_status' || 
          case when i_include_sum then ', sum(f.catch_sum)::numeric(20,10), sum(f.real_value)' else '' end;
 $body$
@@ -110,7 +111,7 @@ create or replace function web.f_catch_query_for_csv
   i_area_bucket_id_layer int default null,
   i_other_params json default null
 )
-returns table(entity_id int, entity_layer_id int, year int, taxon int, fishing_entity smallint, fishing_sector smallint, catch_status char(1), reporting_status char(1), catch_sum numeric, real_value double precision) as
+returns table(entity_id int, entity_layer_id int, year int, taxon int, fishing_entity smallint, data_layer_id smallint, fishing_sector smallint, catch_status char(1), reporting_status char(1), catch_sum numeric, real_value double precision) as
 $body$
 declare
   rtn_sql text;                                              
@@ -174,7 +175,10 @@ begin
   )
   (select web.get_csv_headings(i_entity_layer_id) where exists (select 1 from catch limit 1))
   union all
-  -- Global
+  --
+  -- Global 
+  --   global should NOT include area id/area type. in fact, this is the only format that does not include area id/name
+  --
   (select concat_ws(',', c.year::varchar, csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.fishing_entity fe on (fe.fishing_entity_id = c.fishing_entity)
@@ -184,7 +188,11 @@ begin
     where i_entity_layer_id = 6
     order by c.year, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status)
   union all
-  -- Fishing Entity
+  --
+  -- Fishing Entity 
+  --   for fishing entity as input, fishing entity column shouldn't be shown in the download file
+  --   we need to have one single row per year for All of High_seas, but break out separate row per year/eez combination
+  --
   (select tsv                                      
      from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar) as tsv
               from catch c
@@ -210,7 +218,10 @@ begin
     order by d.year, d.entity_layer_id, d.entity_id
   )
   union all
-  -- Taxon
+  --
+  -- Taxon 
+  --   we need to have one single row per year for All of High_seas, but break out separate row per year/eez combination
+  --
   (select tsv                                      
      from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar) as tsv
               from catch c
@@ -238,7 +249,27 @@ begin
     order by d.year, d.entity_layer_id, d.entity_id
   )
   union all
-  -- All other entity layers 
+  --
+  -- EEZ 
+  --   any other spatial entity layer beside (6, 100, 300) which needs to return Data_layer_id as well
+  --
+  (select concat_ws(',', csv_escape(el.name), el.layer_name, dl.name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
+     from catch c
+     join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
+     join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
+     join web.commercial_groups cg on (cg.commercial_group_id = t.commercial_group_id)
+     join web.fishing_entity fe on (fe.fishing_entity_id = c.fishing_entity)
+     join web.sector_type st on (st.sector_type_id = c.fishing_sector)
+     join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
+     join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
+     join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
+     join web.data_layer dl on (dl.data_layer_id = c.data_layer_id)
+    where i_entity_layer_id = 1
+    order by c.year, dl.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status)
+  union all
+  --
+  -- All other entity layers
+  --   
   (select concat_ws(',', csv_escape(el.name), el.layer_name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
@@ -251,21 +282,7 @@ begin
      join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
     where i_entity_layer_id not in (1, 6, 100, 300)
     order by c.year, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status)
-   union all 
-   -- EEZ (or any other spatial entity which needs to return Data_layer_id as well)
-  (select concat_ws(',', csv_escape(el.name), el.layer_name, l.name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
-     from catch c
-     join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
-     join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
-     join web.commercial_groups cg on (cg.commercial_group_id = t.commercial_group_id)
-     join web.fishing_entity fe on (fe.fishing_entity_id = c.fishing_entity)
-     join web.sector_type st on (st.sector_type_id = c.fishing_sector)
-     join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
-     join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
-     join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
-     join web.data_layer l on l.data_layer_id = c.data_layer_id
-    where i_entity_layer_id in (1)
-    order by c.year, l.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status);
+  ;
 end
 $body$
 language plpgsql;
