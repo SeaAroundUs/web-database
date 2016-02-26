@@ -91,6 +91,7 @@ CREATE SCHEMA fao;
 \i view_web.sql
 \i function_mariculture_data.sql
 \i function_catch_by_dimension.sql
+\i function_catch_in_csv.sql
 \i function_indicators.sql
 \i function_spatial_catch.sql
 \i function_web_partition.sql
