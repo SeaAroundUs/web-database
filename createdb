@@ -98,47 +98,63 @@ fi
 ETIME=$(date '+%s')
 echo "Empty SAU db and users created in $(($ETIME - $STIME)) seconds."
 
-STIME=$(date '+%s')
-echo Restoring admin schema. Please enter password for user sau
-if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/admin.schema; then 
-  ExitWithError
+if [ -f "data_dump/admin.schema" ]; then
+  STIME=$(date '+%s')
+  echo Restoring admin schema. Please enter password for user sau
+  if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/admin.schema; then 
+    ExitWithError
+  fi
 fi
 
-echo Restoring web schema. Please enter password for user sau
-if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/web.schema; then 
-  ExitWithError
+if [ -f "data_dump/web.schema" ]; then
+  echo Restoring web schema. Please enter password for user sau
+  if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/web.schema; then 
+    ExitWithError
+  fi
 fi
 
-echo Restoring geo schema. Please enter password for user sau
-if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/geo.schema; then 
-  ExitWithError
+if [ -f "data_dump/geo.schema" ]; then
+  echo Restoring geo schema. Please enter password for user sau
+  if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/geo.schema; then 
+    ExitWithError
+  fi
 fi
 
-echo Restoring feru schema. Please enter password for user sau
-if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/feru.schema; then
-  ExitWithError
+if [ -f "data_dump/feru.schema" ]; then
+  echo Restoring feru schema. Please enter password for user sau
+  if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/feru.schema; then
+    ExitWithError
+  fi
 fi
 
-echo Restoring expedition schema. Please enter password for user sau
-if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/expedition.schema; then
-  ExitWithError
+if [ -f "data_dump/expedition.schema" ]; then
+  echo Restoring expedition schema. Please enter password for user sau
+  if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/expedition.schema; then
+    ExitWithError
+  fi
 fi
 
-echo Restoring fao schema. Please enter password for user sau
-if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/fao.schema; then
-  ExitWithError
+if [ -f "data_dump/fao.schema" ]; then
+  echo Restoring fao schema. Please enter password for user sau
+  if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/fao.schema; then
+    ExitWithError
+  fi
 fi
 
-if [ "$RestoreCellCatch" = "true" ]; then
- echo Restoring web_partition schema. Please enter password for user sau
- if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/web_partition.schema; then
-   ExitWithError
- fi
+if [ -f "data_dump/web_partition.schema" ]; then
+  if [ "$RestoreCellCatch" = "true" ]; then
+   echo Restoring web_partition schema. Please enter password for user sau
+   if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/web_partition.schema; then
+     ExitWithError
+   fi
+  fi
 fi
 
-#echo Restoring allocation schema. Please enter password for user allocation
-if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/allocation.schema; then
-  ExitWithError
+if [ -f "data_dump/allocation.schema" ]; then
+  #echo Restoring allocation schema. Please enter password for user allocation
+  if ! $RESTORE -d ${DATABASE_NAME} -U sau data_dump/allocation.schema; then
+    ExitWithError
+  fi
 fi
 
 ETIME=$(date '+%s')
