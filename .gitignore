@@ -45,3 +45,8 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+log/
+*.*~
+data_dump/allocation.allocation_data
+data_dump/allocation.allocation_result_eez
