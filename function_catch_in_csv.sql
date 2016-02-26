@@ -17,7 +17,7 @@ $body$
 $body$
 language sql;
 
-create or replace function web.get_tsv_column_list
+create or replace function web.get_csv_column_list
 (
   i_entity_layer_id int,
   i_include_sum boolean
@@ -33,7 +33,7 @@ $body$
 language sql;
 
 -----------------
-create or replace function web.f_dimension_catch_query_layer_preprocessor_for_tsv
+create or replace function web.f_dimension_catch_query_layer_preprocessor_for_csv
 (
   i_entity_layer_id int,
   i_area_bucket_id_layer int, 
@@ -102,7 +102,7 @@ end
 $body$
 language plpgsql;
 
-create or replace function web.f_catch_query_for_tsv 
+create or replace function web.f_catch_query_for_csv 
 (
   i_entity_id int[],
   i_sub_entity_id int[],            
@@ -119,12 +119,12 @@ declare
 begin
   select *
     into main_area_col_name, additional_join_clause
-    from web.f_dimension_catch_query_layer_preprocessor_for_tsv(i_entity_layer_id, i_area_bucket_id_layer, i_other_params);
+    from web.f_dimension_catch_query_layer_preprocessor_for_csv(i_entity_layer_id, i_area_bucket_id_layer, i_other_params);
                                                                                                                                                                                          
   rtn_sql := 
     'select ' || main_area_col_name ||
     case when i_entity_layer_id in (6, 100, 300) then '' else i_entity_layer_id || ',' end ||
-    web.get_tsv_column_list(i_entity_layer_id, true) ||  
+    web.get_csv_column_list(i_entity_layer_id, true) ||  
     ' from web.v_fact_data f' || 
     additional_join_clause ||                   
     ' where' ||   
@@ -136,7 +136,7 @@ begin
      end ||
     case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
-    ' group by ' || main_area_col_name || web.get_tsv_column_list(i_entity_layer_id, false);
+    ' group by ' || main_area_col_name || web.get_csv_column_list(i_entity_layer_id, false);
   
   -- DEBUG ONLY
   --raise info 'rtn_sql: %', rtn_sql;
@@ -170,7 +170,7 @@ begin
   
   return query
   with catch as (
-    select * from web.f_catch_query_for_tsv(i_entity_id, i_sub_entity_id, i_entity_layer_id, case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end, i_other_params)
+    select * from web.f_catch_query_for_csv(i_entity_id, i_sub_entity_id, i_entity_layer_id, case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end, i_other_params)
   )
   (select web.get_csv_headings(i_entity_layer_id) where exists (select 1 from catch limit 1))
   union all
