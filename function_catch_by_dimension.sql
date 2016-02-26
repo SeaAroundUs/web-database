@@ -117,38 +117,6 @@ $body$
 $body$
 language sql;
 
-create or replace function web.get_csv_headings 
-(
-  i_entity_layer_id int
-)
-returns text as
-$body$
-  select array_to_string(
-           case when i_entity_layer_id is distinct from 6 
-           then array['area_name', 'area_type', 'year', 'scientific_name', 'common_name', 'functional_group', 'commercial_group']::text[] 
-           else array['year']::text[] 
-           end ||
-           case when i_entity_layer_id is distinct from 100 then array['fishing_entity']::text[] else array[]::text[] end ||
-           array['fishing_sector','catch_type', 'reporting_status', 'tonnes', 'landed_value'],
-           ',');
-$body$
-language sql;
-
-create or replace function web.get_tsv_column_list
-(
-  i_entity_layer_id int,
-  i_include_sum boolean
-)
-returns text as
-$body$
-  select 'f.year,' || 
-         case when i_entity_layer_id is distinct from 6 then 'f.taxon_key,' else 'null::int,' end ||
-         case when i_entity_layer_id is distinct from 100 then 'f.fishing_entity_id,' else 'null::smallint,' end || 
-         'f.sector_type_id,f.catch_status,f.reporting_status' || 
-         case when i_include_sum then ', sum(f.catch_sum)::numeric(20,10), sum(f.real_value)' else '' end;
-$body$
-language sql;
-
 create or replace function web.get_catch_and_reporting_status_name()
 returns table(status_type varchar(10), status char(1), name varchar) as
 $body$
