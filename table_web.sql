@@ -667,13 +667,6 @@ CREATE TABLE web.dictionary (
   definition TEXT NOT NULL
 );
 
-CREATE TABLE web.catch_data_in_tsv_cache(
-  entity_layer_id smallint,
-  entity_id int,
-  tsv_data text,
-  seq serial primary key
-);
-
 CREATE TABLE web.catch_data_in_csv_cache(
   entity_layer_id smallint,
   entity_id int,
