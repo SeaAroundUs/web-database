@@ -48,30 +48,9 @@ FOREIGN KEY (mariculture_entity_id) REFERENCES web.mariculture_entity(maricultur
 ALTER TABLE web.area ADD CONSTRAINT marine_layer_id_fk
 FOREIGN KEY (marine_layer_id) REFERENCES web.marine_layer(marine_layer_id) ON DELETE CASCADE;
 
--- TODO: reconfirm which table can serve as master source for the main_area_id column in this table
---ALTER TABLE web.area ADD CONSTRAINT main_area_id_fk
---FOREIGN KEY (main_area_id) REFERENCES web.tropics_main_area(main_area_id) ON DELETE CASCADE;
-
--- TODO: reconfirm which table can serve as master source for the sub_area_id column in this table
---ALTER TABLE web.area ADD CONSTRAINT sub_area_id_fk
---FOREIGN KEY (sub_area_id) REFERENCES web.tropics_sub_area(sub_area_id) ON DELETE CASCADE;
-
 -- web.area_invisible
 ALTER TABLE web.area_invisible ADD CONSTRAINT marine_layer_id_fk
 FOREIGN KEY (marine_layer_id) REFERENCES web.marine_layer(marine_layer_id) ON DELETE CASCADE;
-
--- TODO: reconfirm which table can serve as master source for the main_area_id column in this table
---ALTER TABLE web.area_invisible ADD CONSTRAINT main_area_id_fk
---FOREIGN KEY (main_area_id) REFERENCES web.tropics_main_area(main_area_id) ON DELETE CASCADE;
-
--- TODO: reconfirm which table can serve as master source for the sub_area_id column in this table
---ALTER TABLE web.area_invisible ADD CONSTRAINT sub_area_id_fk
---FOREIGN KEY (sub_area_id) REFERENCES web.tropics_sub_area(sub_area_id) ON DELETE CASCADE;
-
--- web.eez_reconstruction_mapping 
---(0 is allowed in the sub_area_id column. maybe this should be looked at closer to see if it should just be null instead)
---ALTER TABLE web.eez_reconstruction_mapping ADD CONSTRAINT sub_area_id_fk
---FOREIGN KEY (sub_area_id) REFERENCES web.tropics_sub_area(sub_area_id) ON DELETE CASCADE;
 
 -- web.eez 
 ALTER TABLE web.eez ADD CONSTRAINT geo_entity_id_fk
@@ -111,8 +90,12 @@ FOREIGN KEY (area_bucket_type_id) REFERENCES web.area_bucket_type(area_bucket_ty
 ALTER TABLE web.v_fact_data ADD CONSTRAINT taxon_key_fk
 FOREIGN KEY (taxon_key) REFERENCES web.cube_dim_taxon(taxon_key) ON DELETE CASCADE;
 
-ALTER TABLE web.v_fact_data ADD CONSTRAINT fishing_entity_id_fk
-FOREIGN KEY (fishing_entity_id) REFERENCES web.fishing_entity(fishing_entity_id) ON DELETE CASCADE;
+-- Defer this foreign key due to the issue with fishing_entity 223. This particular fe is converted to 213 
+-- after records have already been inserted into v_fact_data during aggregation. 
+-- So, can't have foreign as that would break aggregation.
+--
+--ALTER TABLE web.v_fact_data ADD CONSTRAINT fishing_entity_id_fk
+--FOREIGN KEY (fishing_entity_id) REFERENCES web.fishing_entity(fishing_entity_id) ON DELETE CASCADE;
 
 --ALTER TABLE web.v_fact_data ADD CONSTRAINT gear_id_fk
 --FOREIGN KEY (gear_id) REFERENCES web.gear(gear_id) ON DELETE CASCADE;
