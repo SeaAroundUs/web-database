@@ -147,6 +147,7 @@ begin
   when 500 then return query select 'commercial_group_id'::varchar, cg.commercial_group_id::int, 'commercial_group_name'::varchar, cg.name, 'commercial_group'::varchar FROM web.commercial_groups cg WHERE cg.commercial_groups = ANY(i_entity_id);
   when 600 then return query select 'functional_group_id'::varchar, cg.functional_group_id::int, 'functional_group_name'::varchar, cg.description, 'functional_group'::varchar FROM web.functional_groups fg WHERE fg.functional_group_id = ANY(i_entity_id);
   when 900 then return query select 'fao_area_id'::varchar, f.fao_area_id, 'fao_area_name'::varchar, f.name, 'fao_area'::varchar FROM web.fao_area f WHERE f.fao_area_id = ANY(i_entity_id);
+  when 1000 then return query select 'data_layer_id'::varchar, l.data_layer_id, 'data_layer_name'::varchar, l.name, 'data_layer'::varchar FROM web.data_layer l WHERE l.data_layer_id = ANY(i_entity_id);
   else raise exception 'Invalid entity layer id input received: %', i_entity_layer_id;
   end case;
 end
