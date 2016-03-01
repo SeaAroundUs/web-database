@@ -673,3 +673,23 @@ CREATE TABLE web.catch_data_in_csv_cache(
   csv_data text,
   seq serial primary key
 );
+
+CREATE TABLE web.uncertainty_time_period(
+  period_id smallint primary key,
+  year_range int4range not null
+);
+
+CREATE TABLE web.uncertainty_score(
+  score smallint primary key,
+  score_name varchar(30),
+  tolerance smallint,
+  ipcc_criteria text
+);
+
+CREATE TABLE web.uncertainty_eez(
+    eez_id int not null,
+    sector_type_id smallint,
+    period_id smallint,
+    score smallint,
+    CONSTRAINT uncertainty_eez_pkey PRIMARY KEY(eez_id, sector_type_id, period_id)
+);
