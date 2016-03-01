@@ -7,9 +7,11 @@ create or replace function web.get_csv_headings
 returns text as
 $body$
   select array_to_string(
-           case when i_entity_layer_id is distinct from 6 
-           then array['area_name', 'area_type', 'year', 'scientific_name', 'common_name', 'functional_group', 'commercial_group']::text[] 
-           else array['year']::text[] 
+           case when i_entity_layer_id = 6 
+           then array['year']::text[] 
+           else array['area_name', 'area_type']::text[] || 
+                case when i_entity_layer_id = 1 then 'data_layer' else null end || 
+                array['year', 'scientific_name', 'common_name', 'functional_group', 'commercial_group']::text[] 
            end ||
            case when i_entity_layer_id is distinct from 100 then array['fishing_entity']::text[] else array[]::text[] end ||
            array['fishing_sector','catch_type', 'reporting_status', 'tonnes', 'landed_value'],
@@ -27,7 +29,7 @@ $body$
   select 'f.year,' || 
          case when i_entity_layer_id is distinct from 6 then 'f.taxon_key,' else 'null::int,' end ||
          case when i_entity_layer_id is distinct from 100 then 'f.fishing_entity_id,' else 'null::smallint,' end || 
-         case when i_entity_layer_id = 1 then 'f.data_layer_id,' else 'null::int,' end ||
+         case when i_entity_layer_id = 1 then 'f.data_layer_id::smallint,' else 'null::smallint,' end ||
          'f.sector_type_id,f.catch_status,f.reporting_status' || 
          case when i_include_sum then ', sum(f.catch_sum)::numeric(20,10), sum(f.real_value)' else '' end;
 $body$
@@ -97,7 +99,7 @@ begin
     else
       raise exception 'Invalid entity layer id input received: %', i_entity_layer_id;
   end case;
-                                                                                
+                                                                               
   return query select main_area_col_name, additional_join_clause;
 end
 $body$
@@ -140,8 +142,7 @@ begin
     ' group by ' || main_area_col_name || web.get_csv_column_list(i_entity_layer_id, false);
   
   -- DEBUG ONLY
-  --raise info 'rtn_sql: %', rtn_sql;
-  --
+  raise info 'f_catch_query_for_csv rtn_sql: %', rtn_sql;
   
   return query execute rtn_sql                 
    using i_entity_id, i_sub_entity_id;
