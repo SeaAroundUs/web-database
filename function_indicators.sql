@@ -61,7 +61,7 @@ declare
   te_fraction numeric := 1.0/coalesce(i_transfer_efficiency, 0.1);
   base_year int := coalesce(i_base_year, 1950);
 begin
-  return query
+  return query                                                                           
   with fact(entity_id, year, catch_sum, catch_trophic_level, catch_max_length) as (
     select * from web.f_marine_trophic_index_query(i_entity_id, i_sub_area_id, i_entity_layer_id, i_taxon_exclusion_list, area_bucket_id_layer, i_other_params)
   ),
@@ -114,7 +114,7 @@ begin
   return query
   select f.main_area_id,
          f.marine_layer_id,
-         f.taxon_key,
+         f.taxon_key,                           
          sum(f.catch_sum),
          min(t.tl) as trophic_level,
          min(t.sl_max_cm) as sl_max,
@@ -145,7 +145,7 @@ create or replace function web.f_marine_trophic_index_species_list_json(
   i_entity_layer_id int default 1, 
   i_sub_entity_id int[] default null::int[], 
   i_taxon_exclusion_list int[] default null, 
-  i_other_params json default null
+  i_other_params json default null                                 
 )
 returns setof json as
 $body$
@@ -184,20 +184,6 @@ begin
 end
 $body$
 language plpgsql;
-
-create or replace function web.f_marine_trophic_index_species_list_json(
-  i_entity_id int[], 
-  i_entity_layer_id int default 1, 
-  i_sub_entity_id int[] default null::int[], 
-  i_taxon_exclusion_list int[] default null, 
-  i_other_params json default null
-)
-returns setof json as
-$body$
-  select * from web.f_marine_trophic_index_species_list_json(array[i_entity_id]::int[], i_entity_layer_id, i_sub_entity_id, i_taxon_exclusion_list, i_other_params);
-$body$
-language sql;
-
 
 /* 
     Stock Status 
