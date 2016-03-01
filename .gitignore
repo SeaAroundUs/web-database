@@ -50,3 +50,4 @@ log/
 *.*~
 data_dump/allocation.allocation_data
 data_dump/allocation.allocation_result_eez
+/rmv.sql
