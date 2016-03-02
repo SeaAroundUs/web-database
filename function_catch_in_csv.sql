@@ -181,18 +181,17 @@ begin
   end if;
   
   return query
-  with uncertainty as (
+  with catch as (
+    select c.*
+      from web.f_catch_query_for_csv(i_entity_id, i_sub_entity_id, i_entity_layer_id, case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end, i_other_params) as c
+  ),
+  uncertainty as (
     select ue.eez_id, ue.sector_type_id, ue.score, utp.year_range
       from web.uncertainty_eez ue  
       join web.uncertainty_time_period utp on (utp.period_id = ue.period_id)
      where i_entity_layer_id = 1 
        and ue.eez_id = any(i_entity_id)
-  ), 
-  catch as (
-    select c.*, u.score as uncertainty_score
-      from web.f_catch_query_for_csv(i_entity_id, i_sub_entity_id, i_entity_layer_id, case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end, i_other_params) as c
-      left join uncertainty u on (i_entity_layer_id = 1 and u.eez_id = c.entity_id and u.sector_type_id = c.fishing_sector and u.year_range @> c.year and c.data_layer_id = 1)
-  )
+  ) 
   (select web.get_csv_headings(i_entity_layer_id) where exists (select 1 from catch limit 1))
   union all
   --
@@ -284,7 +283,8 @@ begin
      join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
      join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
      join web.data_layer dl on (dl.data_layer_id = c.data_layer_id)
-     left join web.uncertainty_score us on (us.score = round(c.uncertainty_score)::int)
+     left join uncertainty u on (u.eez_id = c.entity_id and u.sector_type_id = c.fishing_sector and u.year_range @> c.year and c.data_layer_id = 1)
+     left join web.uncertainty_score us on (us.score = round(u.score)::int)
     where i_entity_layer_id = 1
     order by c.year, dl.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status)
   union all
