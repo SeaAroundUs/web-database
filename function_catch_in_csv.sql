@@ -10,7 +10,7 @@ $body$
            case when i_entity_layer_id = 6 
            then array['year']::text[] 
            else array['area_name', 'area_type']::text[] || 
-                case when i_entity_layer_id = 1 then 'data_layer' else null end || 
+                case when i_entity_layer_id = 1 then array['data_layer', 'uncertainty_score']::text[] else null::text[] end || 
                 array['year', 'scientific_name', 'common_name', 'functional_group', 'commercial_group']::text[] 
            end ||
            case when i_entity_layer_id is distinct from 100 then array['fishing_entity']::text[] else array[]::text[] end ||
@@ -113,7 +113,17 @@ create or replace function web.f_catch_query_for_csv
   i_area_bucket_id_layer int default null,
   i_other_params json default null
 )
-returns table(entity_id int, entity_layer_id int, year int, taxon int, fishing_entity smallint, data_layer_id smallint, fishing_sector smallint, catch_status char(1), reporting_status char(1), catch_sum numeric, real_value double precision) as
+returns table(entity_id int, 
+              entity_layer_id int, 
+              year int, 
+              taxon int, 
+              fishing_entity smallint, 
+              data_layer_id smallint, 
+              fishing_sector smallint, 
+              catch_status char(1), 
+              reporting_status char(1), 
+              catch_sum numeric, 
+              real_value double precision) as
 $body$
 declare
   rtn_sql text;                                              
@@ -142,7 +152,7 @@ begin
     ' group by ' || main_area_col_name || web.get_csv_column_list(i_entity_layer_id, false);
   
   -- DEBUG ONLY
-  raise info 'f_catch_query_for_csv rtn_sql: %', rtn_sql;
+  --raise info 'f_catch_query_for_csv rtn_sql: %', rtn_sql;
   
   return query execute rtn_sql                 
    using i_entity_id, i_sub_entity_id;
@@ -171,8 +181,17 @@ begin
   end if;
   
   return query
-  with catch as (
-    select * from web.f_catch_query_for_csv(i_entity_id, i_sub_entity_id, i_entity_layer_id, case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end, i_other_params)
+  with uncertainty as (
+    select ue.eez_id, ue.sector_type_id, ue.score, utp.year_range
+      from web.uncertainty_eez ue  
+      join web.uncertainty_time_period utp on (utp.period_id = ue.period_id)
+     where i_entity_layer_id = 1 
+       and ue.eez_id = any(i_entity_id)
+  ), 
+  catch as (
+    select c.*, u.score as uncertainty_score
+      from web.f_catch_query_for_csv(i_entity_id, i_sub_entity_id, i_entity_layer_id, case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end, i_other_params) as c
+      left join uncertainty u on (i_entity_layer_id = 1 and u.eez_id = c.entity_id and u.sector_type_id = c.fishing_sector and u.year_range @> c.year and c.data_layer_id = 1)
   )
   (select web.get_csv_headings(i_entity_layer_id) where exists (select 1 from catch limit 1))
   union all
@@ -254,7 +273,7 @@ begin
   -- EEZ 
   --   any other spatial entity layer beside (6, 100, 300) which needs to return Data_layer_id as well
   --
-  (select concat_ws(',', csv_escape(el.name), el.layer_name, dl.name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
+  (select concat_ws(',', csv_escape(el.name), el.layer_name, dl.name, coalesce(us.score_name, ''), c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
      join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
@@ -265,6 +284,7 @@ begin
      join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
      join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
      join web.data_layer dl on (dl.data_layer_id = c.data_layer_id)
+     left join web.uncertainty_score us on (us.score = round(c.uncertainty_score)::int)
     where i_entity_layer_id = 1
     order by c.year, dl.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status)
   union all
