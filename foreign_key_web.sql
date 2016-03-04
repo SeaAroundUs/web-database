@@ -126,8 +126,11 @@ FOREIGN KEY (agreement_type_id) REFERENCES web.agreement_type(id) ON DELETE CASC
 ALTER TABLE web.uncertainty_eez ADD CONSTRAINT uncertainty_eez_eez_id_fk
 FOREIGN KEY (eez_id) REFERENCES web.eez(eez_id) ON DELETE CASCADE;
 
+ALTER TABLE web.uncertainty_eez ADD CONSTRAINT uncertainty_eez_sector_type_id_fk
+FOREIGN KEY (sector_type_id) REFERENCES web.sector_type(sector_type_id) ON DELETE CASCADE;
+
 ALTER TABLE web.uncertainty_eez ADD CONSTRAINT uncertainty_eez_period_id_fk
 FOREIGN KEY (period_id) REFERENCES web.uncertainty_time_period(period_id) ON DELETE CASCADE;
 
-ALTER TABLE web.uncertainty_eez ADD CONSTRAINT uncertainty_eez_sector_type_id_fk
-FOREIGN KEY (sector_type_id) REFERENCES web.sector_type(sector_type_id) ON DELETE CASCADE;
+ALTER TABLE web.uncertainty_eez ADD CONSTRAINT uncertainty_eez_score_fk
+FOREIGN KEY (score) REFERENCES web.uncertainty_score(score) ON DELETE CASCADE;
