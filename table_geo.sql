@@ -323,3 +323,10 @@ CREATE TABLE geo.mariculture_entity (
     shape_area numeric,
     geom public.geometry(MultiPolygon,4326)
 );
+
+CREATE TABLE geo.cell_grid (
+    cell_id serial primary key,
+    row integer,
+    col integer,
+    geom public.geometry(MultiPolygon,4326)
+);

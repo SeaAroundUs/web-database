@@ -34,3 +34,5 @@ CREATE INDEX mariculture_points_sub_entity_id_idx on geo.mariculture_points(sub_
 CREATE UNIQUE INDEX area_area_key_idx ON geo.area(area_key);
 CREATE UNIQUE INDEX v_area_id_idx ON geo.v_area(id);
 CREATE INDEX v_area_marine_layer_id_main_area_id_idx ON geo.v_area(marine_layer_id, main_area_id);
+
+CREATE INDEX cell_grid_geom_idx ON geo.cell_grid USING gist(geom);

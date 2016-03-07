@@ -57,7 +57,7 @@ DECLARE
   index_name TEXT;
   column_name TEXT;         
   action VARCHAR(10);
-  columns_to_index TEXT[] := ARRAY['fishing_entity_id', 'taxon_key', 'commercial_group_id', 'functional_group_id'];
+  columns_to_index TEXT[] := ARRAY['fishing_entity_id', 'taxon_key', 'commercial_group_id', 'functional_group_id', 'cell_id'];
 BEGIN
   FOR table_name, index_name, column_name, action IN 
     WITH ti(table_name, index_name, column_name) AS (
