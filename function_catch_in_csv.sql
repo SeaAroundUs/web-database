@@ -284,7 +284,7 @@ begin
      join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
      join web.data_layer dl on (dl.data_layer_id = c.data_layer_id)
      left join uncertainty u on (u.eez_id = c.entity_id and u.sector_type_id = c.fishing_sector and u.year_range @> c.year and c.data_layer_id = 1)
-     left join web.uncertainty_score us on (us.score = round(u.score)::int)
+     left join web.uncertainty_score us on (us.score = u.score)
     where i_entity_layer_id = 1
     order by c.year, dl.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status)
   union all
