@@ -272,7 +272,7 @@ begin
   -- EEZ 
   --   any other spatial entity layer beside (6, 100, 300) which needs to return Data_layer_id as well
   --
-  (select concat_ws(',', csv_escape(el.name), el.layer_name, dl.name, coalesce(us.score_name, ''), c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
+  (select concat_ws(',', csv_escape(el.name), el.layer_name, dl.name, coalesce(u.score::varchar, ''), c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
      join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
@@ -284,7 +284,6 @@ begin
      join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
      join web.data_layer dl on (dl.data_layer_id = c.data_layer_id)
      left join uncertainty u on (u.eez_id = c.entity_id and u.sector_type_id = c.fishing_sector and u.year_range @> c.year and c.data_layer_id = 1)
-     left join web.uncertainty_score us on (us.score = u.score)
     where i_entity_layer_id = 1
     order by c.year, dl.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status)
   union all
