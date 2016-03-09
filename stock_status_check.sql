@@ -15,7 +15,7 @@ declare
   REBUILDING constant smallint := 5;
   UNKNOWN constant smallint := 6;
 begin
-  return(
+  return query(
   with categorized as (
     select t.year, t.taxon, t.catch_sum,
            (case
@@ -45,7 +45,7 @@ begin
       from categorized t
      where t.category_id != UNKNOWN
   )
-    select taxa_count,
+    select t.taxa_count,
            case when i_entity_layer_id = 1 then case when t.cellCount > 30 and t.taxa_count > 10 then true else false end else true end
       from (select (select count(distinct taxon)::int from categorized) as taxa_count,
                    (select sum(a.number_of_cells) from web.area a where a.main_area_id = any(i_entity_id) and a.marine_layer_id = i_entity_layer_id and coalesce(a.sub_area_id = any(i_sub_area_id), true)) as cellCount) as t)
