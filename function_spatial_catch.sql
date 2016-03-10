@@ -289,7 +289,13 @@ create or replace function web.f_spatial_catch_json
 returns setof json as         
 $body$
 begin
-  if i_fishing_entity_id is null and coalesce(i_bucketing_method, 'ptile') = 'ptile' and i_entity_id is null and i_reporting_status_id is null and i_catch_status is null and i_grouped_by_entity_layer_id is null then
+  if i_fishing_entity_id is null 
+     and coalesce(i_bucketing_method, 'ptile') = 'ptile' 
+     and i_entity_id is null 
+     and i_reporting_status_id is null 
+     and i_catch_status is null 
+     and i_grouped_by_entity_layer_id is null 
+  then
     return query select result from web.cell_catch_global_cache where year = any(i_year);
   else
     return query
