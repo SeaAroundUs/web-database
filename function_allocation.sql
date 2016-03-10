@@ -73,7 +73,7 @@ BEGIN
              'nop'
             END
       FROM allocation.allocation_result_partition_map AS fe
-      FULL JOIN (SELECT REPLACE(table_name, 'allocation_result_', '')::INT AS partition_id FROM schema_v('allocation_partition') WHERE table_name LIKE 'allocation_result_p%') AS p ON (p.partition_id = fe.partition_id)
+      FULL JOIN (SELECT REPLACE(table_name, 'allocation_result_', '')::INT AS partition_id FROM schema_v('allocation_partition') WHERE table_name ~ E'^allocation_result_\\d+$') AS p ON (p.partition_id = fe.partition_id)
   LOOP
     IF action = 'create' THEN
       EXECUTE 'CREATE TABLE allocation_partition.allocation_result_' || pid || '(CHECK(universal_data_id BETWEEN ' || begin_id || ' AND ' || end_id || ')) INHERITS (allocation.allocation_result)';
