@@ -52,6 +52,9 @@ CREATE SCHEMA web;
 DROP SCHEMA IF EXISTS web_partition CASCADE;
 CREATE SCHEMA web_partition;
 
+DROP SCHEMA IF EXISTS web_cache CASCADE;
+CREATE SCHEMA web_cache;
+
 DROP SCHEMA IF EXISTS geo CASCADE;
 CREATE SCHEMA geo;
 
@@ -96,6 +99,7 @@ CREATE SCHEMA fao;
 \i function_spatial_catch.sql
 \i function_web_partition.sql
 \i function_entity_layer.sql
+\i function_catch_csv_cache.sql
 \i populate_web.sql
 
 \i table_feru.sql
