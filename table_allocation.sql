@@ -37,7 +37,7 @@ CREATE TABLE allocation.simple_area_cell_assignment_raw (
     marine_layer_id smallint,
     area_id integer,
     fao_area_id smallint,
-    cell_id integer,
+    cell_id int,
     water_area double precision,
     CONSTRAINT simple_area_cell_assignment_raw_uk UNIQUE (marine_layer_id, area_id, fao_area_Id, cell_id)
 );
