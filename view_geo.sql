@@ -19,7 +19,7 @@ as
     join web.area a on (a.main_area_id = h.fao_area_id and a.marine_layer_id = 2)
 with no data;
 
-/*
+/* This view is no longer in use, but is left here as sample code
 create materialized view geo.v_global
 as
   -- This is global, so there's no need to calculate coral_reefs and sea_mounts percentage
@@ -284,4 +284,15 @@ as
     join web.geo_entity ge on (ge.geo_entity_id = ee.geo_entity_id)
     left join web.fishing_entity fe2 on (fe2.geo_entity_id = ge.geo_entity_id and fe2.is_currently_used_for_web)
     left join web.fishing_entity fe3 on (fe3.geo_entity_id = ge.admin_geo_entity_id)
+with no data;
+
+create materialized view geo.v_country                  
+as
+  select nc.gid as id,
+         nc.name::text as title,
+         lc.c_number,
+         nc.iso_a3 c_iso_code,
+         st_asgeojson(st_simplify(nc.geom, 0.02::double precision), 3)::json as geom_geojson
+    from geo.ne_country nc
+    left join web.country lc on (lc.c_number = nc.c_number)
 with no data;
