@@ -179,6 +179,8 @@ cat index_feru.sql >> rmv.sql
 cat index_expedition.sql >> rmv.sql
 cat index_admin.sql >> rmv.sql
 
+type update_fao_area_key.sql >> rmv.sql
+
 ## Adding commands to refresh materialized views
 if ! $PSQLSAU -d ${DATABASE_NAME} -f refresh_mv.sql -t >> rmv.sql; then
   ExitWithError

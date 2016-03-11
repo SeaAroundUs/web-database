@@ -111,6 +111,8 @@ type index_feru.sql >> rmv.sql
 type index_expedition.sql >> rmv.sql
 type index_admin.sql >> rmv.sql
 
+type update_fao_area_key.sql >> rmv.sql
+
 :: Adding commands to refresh materialized views 
 psql -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -U sau -t -f refresh_mv.sql >> rmv.sql 
 IF ERRORLEVEL 1 GOTO ErrorLabel
