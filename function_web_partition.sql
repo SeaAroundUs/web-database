@@ -30,16 +30,8 @@ BEGIN
     END IF;
   END LOOP;
   
-  IF partitions_created > 0 THEN 
-    GRANT USAGE ON SCHEMA web TO web;
-    GRANT SELECT,REFERENCES ON ALL TABLES IN SCHEMA web TO web;
-    GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA web TO web;
-    GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA web TO web;
-    
-    GRANT USAGE ON SCHEMA web_partition TO web;
-    GRANT SELECT,REFERENCES ON ALL TABLES IN SCHEMA web_partition TO web;
-    GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA web_partition TO web;
-    GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA web_partition TO web;
+  IF partitions_created > 0 THEN
+    PERFORM admin.grant_access();
   END IF;
   
   RETURN QUERY SELECT partitions_created, partitions_dropped;
