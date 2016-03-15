@@ -64,34 +64,26 @@ IF ERRORLEVEL 1 GOTO ErrorLabel
 
 :: Initialize tables with geometry
 :InitializeSauSchema
-ECHO Restoring admin schema. Please enter password for user sau
-IF EXIST data_dump/feru.schema pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -j %RestoreThreadCount% -U sau data_dump/admin.schema
-IF ERRORLEVEL 1 GOTO ErrorLabel
-ECHO Restoring web schema. Please enter password for user sau
-IF EXIST data_dump/web.schema pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -j %RestoreThreadCount% -U sau data_dump/web.schema
-IF ERRORLEVEL 1 GOTO ErrorLabel
-ECHO Restoring geo schema. Please enter password for user sau
-IF EXIST sau data_dump/geo.schema pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -j %RestoreThreadCount% -U sau data_dump/geo.schema
-IF ERRORLEVEL 1 GOTO ErrorLabel
-ECHO Restoring feru schema. Please enter password for user sau
-IF EXIST data_dump/feru.schema pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -j %RestoreThreadCount% -U sau data_dump/feru.schema
-IF ERRORLEVEL 1 GOTO ErrorLabel
-ECHO Restoring expedition schema. Please enter password for user sau
-IF EXIST data_dump/expedition.schema pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -j %RestoreThreadCount% -U sau data_dump/expedition.schema
-IF ERRORLEVEL 1 GOTO ErrorLabel
-ECHO Restoring fao schema. Please enter password for user sau
-IF EXIST data_dump/fao.schema pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -j %RestoreThreadCount% -U sau data_dump/fao.schema
-IF ERRORLEVEL 1 GOTO ErrorLabel
+set schemas[0]="admin.schema"
+set schemas[1]="web.schema"
+set schemas[2]="geo.schema"
+set schemas[3]="feru.schema"
+set schemas[4]="expedition.schema"
+set schemas[5]="fao.schema"
+set schemas[7]="allocation.schema"
+set schemas[8]="distribution.schema"
+
+FOR /F "tokens=2 delims==" %%s in ('set schemas[') DO (
+  ECHO Restoring %%s schema. Please enter password for user sau
+  IF EXIST data_dump/%%s pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -j %RestoreThreadCount% -U sau data_dump/%%s
+  IF ERRORLEVEL 1 GOTO ErrorLabel
+)
 
 IF /i NOT "%RestoreCellCatch%"=="true" GOTO SkipCellCatch
 ECHO Restoring web_partition schema. Please enter password for user sau
 IF EXIST data_dump/web_partition.schema pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -j %RestoreThreadCount% -U sau data_dump/web_partition.schema
 IF ERRORLEVEL 1 GOTO ErrorLabel
 :SkipCellCatch
-
-ECHO Restoring allocation schema. Please enter password for user sau
-IF EXIST data_dump/allocation.schema pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -U sau data_dump/allocation.schema
-IF ERRORLEVEL 1 GOTO ErrorLabel
 
 :: Clear previous content or create anew
 ECHO vacuum analyze; > rmv.sql
