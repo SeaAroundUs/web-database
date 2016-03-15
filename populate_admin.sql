@@ -10,8 +10,9 @@ ALTER SEQUENCE admin.datatransfer_tables_id_seq RESTART;
 INSERT INTO admin.datatransfer_tables(source_database_name, source_table_name, source_where_clause, target_schema_name, target_table_name, target_excluded_columns, source_key_column, number_of_threads)
 VALUES
  ('Merlin', 'SimpleAreaCellAssignmentRaw', 'WHERE MarineLayerID IS NOT NULL', 'allocation', 'simple_area_cell_assignment_raw', '{}'::TEXT[], 'ID', 9)
-,('Merlin', 'Data', NULL, 'allocation', 'allocation_data', ARRAY['unit_price']::TEXT[], 'UniversalDataID', 9)
 ,('Merlin', 'AllocationSimpleArea', NULL, 'allocation', 'allocation_simple_area', '{}'::TEXT[], 'AllocationSimpleAreaID', 9)
+,('Merlin', 'Cell', NULL, 'allocation', 'cell', '{}'::TEXT[], NULL, 1)
+,('Merlin', 'Data', NULL, 'allocation', 'allocation_data', ARRAY['unit_price']::TEXT[], 'UniversalDataID', 9)
 ,('Merlin', 'AllocationResult', NULL, 'allocation', 'allocation_result', '{}'::TEXT[], 'RowID', 9)
 ;
 
