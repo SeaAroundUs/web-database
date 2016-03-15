@@ -28,7 +28,7 @@ as
     from web.cube_dim_taxon
 with no data;
 
-
+/*
 create materialized view web.v_area_detail
 as
   select marine_layer_id, 
@@ -44,7 +44,7 @@ as
          web.get_area_url_token(marine_layer_id, main_area_id, sub_area_id) as area_url_token
     from web.area_get_all_active_combinations()
 with no data;
-
+*/
 
 create materialized view web.v_dim_area
 as
