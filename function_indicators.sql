@@ -292,7 +292,7 @@ create or replace function web.f_stock_status_json(
   i_sub_area_id int[] default null::int[],
   i_other_params json default null                                                                       
 )
-returns json 
+returns setof json 
 as
 $body$
 declare
@@ -303,7 +303,7 @@ declare
   REBUILDING constant smallint := 5;
   UNKNOWN constant smallint := 6;
 begin
-  return(
+  return query
   with categorized as (
     select t.year, t.taxon, t.catch_sum,
            (case 
@@ -359,9 +359,9 @@ begin
                                 on (v.year = t.time_business_key)        
                            ) as values
                       from category_lookup c
-                      join sum_data sd on (sd.should_be_displayed)
                       join year_window yw on (true)
-                     where exists (select 1 from catch_sum_tally cs where cs.category_id = c.category_id limit 1)
+                     where sd.should_be_displayed
+                       and exists (select 1 from catch_sum_tally cs where cs.category_id = c.category_id limit 1)
                      order by c.category_id) as fd                                               
            ),                    
            'nss',
@@ -377,14 +377,15 @@ begin
                                 on (v.year = t.time_business_key)        
                            ) as values
                       from category_lookup c
-                      join sum_data sd on sd.should_be_displayed
-                     where exists (select 1 from catch_sum_tally cs where cs.category_id = c.category_id limit 1)
+                     where sd.should_be_displayed
+                       and exists (select 1 from catch_sum_tally cs where cs.category_id = c.category_id limit 1)
                      order by c.category_id) as fd 
            ),
            'summary',
            json_build_object('n', (select (case when should_be_displayed then taxa_count else 0 end)::int from sum_data))
          )                                                             
-  );
+    from sum_data sd 
+   where sd.should_be_displayed;
 end
 $body$
 language plpgsql;

@@ -11,3 +11,6 @@
 \i get_table_index.sql
 \i is_schema_exists.sql
 \i csv_escape.sql
+\i jsonb_merge.sql
+\i update_sequence.sql
+\i update_all_sequence.sql

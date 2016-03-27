@@ -202,8 +202,7 @@ as
          hi.slope as c_slope,
          hi.abyssal,
          hi.inshore,
-         hi.offshore,
-         hi.offshore_back
+         hi.offshore
     from web.habitat_index hi;
 
 create or replace view web.v_subsidy
@@ -365,7 +364,7 @@ as
 create or replace view web.v_geo_entity_with_eez as
 with admin(geo_entity_id) as (
   select distinct ge.admin_geo_entity_id
-    from web.geo_entity ge
+    from web.geo_entity ge     
    where ge.geo_entity_id != 0
 ), 
 ee(admin_geo_entity_id, admin_geo_name, eez) as (
@@ -413,3 +412,8 @@ as
                    order by fcrm.country_name) as rf
          ) as contracting_country
     from web.rfmo r;
+
+/*
+The command below should be maintained as the last command in this entire script.
+*/
+SELECT admin.grant_access();

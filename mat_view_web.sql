@@ -165,3 +165,8 @@ as
     join tax on (tax.taxon_key = t.taxon_key)
 with no data;
 
+/*
+The command below should be maintained as the last command in this entire script.
+*/
+SELECT admin.grant_access();
+

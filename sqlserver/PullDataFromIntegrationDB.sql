@@ -283,15 +283,15 @@ BEGIN
   RAISERROR (@msg, 0, 1) WITH NOWAIT;
   TRUNCATE TABLE [dbo].[TaxonDistribution];
   SET IDENTITY_INSERT [dbo].[TaxonDistribution] ON;
+  INSERT INTO [dbo].[TaxonDistribution](TaxonDistributionID, TaxonKey, CellID, RelativeAbundance)
+  SELECT taxon_distribution_id, taxon_key, cell_id, relative_abundance
+    FROM SAU_INTEGRATION_DB.sau_int.distribution.taxon_distribution;
   /* This is temporary for v41 work only. Beyond v41, this code should be restored to pull data from the distribution schema of the integration database instead */
   /*
   INSERT INTO [dbo].[TaxonDistribution](TaxonDistributionID, TaxonKey, CellID, RelativeAbundance)
   SELECT taxon_distribution_id, taxon_key, cell_id, relative_abundance
-    FROM SAU_INTEGRATION_DB.sau_int.distribution.taxon_distribution;
-  */
-  INSERT INTO [dbo].[TaxonDistribution](TaxonDistributionID, TaxonKey, CellID, RelativeAbundance)
-  SELECT taxon_distribution_id, taxon_key, cell_id, relative_abundance
     FROM SAU_INTEGRATION_DB.sau_int.allocation.taxon_distribution;
+  */
   SET IDENTITY_INSERT [dbo].[TaxonDistribution] OFF;
   
   /* dbo.TaxonDistributionSubstitute */

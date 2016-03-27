@@ -29,7 +29,7 @@ VALUES
 ,('sau_int', 'master.rare_taxon', NULL, 'web', 'rare_taxon', '{}'::TEXT[])
 ,('sau_int', 'master.eez', 'where not is_retired', 'web', 'eez', '{}'::TEXT[])
 ,('sau_int', 'master.fao_area', NULL, 'web', 'fao_area', ARRAY['area_key']::TEXT[])  --(web has the extra column area_key int[] that needs to be populated by a function)
-,('sau_int', 'master.fishing_entity', NULL, 'web', 'fishing_entity', '{}'::TEXT[])
+,('sau_int', 'master.fishing_entity', 'WHERE is_currently_used_for_reconstruction', 'web', 'fishing_entity', '{}'::TEXT[])
 ,('sau_int', 'master.functional_groups', NULL, 'web', 'functional_groups', '{}'::TEXT[])
 ,('sau_int', 'master.gear', NULL, 'web', 'gear', '{}'::TEXT[])
 ,('sau_int', 'master.geo_entity', NULL, 'web', 'geo_entity', '{}'::TEXT[])
@@ -51,4 +51,5 @@ VALUES
 ,('sau_int', 'master.uncertainty_time_period', NULL, 'web', 'uncertainty_time_period', '{}'::TEXT[])
 ,('sau_int', 'master.uncertainty_score', NULL, 'web', 'uncertainty_score', '{}'::TEXT[])
 ,('sau_int', 'master.uncertainty_eez', 'u, master.sector_type s where u.sector = s.name', 'web', 'uncertainty_eez', '{}'::TEXT[])
+,('sau_int', 'distribution.taxon_distribution', NULL, 'distribution', 'taxon_distribution', '{}'::TEXT[])
 ;

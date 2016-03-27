@@ -112,9 +112,9 @@ CREATE TABLE web.cube_dim_taxon(
   is_taxa_used boolean,
   is_mariculture_only boolean,
   is_baltic_only boolean NOT NULL,
-  sl_max int,
+  sl_max float,
   slbl_max_type varchar(10),	  
-  sl_max_2 int,
+  sl_max_2 float,
   comments_sl_max text,
   tl float,
   se_tl float,
@@ -139,7 +139,8 @@ CREATE TABLE web.cube_dim_taxon(
   x_min int,
   x_max int,
   y_min int,
-  y_max int
+  y_max int,
+  lineage ltree
 );
 
 CREATE TABLE web.rare_taxon(
@@ -521,7 +522,7 @@ CREATE TABLE web.habitat_index(
   taxon_key serial PRIMARY KEY,
   taxon_name varchar(50) NULL,
   common_name varchar(50) NULL,
-  sl_max int NULL,
+  sl_max float NULL,
   cla_code integer, 
   ord_code integer, 
   fam_code integer, 
@@ -538,8 +539,7 @@ CREATE TABLE web.habitat_index(
   slope decimal(50,20) NULL,
   abyssal decimal(50,20) NULL,
   inshore decimal(50,20) NULL,
-  offshore decimal(50,20) NULL,
-  offshore_back decimal(50,20) NULL
+  offshore decimal(50,20) NULL
 );
 
 CREATE TABLE web.eez_to_fishbase_url(

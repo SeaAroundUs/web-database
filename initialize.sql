@@ -10,18 +10,16 @@
 \i initialize.sql
 \cd ..
 
---These extensions are not supported by RDS
---CREATE EXTENSION adminpack;
---CREATE EXTENSION xml2;
-
 DROP EXTENSION IF EXISTS dblink CASCADE;
 DROP EXTENSION IF EXISTS hstore CASCADE;
 DROP EXTENSION IF EXISTS intarray CASCADE;
 DROP EXTENSION IF EXISTS tablefunc CASCADE;
 DROP EXTENSION IF EXISTS "uuid-ossp" CASCADE;
 DROP EXTENSION IF EXISTS fuzzystrmatch CASCADE;
-DROP EXTENSION IF EXISTS postgis CASCADE;
 DROP EXTENSION IF EXISTS postgres_fdw;
+DROP EXTENSION IF EXISTS ltree CASCADE;
+DROP EXTENSION IF EXISTS plv8 CASCADE;
+DROP EXTENSION IF EXISTS postgis CASCADE;
 
 CREATE EXTENSION dblink;
 CREATE EXTENSION hstore;
@@ -29,11 +27,16 @@ CREATE EXTENSION intarray;
 CREATE EXTENSION tablefunc;
 CREATE EXTENSION "uuid-ossp";
 CREATE EXTENSION fuzzystrmatch;
+CREATE EXTENSION postgres_fdw;
+CREATE EXTENSION ltree;
+CREATE EXTENSION plv8;
+
+-- Postgis extensions have to be last in the chain as they currently modify the
+-- search_path environment variable. Bad but out of our control, so keep them
+-- quarantined to be the last in the chain side-step this badness.
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 CREATE EXTENSION postgis_tiger_geocoder;
---CREATE EXTENSION file_fdw;
-CREATE EXTENSION postgres_fdw;
 
 \echo
 \echo Creating Admin DB Objects...
@@ -89,6 +92,7 @@ CREATE SCHEMA fao;
 \echo Creating Web DB Objects...
 \echo
 \i table_web.sql
+\i trigger_web.sql
 \i function_web.sql
 \i mat_view_web.sql
 \i view_web.sql
@@ -110,5 +114,7 @@ CREATE SCHEMA fao;
 \i view_geo.sql
 
 \i table_expedition.sql
+\i table_distribution.sql
+\i index_distribution.sql
 
 select admin.grant_access();

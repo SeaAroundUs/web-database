@@ -62,7 +62,7 @@ SET SQLINPUTFILE=rds_postgis_setup
 psql -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -U postgres -f %SQLINPUTFILE%.sql -L .\log\%SQLINPUTFILE%.log
 IF ERRORLEVEL 1 GOTO ErrorLabel
 
-:: Initialize tables with geometry
+:: Initialize tables with data
 :InitializeSauSchema
 set schemas[0]="admin.schema"
 set schemas[1]="web.schema"
@@ -87,6 +87,7 @@ IF ERRORLEVEL 1 GOTO ErrorLabel
 
 :: Clear previous content or create anew
 ECHO vacuum analyze; > rmv.sql
+ECHO select update_all_sequence('sau'::text); >> rmv.sql
 ECHO select * from web_partition.maintain_cell_catch_partition(); >> rmv.sql
 
 :: Adding foreign keys

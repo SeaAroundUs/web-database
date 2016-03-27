@@ -82,7 +82,16 @@ CREATE TABLE allocation.allocation_data (
     input_type_id smallint DEFAULT 0 NOT NULL,
     unique_area_id_auto_gen integer,
     original_fishing_entity_id integer NOT NULL,
-    unit_price double precision NOT NULL DEFAULT 1466
+    unit_price double precision not null default 1466
+);
+
+CREATE TABLE allocation.allocation_data_eez_hs ( 
+    universal_data_id integer PRIMARY KEY,
+    fishing_entity_id integer NOT NULL,
+    year integer NOT NULL,
+    taxon_key integer NOT NULL,
+    sector_type_id smallint DEFAULT 0 NOT NULL,
+    catch_type_id smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE allocation.price(
@@ -157,79 +166,19 @@ CREATE TABLE allocation.ifa(
   eez_id int NOT NULL,
   ifa_is_located_in_this_fao int NOT NULL
 );
-
-/* These tables were needed temporarily for Whaleshark work
-CREATE TABLE allocation.final_catch_data_ver40(
-	id int not null,
-	fishing_entity_id float,
-	original_country_fishing text,
-	eez_id float,
-	sub_area_eez text,
-	archive_sub_area_eez text,
-	fao_area float,
-	sub_regional_area text,
-	archive_sub_regional_eez text,
-	province_state text,
-	ices_area_id_eric text,
-	nafo_division text,
-	archive_nafo_division text,
-	ccamlr_area text,
-	layer float,
-	year float,
-	taxon_key float,
-	orig_taxon_key float,
-	taxon_name text,
-	original_fao_name text,
-	catch_amount float,
-	adjustment_factor text,
-	gear_type text,
-	sector text,
-	original_sector text,
-	catch_type text,
-	catch_type_id int,
-	input text,
-	forward_carry_rule text,
-	reference_id float,
-	notes text,
-	taxon_notes text,
-	ices_division text,
-	ices_subdivision text
+                       
+CREATE TABLE allocation.allocation_data_partition_udi(
+ id serial primary key,                                     
+ fishing_entity_id int, 
+ taxon_key int, 
+ catch_type_id smallint, 
+ sector_type_id smallint, 
+ partition_id int[], 
+ udi int[]
 );
 
-CREATE TABLE allocation.final_catch_data_ver41(
-	id int not null,
-	fishing_entity_id float,
-	original_country_fishing text,
-	eez_id float,
-	sub_area_eez text,
-	archive_sub_area_eez text,
-	fao_area float,
-	sub_regional_area text,
-	archive_sub_regional_eez text,
-	province_state text,
-	ices_area_id text,
-	nafo_division text,
-	archive_nafo_division text,
-	ccamlr_area text,
-	layer float,
-	year float,
-	taxon_key float,
-	orig_taxon_key float,
-	taxon_name text,
-	original_fao_name text,
-	catch_amount float,
-	adjustment_factor text,
-	gear_type text,
-	sector text,
-	original_sector text,
-	catch_type text,
-	catch_type_id int,
-	input text,
-	forward_carry_rule text,
-	reference_id float,
-	notes text,
-	taxon_notes text,
-	ices_division text,
-	ices_subdivision text
+CREATE TABLE allocation.catch_by_taxon(
+ taxon_key integer primary key,
+ total_catch numeric,
+ total_value double precision
 );
-*/

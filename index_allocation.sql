@@ -28,5 +28,3 @@ CREATE INDEX allocation_result_lme_lme_id_idx ON allocation.allocation_result_lm
 
 CREATE INDEX allocation_result_rfmo_universal_data_id_idx ON allocation.allocation_result_rfmo(universal_data_id);
 CREATE INDEX allocation_result_rfmo_rfmo_id_idx ON allocation.allocation_result_rfmo(rfmo_id);
-
-CREATE INDEX v_allocation_result_eez_unique_universal_data_id_uk ON allocation.v_allocation_result_eez_unique_universal_data_id(universal_data_id);
