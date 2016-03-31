@@ -1,31 +1,34 @@
 /* materialzed views */
 create materialized view web.v_all_taxon
 as
-  select taxon_key, 
-         scientific_name, 
-         common_name, 
-         commercial_group_id, 
-         functional_group_id, 
-         tl,        
-         sl_max as sl_max_cm, 
-         taxon_level_id, 
-         taxon_group_id, 
-         isscaap_id, 
-         lat_north, 
-         lat_south, 
-         min_depth, 
-         max_depth, 
-         loo, 
-         woo, 
-         k, 
-         x_min, 
-         x_max, 
-         y_min, 
-         y_max, 
-         has_habitat_index, 
-         has_map,              
-         is_baltic_only
-    from web.cube_dim_taxon
+  select t.taxon_key, 
+         t.scientific_name, 
+         t.common_name, 
+         t.commercial_group_id, 
+         t.functional_group_id, 
+         t.tl,        
+         t.sl_max as sl_max_cm, 
+         t.taxon_level_id, 
+         t.taxon_group_id, 
+         t.isscaap_id, 
+         t.lat_north, 
+         t.lat_south, 
+         t.min_depth, 
+         t.max_depth, 
+         t.loo, 
+         t.woo, 
+         t.k, 
+         t.x_min, 
+         t.x_max, 
+         t.y_min, 
+         t.y_max, 
+         t.has_habitat_index, 
+         t.has_map,              
+         t.is_baltic_only,
+         (select td.is_backfilled 
+           from distribution.taxon_distribution td 
+          where td.taxon_key = t.taxon_key limit 1) as is_taxon_distribution_backfilled
+    from web.cube_dim_taxon t
 with no data;
 
 /*
