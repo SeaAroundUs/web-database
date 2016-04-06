@@ -51,5 +51,6 @@ VALUES
 ,('sau_int', 'master.uncertainty_time_period', NULL, 'web', 'uncertainty_time_period', '{}'::TEXT[])
 ,('sau_int', 'master.uncertainty_score', NULL, 'web', 'uncertainty_score', '{}'::TEXT[])
 ,('sau_int', 'master.uncertainty_eez', 'u, master.sector_type s where u.sector = s.name', 'web', 'uncertainty_eez', '{}'::TEXT[])
+,('sau_int', 'master.area_invisible', NULL, 'web', 'area_invisible', '{}'::TEXT[])
 ,('sau_int', 'distribution.taxon_distribution', NULL, 'distribution', 'taxon_distribution', '{}'::TEXT[])
 ;
