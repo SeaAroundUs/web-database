@@ -210,7 +210,8 @@ CREATE TABLE web.functional_groups(
   target_grp int NULL,
   name varchar(20) NULL,
   description varchar(50) NULL,
-  include_in_depth_adjustment_function BOOLEAN NOT NULL
+  include_in_depth_adjustment_function BOOLEAN NOT NULL,
+  size_range numrange
 );
 
 CREATE TABLE web.gear(
