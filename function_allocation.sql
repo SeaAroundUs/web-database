@@ -254,7 +254,7 @@ RETURNS SETOF TEXT AS
 $body$
 DECLARE
   PARTITION_BATCH_SIZE constant smallint := 20;
-  UDI_BATCH_SIZE constant smallint := 40;
+  UDI_BATCH_SIZE constant smallint := 80;
   rec record;
   allocation_data_partition_udi_id int[] := '{}';
   partition_count smallint := 0;

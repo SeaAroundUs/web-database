@@ -786,7 +786,7 @@ begin
       '' 
     end ||
     ',f.fishing_entity_id::int';
-
+raise info 'rtn_sql: %', rtn_sql;
   return query execute rtn_sql
    using i_entity_id, i_sub_entity_id;
 end
@@ -1675,7 +1675,7 @@ begin
     ',f.main_area_id, f.marine_layer_id';
     
   --DEBUG ONLY
-  --raise info 'rtn_sql: %', rtn_sql;
+raise info 'rtn_sql: %', rtn_sql;
   --DEBUG ONLY
   
   return query execute rtn_sql
@@ -1701,7 +1701,7 @@ begin
   return (
     with catch(year, entity_id, main_area_id, marine_layer_id, measure) as ( 
        select * from web.f_dimension_lme_catch_query(i_measure, i_entity_id, i_sub_entity_id, i_entity_layer_id, area_bucket_id_layer, false, i_other_params)
-    ),
+    ),                                                 
     ranking(lme_id, measure_rank) as (
       select c.main_area_id, row_number() over(order by sum(c.measure) desc)
         from catch c
@@ -1710,18 +1710,24 @@ begin
        order by sum(c.measure) desc
        limit i_top_count
     ),
-    total(year, mixed_total, non_lme_total) as (
+    l3_total(year, mixed_total) as (
       select c.year, 
-             sum(case when c.marine_layer_id = 3 and r.lme_id is null then c.measure else 0 end),
-             sum(case when c.marine_layer_id = 6 then c.measure else 0 end) - sum(case when c.marine_layer_id = 3 then c.measure else 0 end)
+             sum(case when r.lme_id is null then c.measure else 0 end) as mt
         from catch c
-        left join ranking r on (r.lme_id = c.main_area_id and c.marine_layer_id = 3)
+        left join ranking r on (r.lme_id = c.main_area_id)
+       where c.marine_layer_id = 3
+       group by c.year
+    ),
+    l6_total(year, non_lme_total) as (
+      select c.year, 
+             sum(case when c.marine_layer_id = 6 then c.measure else 0 end) - sum(case when c.marine_layer_id = 3 then c.measure else 0 end) as nlt
+        from catch c
        group by c.year
     )
     select json_agg(fd.*) 
       from ((select l.lme_id as entity_id, l.name as key, 
                     (select array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 3)]] order by tm.time_business_key)
-                       from web.time tm
+                       from web.time tm                                                                                             
                        left join catch c on (c.year = tm.time_business_key and c.main_area_id = r.lme_id and c.marine_layer_id = 3) 
                       where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
                from ranking r 
@@ -1731,17 +1737,17 @@ begin
             (select null::int, 'Others'::text as key, 
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
                        from web.time tm
-                       left join total tby on (tby.year = tm.time_business_key)
+                       left join l3_total tby on (tby.year = tm.time_business_key)
                       where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
-               where exists (select 1 from total t where t.mixed_total is distinct from 0 limit 1)
+               where exists (select 1 from l3_total t where t.mixed_total is distinct from 0 limit 1)
             )
             union all
             (select null::int, 'Non-LME'::text as key, 
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.non_lme_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
                        from web.time tm
-                       left join total tby on (tby.year = tm.time_business_key)
+                       left join l6_total tby on (tby.year = tm.time_business_key)
                       where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
-               where exists (select 1 from total t where t.non_lme_total is distinct from 0 limit 1)
+               where exists (select 1 from l6_total t where t.non_lme_total is distinct from 0 limit 1)
             )
            )
         as fd

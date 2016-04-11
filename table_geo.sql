@@ -326,7 +326,7 @@ CREATE TABLE geo.mariculture_entity (
 
 CREATE TABLE geo.cell_grid (
     cell_id serial primary key,
-    row integer,
-    col integer,
+    lat integer,
+    lon integer,
     geom public.geometry(MultiPolygon,4326)
 );
