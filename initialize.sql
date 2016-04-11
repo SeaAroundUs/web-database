@@ -89,6 +89,12 @@ CREATE SCHEMA fao;
 \i table_fao.sql
 
 \echo
+\echo Creating distribution DB Objects...
+\echo
+\i table_distribution.sql
+\i index_distribution.sql
+
+\echo
 \echo Creating Web DB Objects...
 \echo
 \i table_web.sql
@@ -114,7 +120,5 @@ CREATE SCHEMA fao;
 \i view_geo.sql
 
 \i table_expedition.sql
-\i table_distribution.sql
-\i index_distribution.sql
 
 select admin.grant_access();
