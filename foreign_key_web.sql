@@ -33,8 +33,9 @@ FOREIGN KEY (geo_entity_id) REFERENCES web.geo_entity(geo_entity_id) ON DELETE C
 ALTER TABLE web.mariculture_data ADD CONSTRAINT mariculture_sub_entity_id_fk
 FOREIGN KEY (mariculture_sub_entity_id) REFERENCES web.mariculture_sub_entity(mariculture_sub_entity_id) ON DELETE CASCADE;
 
-ALTER TABLE web.mariculture_data ADD CONSTRAINT taxon_key_fk
-FOREIGN KEY (taxon_key) REFERENCES web.cube_dim_taxon(taxon_key) ON DELETE CASCADE;
+--Temporary only due to taxon is_retired issues
+--ALTER TABLE web.mariculture_data ADD CONSTRAINT taxon_key_fk
+--FOREIGN KEY (taxon_key) REFERENCES web.cube_dim_taxon(taxon_key) ON DELETE CASCADE;
 
 -- web.mariculture_entity
 ALTER TABLE web.mariculture_entity ADD CONSTRAINT legacy_c_number_fk
