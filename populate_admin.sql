@@ -1,11 +1,6 @@
 TRUNCATE TABLE admin.datatransfer_tables;
 ALTER SEQUENCE admin.datatransfer_tables_id_seq RESTART;
 
---INSERT INTO admin.datatransfer_tables(source_database_name, source_table_name, source_where_clause, target_schema_name, target_table_name, target_excluded_columns)
---VALUES
---('Merlin', 'AllocationAreaType', NULL, 'allocation', 'allocation_area_type', '{}'::TEXT[])
---;
-
 -- Below are tables to be processed with multiple threads each due to their size
 INSERT INTO admin.datatransfer_tables(source_database_name, source_table_name, source_where_clause, target_schema_name, target_table_name, target_excluded_columns, source_key_column, number_of_threads)
 VALUES
