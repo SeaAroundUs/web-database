@@ -211,7 +211,8 @@ CREATE TABLE web.functional_groups(
   name varchar(20) NULL,
   description varchar(50) NULL,
   include_in_depth_adjustment_function BOOLEAN NOT NULL,
-  size_range numrange
+  size_range numrange,
+  fgi_block int[]
 );
 
 CREATE TABLE web.gear(
