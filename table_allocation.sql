@@ -144,7 +144,7 @@ CREATE TABLE allocation.allocation_result_rfmo(
 	total_catch float null
 );
 
-CREATE TABLE allocation.taxon_distribution (
+CREATE TABLE allocation.taxon_distribution_old (
     taxon_key integer NOT NULL,
     cell_id integer NOT NULL,
     relative_abundance integer NOT NULL,
