@@ -44,7 +44,6 @@ BEGIN
   SELECT admin.grant_privilege('web_partition', 'web', false, false);
   SELECT admin.grant_privilege('web_cache', 'web', false, false);
   SELECT admin.grant_privilege('fao', 'web', false, false);
-  SELECT admin.grant_privilege('fao', 'web', false, false);
   SELECT admin.grant_privilege('geo', 'web', false, false);
   SELECT admin.grant_privilege('feru', 'web', false, false);
   SELECT admin.grant_privilege('expedition', 'web', false, false);
@@ -58,6 +57,15 @@ BEGIN
   
   -- For user sau_reader
   SELECT admin.grant_privilege('allocation', 'sau_reader', false, false);
+  SELECT admin.grant_privilege('admin', 'sau_reader', false, false);
+  SELECT admin.grant_privilege('web', 'sau_reader', false, false);
+  SELECT admin.grant_privilege('web_partition', 'sau_reader', false, false);
+  SELECT admin.grant_privilege('web_cache', 'sau_reader', false, false);
+  SELECT admin.grant_privilege('fao', 'sau_reader', false, false);
+  SELECT admin.grant_privilege('geo', 'sau_reader', false, false);
+  SELECT admin.grant_privilege('feru', 'sau_reader', false, false);
+  SELECT admin.grant_privilege('expedition', 'sau_reader', false, false);
+  SELECT admin.grant_privilege('distribution', 'sau_reader', false, false);
 END
 $body$
 LANGUAGE plpgsql
