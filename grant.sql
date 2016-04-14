@@ -34,20 +34,20 @@ CREATE OR REPLACE FUNCTION admin.grant_access() RETURNS void AS
 $body$
 BEGIN
     -- For user allocation
-  SELECT admin.grant_privilege('admin', 'allocation', false, false);
-  SELECT admin.grant_privilege('allocation', 'allocation', false, false);
+  PERFORM admin.grant_privilege('admin', 'allocation', false, false);
+  PERFORM admin.grant_privilege('allocation', 'allocation', false, false);
   
   -- for user web
-  SELECT admin.grant_privilege('admin', 'web', false, false);
-  SELECT admin.grant_privilege('allocation', 'web', false, false);
-  SELECT admin.grant_privilege('web', 'web', false, false);
-  SELECT admin.grant_privilege('web_partition', 'web', false, false);
-  SELECT admin.grant_privilege('web_cache', 'web', false, false);
-  SELECT admin.grant_privilege('fao', 'web', false, false);
-  SELECT admin.grant_privilege('geo', 'web', false, false);
-  SELECT admin.grant_privilege('feru', 'web', false, false);
-  SELECT admin.grant_privilege('expedition', 'web', false, false);
-  SELECT admin.grant_privilege('distribution', 'web', false, false);
+  PERFORM admin.grant_privilege('admin', 'web', false, false);
+  PERFORM admin.grant_privilege('allocation', 'web', false, false);
+  PERFORM admin.grant_privilege('web', 'web', false, false);
+  PERFORM admin.grant_privilege('web_partition', 'web', false, false);
+  PERFORM admin.grant_privilege('web_cache', 'web', false, false);
+  PERFORM admin.grant_privilege('fao', 'web', false, false);
+  PERFORM admin.grant_privilege('geo', 'web', false, false);
+  PERFORM admin.grant_privilege('feru', 'web', false, false);
+  PERFORM admin.grant_privilege('expedition', 'web', false, false);
+  PERFORM admin.grant_privilege('distribution', 'web', false, false);
   
    IF is_schema_exists('admin') THEN
    /* Writeable grants to specific tables in the admin schema to the web user */
@@ -56,16 +56,18 @@ BEGIN
    END IF;
   
   -- For user sau_reader
-  SELECT admin.grant_privilege('allocation', 'sau_reader', false, false);
-  SELECT admin.grant_privilege('admin', 'sau_reader', false, false);
-  SELECT admin.grant_privilege('web', 'sau_reader', false, false);
-  SELECT admin.grant_privilege('web_partition', 'sau_reader', false, false);
-  SELECT admin.grant_privilege('web_cache', 'sau_reader', false, false);
-  SELECT admin.grant_privilege('fao', 'sau_reader', false, false);
-  SELECT admin.grant_privilege('geo', 'sau_reader', false, false);
-  SELECT admin.grant_privilege('feru', 'sau_reader', false, false);
-  SELECT admin.grant_privilege('expedition', 'sau_reader', false, false);
-  SELECT admin.grant_privilege('distribution', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('allocation', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('admin', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('web', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('web_partition', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('web_cache', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('fao', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('geo', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('feru', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('expedition', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('distribution', 'sau_reader', false, false);
+  
+  RETURN;
 END
 $body$
 LANGUAGE plpgsql
