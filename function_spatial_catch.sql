@@ -294,7 +294,8 @@ begin
      and i_entity_id is null 
      and i_reporting_status_id is null 
      and i_catch_status is null 
-     and i_grouped_by_entity_layer_id is null 
+     and i_grouped_by_entity_layer_id is null
+     and exists (select 1 from web.cell_catch_global_cache where year = any(i_year) limit 1)
   then
     return query select result from web.cell_catch_global_cache where year = any(i_year);
   else
