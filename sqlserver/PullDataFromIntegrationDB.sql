@@ -673,6 +673,9 @@ BEGIN
   
 
   SET @msg = char(10) + 'Pulling down allocation.v_internal_generate_allocation_simple_area_table'; 
+  RAISERROR (@msg, 0, 1) WITH NOWAIT;	
+  TRUNCATE TABLE  [imported].[AllocationSimpleArea];
+  INSERT INTO  [imported].[AllocationSimpleArea](
 	  [MarineLayerID]
            ,[AreaID]
            ,[FaoAreaID]
@@ -692,6 +695,7 @@ BEGIN
 			inherited_att_is_ifa,
 			inherited_att_allows_coastal_fishing_for_layer2_data
             FROM allocation.v_internal_generate_allocation_simple_area_table');
+  ALTER INDEX ALL ON [imported].[AllocationSimpleArea] REORGANIZE;
 END            
 
 GO
