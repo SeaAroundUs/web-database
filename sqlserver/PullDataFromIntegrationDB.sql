@@ -668,6 +668,28 @@ BEGIN
               FROM geo.world');
   ALTER INDEX ALL ON [dbo].[world] REORGANIZE;
   */
+  
+
+  SET @msg = char(10) + 'Pulling down allocation.v_internal_generate_allocation_simple_area_table'; 
+	  [MarineLayerID]
+           ,[AreaID]
+           ,[FaoAreaID]
+           ,[IsActive]
+           ,[InheritedAtt_BelongsToReconstructionEEZID]
+           ,[InheritedAtt_IsIFA]
+           ,[InheritedAtt_AllowsCoastalFishingForLayer2Data]
+  )
+  SELECT *
+    FROM openquery(
+           SAU_INTEGRATION_DB, 
+           'SELECT marine_layer_id,
+			area_id,
+			fao_area_id,
+			is_active,
+			inherited_att_belongs_to_reconstruction_eez_id,
+			inherited_att_is_ifa,
+			inherited_att_allows_coastal_fishing_for_layer2_data
+            FROM allocation.v_internal_generate_allocation_simple_area_table');
 END            
 
 GO
