@@ -107,6 +107,18 @@ BEGIN
 	          FROM master.catch_type');
   ALTER INDEX ALL ON [dbo].[CatchType] REORGANIZE;
 	
+  /* dbo.ReportingStatus */
+  SET @msg = char(10) + 'Pulling down ReportingStatus...'; 
+  RAISERROR (@msg, 0, 1) WITH NOWAIT;
+  DELETE FROM [dbo].[ReportingStatus];
+  INSERT INTO [dbo].[ReportingStatus](ReportingStatusID, Name)
+  SELECT *                
+    FROM openquery(    
+           SAU_INTEGRATION_DB, 
+	       'SELECT reporting_status_id, name
+	          FROM master.reporting_status');
+  ALTER INDEX ALL ON [dbo].[ReportingStatus] REORGANIZE;
+	
   /* dbo.InputType */
   SET @msg = char(10) + 'Pulling down InputType...'; 
   RAISERROR (@msg, 0, 1) WITH NOWAIT;
