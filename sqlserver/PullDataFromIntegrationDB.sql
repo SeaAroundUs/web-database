@@ -5,6 +5,9 @@ AS
 BEGIN
   DECLARE @msg NVARCHAR(256);
   DECLARE @MaxUniversalDataID INT;
+
+  /* Truncate tables with foreign keys to other tables to avoid dependency problems */
+  TRUNCATE TABLE [dbo].[DataRaw];
   
   /* dbo.AgreementRaw */
   SET @msg = char(10) + 'Pulling down AgreementRaw...'; 
@@ -337,7 +340,6 @@ BEGIN
   /* dbo.DataRaw */
   SET @msg = char(10) + 'Pulling down DataRaw...'; 
   RAISERROR (@msg, 0, 1) WITH NOWAIT;
-  TRUNCATE TABLE [dbo].[DataRaw];
   INSERT INTO [dbo].[DataRaw](
 	   [ExternalDataRowID]
 	  ,[DataLayerID]
