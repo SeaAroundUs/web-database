@@ -91,7 +91,8 @@ BEGIN
     FROM openquery(    
            SAU_INTEGRATION_DB, 
 	       'SELECT time_key, year 
-	          FROM master.time');
+	          FROM master.time
+	         WHERE is_used_for_allocation');
   ALTER INDEX ALL ON [dbo].[AllocationYear] REORGANIZE;
   
   /* dbo.CatchType */
@@ -336,6 +337,7 @@ BEGIN
 	  ,[CatchAmount]
 	  ,[Sector]
 	  ,[CatchTypeID]
+	  ,[ReportingStatusID]
 	  ,[Input]
 	  ,[ICES_AreaID]
 	  ,[CCAMLRArea]
@@ -344,7 +346,7 @@ BEGIN
   SELECT *
     FROM openquery(
            SAU_INTEGRATION_DB, 
-           'SELECT c.id,c.layer,c.fishing_entity_id,c.eez_id,c.fao_area_id,c.year,c.taxon_key,c.amount,st.name as sector,c.catch_type_id,it.name as input,ia.ices_area,c.ccamlr_area,na.nafo_division
+           'SELECT c.id,c.layer,c.fishing_entity_id,c.eez_id,c.fao_area_id,c.year,c.taxon_key,c.amount,st.name as sector,c.catch_type_id,c.reporting_status_id,it.name as input,ia.ices_area,c.ccamlr_area,na.nafo_division
               FROM recon.catch c
               JOIN master.sector_type st ON (st.sector_type_id = c.sector_type_id)
               JOIN master.input_type it ON (it.input_type_id = c.input_type_id)
