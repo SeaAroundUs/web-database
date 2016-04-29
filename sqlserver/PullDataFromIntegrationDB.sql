@@ -289,7 +289,7 @@ BEGIN
     FROM openquery(    
            SAU_INTEGRATION_DB, 
 	       'SELECT eez_id, ifa_is_located_in_this_fao
-              FROM allocation.ifa');
+              FROM geo.ifa_fao');
   ALTER INDEX ALL ON [dbo].[IFA] REORGANIZE;
   
   /* dbo.LME */
