@@ -5,10 +5,13 @@
 --FOREIGN KEY (query_id) REFERENCES allocation.query(id) ON DELETE CASCADE;
 -----
 ALTER TABLE allocation.allocation_data ADD CONSTRAINT catch_type_id_fk
-FOREIGN KEY (catch_type_id) REFERENCES allocation.catch_type(catch_type_id) ON DELETE CASCADE;
+FOREIGN KEY (catch_type_id) REFERENCES web.catch_type(catch_type_id) ON DELETE CASCADE;
+
+ALTER TABLE allocation.allocation_data ADD CONSTRAINT reporting_status_id_fk
+FOREIGN KEY (reporting_status_id) REFERENCES web.reporting_status(reporting_status_id) ON DELETE CASCADE;
 
 ALTER TABLE allocation.allocation_data ADD CONSTRAINT sector_type_id_fk
-FOREIGN KEY (sector_type_id) REFERENCES allocation.sector_type(sector_type_id) ON DELETE CASCADE;
+FOREIGN KEY (sector_type_id) REFERENCES web.sector_type(sector_type_id) ON DELETE CASCADE;
 
 ALTER TABLE allocation.allocation_data ADD CONSTRAINT allocation_area_type_id_fk
 FOREIGN KEY (allocation_area_type_id) REFERENCES allocation.allocation_area_type(allocation_area_type_id) ON DELETE CASCADE;
