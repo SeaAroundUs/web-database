@@ -1,13 +1,3 @@
-CREATE TABLE allocation.catch_type (
-    catch_type_id smallint DEFAULT 0 PRIMARY KEY,
-    name character varying(50) NOT NULL
-);
-
-CREATE TABLE allocation.sector_type (
-    sector_type_id smallint DEFAULT 0 PRIMARY KEY,
-    name character varying(50) NOT NULL
-);
-
 CREATE TABLE allocation.allocation_area_type (
     allocation_area_type_id smallint DEFAULT 0 PRIMARY KEY,
     name character varying(50) NOT NULL,
@@ -20,16 +10,16 @@ CREATE TABLE allocation.layer (
 );
 
 CREATE TABLE allocation.fishing_entity(
-  fishing_entity_id smallint PRIMARY KEY,
-  name varchar(100) NOT NULL,
-  geo_entity_id int NULL,
-  date_allowed_to_fish_other_eEZs int NOT NULL,
-  date_allowed_to_fish_high_seas int NOT NULL,
-  legacy_c_number int NULL,
-  is_currently_used_for_web boolean DEFAULT true NOT NULL,
-  is_currently_used_for_reconstruction boolean DEFAULT true NOT NULL,
-  is_allowed_to_fish_pre_eez_by_default boolean DEFAULT true NOT NULL,
-  remarks varchar(50) NULL
+    fishing_entity_id smallint PRIMARY KEY,
+    name varchar(100) NOT NULL,
+    geo_entity_id int NULL,
+    date_allowed_to_fish_other_eEZs int NOT NULL,
+    date_allowed_to_fish_high_seas int NOT NULL,
+    legacy_c_number int NULL,
+    is_currently_used_for_web boolean DEFAULT true NOT NULL,
+    is_currently_used_for_reconstruction boolean DEFAULT true NOT NULL,
+    is_allowed_to_fish_pre_eez_by_default boolean DEFAULT true NOT NULL,
+    remarks varchar(50) NULL
 );
 
 CREATE TABLE allocation.simple_area_cell_assignment_raw (
@@ -79,6 +69,7 @@ CREATE TABLE allocation.allocation_data (
     catch_amount double precision NOT NULL,
     sector_type_id smallint DEFAULT 0 NOT NULL,
     catch_type_id smallint DEFAULT 0 NOT NULL,
+    reporting_status_id smallint DEFAULT 0 NOT NULL,
     input_type_id smallint DEFAULT 0 NOT NULL,
     unique_area_id_auto_gen integer,
     original_fishing_entity_id integer NOT NULL,
@@ -91,7 +82,8 @@ CREATE TABLE allocation.allocation_data_eez_hs (
     year integer NOT NULL,
     taxon_key integer NOT NULL,
     sector_type_id smallint DEFAULT 0 NOT NULL,
-    catch_type_id smallint DEFAULT 0 NOT NULL
+    catch_type_id smallint DEFAULT 0 NOT NULL,
+    reporting_status_id smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE allocation.price(
@@ -152,33 +144,34 @@ CREATE TABLE allocation.taxon_distribution_old (
 );
 
 CREATE TABLE allocation.taxon_distribution_substitute(
-  original_taxon_key int primary key,
-  use_this_taxon_key_instead int not null
+    original_taxon_key int primary key,
+    use_this_taxon_key_instead int not null
 );
 
 CREATE TABLE allocation.ices_area(
-  ices_division varchar(255) NULL,
-  ices_subdivision varchar(255) NULL,
-  ices_area_id varchar(255) NOT NULL
+    ices_division varchar(255) NULL,
+    ices_subdivision varchar(255) NULL,
+    ices_area_id varchar(255) NOT NULL
 );
 
 CREATE TABLE allocation.ifa(
-  eez_id int NOT NULL,
-  ifa_is_located_in_this_fao int NOT NULL
+    eez_id int NOT NULL,
+    ifa_is_located_in_this_fao int NOT NULL
 );
                        
 CREATE TABLE allocation.allocation_data_partition_udi(
- id serial primary key,                                     
- fishing_entity_id int, 
- taxon_key int, 
- catch_type_id smallint, 
- sector_type_id smallint, 
- partition_id int[], 
- udi int[]
+    id serial primary key,                                     
+    fishing_entity_id int, 
+    taxon_key int, 
+    catch_type_id smallint, 
+    reporting_status_id smallint, 
+    sector_type_id smallint, 
+    partition_id int[], 
+    udi int[]
 );
 
 CREATE TABLE allocation.catch_by_taxon(
- taxon_key integer primary key,
- total_catch numeric,
- total_value double precision
+    taxon_key integer primary key,
+    total_catch numeric,
+    total_value double precision
 );

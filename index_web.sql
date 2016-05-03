@@ -35,6 +35,7 @@ CREATE INDEX v_fact_data_taxon_key_idx ON web.v_fact_data(taxon_key);
 CREATE INDEX v_fact_data_area_key_idx ON web.v_fact_data(area_key);
 CREATE INDEX v_fact_data_time_key_idx ON web.v_fact_data(time_key);
 CREATE INDEX v_fact_data_catch_type_id_idx ON web.v_fact_data(catch_type_id);
+CREATE INDEX v_fact_data_reporting_status_id_idx ON web.v_fact_data(reporting_status_id);
 CREATE INDEX v_fact_data_sector_type_id_idx ON web.v_fact_data(sector_type_id);
 CREATE INDEX v_fact_data_main_area_id_marine_layer_id_idx ON web.v_fact_data(main_area_id, marine_layer_id);
 CREATE INDEX v_fact_data_fishing_entity_id_idx ON web.v_fact_data(fishing_entity_id);

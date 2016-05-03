@@ -60,7 +60,14 @@ CREATE TABLE web.country(
 
 CREATE TABLE web.catch_type(
   catch_type_id smallint primary key,
-  name varchar(50) not null                        
+  name varchar(50) not null,
+  abbreviation char(1) not null                        
+);
+
+CREATE TABLE web.reporting_status(
+  reporting_status_id smallint primary key,
+  name varchar(50) not null,
+  abbreviation char(1) not null                        
 );
 
 CREATE TABLE web.sector_type(
@@ -576,7 +583,7 @@ CREATE TABLE web.data_layer (
   data_layer_id smallint DEFAULT 0 PRIMARY KEY,
   name character varying(255) NOT NULL
 );
-
+                            
 CREATE TABLE web.v_fact_data(
   area_data_key serial primary key, 
   taxon_key integer,
@@ -591,6 +598,7 @@ CREATE TABLE web.v_fact_data(
   marine_layer_id integer,
   catch_type_id smallint,
   catch_status character(1),
+  reporting_status_id smallint,
   reporting_status character(1),
   sector_type_id smallint,
   catch_sum numeric(50, 20),
@@ -692,9 +700,9 @@ CREATE TABLE web.uncertainty_score(
 );
 
 CREATE TABLE web.uncertainty_eez(
-    eez_id int not null,
-    sector_type_id smallint,
-    period_id smallint,
-    score smallint,
-    CONSTRAINT uncertainty_eez_pkey PRIMARY KEY(eez_id, sector_type_id, period_id)
+  eez_id int not null,
+  sector_type_id smallint,
+  period_id smallint,
+  score smallint,
+  CONSTRAINT uncertainty_eez_pkey PRIMARY KEY(eez_id, sector_type_id, period_id)
 );

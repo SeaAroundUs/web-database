@@ -113,6 +113,9 @@ FOREIGN KEY (marine_layer_id) REFERENCES web.marine_layer(marine_layer_id) ON DE
 ALTER TABLE web.v_fact_data ADD CONSTRAINT catch_type_id_fk
 FOREIGN KEY (catch_type_id) REFERENCES web.catch_type(catch_type_id) ON DELETE CASCADE;
 
+ALTER TABLE web.v_fact_data ADD CONSTRAINT reporting_status_id_fk
+FOREIGN KEY (reporting_status_id) REFERENCES web.reporting_status(reporting_status_id) ON DELETE CASCADE;
+
 ALTER TABLE web.v_fact_data ADD CONSTRAINT sector_type_id_fk
 FOREIGN KEY (sector_type_id) REFERENCES web.sector_type(sector_type_id) ON DELETE CASCADE;
 

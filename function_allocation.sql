@@ -236,14 +236,14 @@ BEGIN
   TRUNCATE TABLE allocation.allocation_data_partition_udi;
               
   EXECUTE 
-  format('INSERT INTO allocation.allocation_data_partition_udi(fishing_entity_id, taxon_key, catch_type_id, sector_type_id, partition_id, udi)
-          SELECT ad.fishing_entity_id, ad.taxon_key, ad.catch_type_id, ad.sector_type_id, 
+  format('INSERT INTO allocation.allocation_data_partition_udi(fishing_entity_id, taxon_key, catch_type_id, reporting_status_id, sector_type_id, partition_id, udi)
+          SELECT ad.fishing_entity_id, ad.taxon_key, ad.catch_type_id, ad.reporting_status_id, ad.sector_type_id, 
                  array_agg(distinct m.partition_id order by m.partition_id) partition_id, 
                  array_agg(distinct ad.universal_data_id order by ad.universal_data_id) uid
             FROM allocation_data_partition.allocation_data_%s ad
             JOIN allocation.allocation_result_partition_map m 
               ON (ad.universal_data_id between m.begin_universal_data_id and m.end_universal_data_id)
-           GROUP BY ad.fishing_entity_id, ad.taxon_key, ad.catch_type_id, ad.sector_type_id',
+           GROUP BY ad.fishing_entity_id, ad.taxon_key, ad.catch_type_id, ad.reporting_status_id, ad.sector_type_id',
          i_year); 
 END;
 $body$
@@ -253,8 +253,8 @@ CREATE OR REPLACE FUNCTION allocation.generate_insert_cell_catch_partition_state
 RETURNS SETOF TEXT AS
 $body$
 DECLARE
-  PARTITION_BATCH_SIZE constant smallint := 20;
-  UDI_BATCH_SIZE constant smallint := 80;
+  PARTITION_BATCH_SIZE constant smallint := 50;
+  UDI_BATCH_SIZE constant smallint := 150;
   rec record;
   allocation_data_partition_udi_id int[] := '{}';
   partition_count smallint := 0;
@@ -303,8 +303,10 @@ BEGIN
       FROM web.cube_dim_taxon cdt 
      WHERE cdt.taxon_key = adpu.taxon_key;
  
-    c_status := (case when adpu.catch_type_id in (1, 3) then 'R' when adpu.catch_type_id = 2 then 'D' else null end)::CHAR(1);
-    r_status := (case when adpu.catch_type_id = 1 then 'R' when adpu.catch_type_id in (2, 3) then 'U' else null end)::CHAR(1);
+    SELECT c.abbreviation, r.abbreviation 
+      INTO c_status, r_status 
+      FROM web.catch_type c, web.reporting_status r
+     WHERE c.catch_type_id = adpu.catch_type_id AND r.reporting_status_id = adpu.reporting_status_id;
     
     SELECT array_to_string(ARRAY_AGG('(SELECT cell_id, SUM(allocated_catch) ac' || 
                                      '   FROM allocation_partition.allocation_result_' || u.partition_id || 
