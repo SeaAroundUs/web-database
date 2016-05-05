@@ -425,7 +425,7 @@ $body$
            'nss',
            (select json_agg(fd.*)  
               from (select MAX(c.category) as key,
-                           array_accum(array[array[ds.year, ds.value::numeric(8,2)]] order by ds.year)
+                           array_accum(array[array[ds.year, ds.value::numeric(8,2)]] order by ds.year) as values
                       from category_lookup c
                       join collated ds on (ds.data_set = 'nss' and ds.category_id = c.category_id)
                      group by c.category_id
