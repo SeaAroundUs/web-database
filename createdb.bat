@@ -80,6 +80,8 @@ FOR /F "tokens=2 delims==" %%s in ('set schemas[') DO (
 )
 
 IF /i NOT "%RestoreCellCatch%"=="true" GOTO SkipCellCatch
+psql -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -U sau -c "select * from web_partition.maintain_cell_catch_partition()" -L .\log\MaintainCellCatch.log
+IF ERRORLEVEL 1 GOTO ErrorLabel
 ECHO Restoring web_partition schema. Please enter password for user sau
 IF EXIST data_dump/web_partition.schema pg_restore -h %DbHost% -p %DbPort% -d %DATABASE_NAME% -Fc -a -j %RestoreThreadCount% -U sau data_dump/web_partition.schema
 IF ERRORLEVEL 1 GOTO ErrorLabel
