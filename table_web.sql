@@ -706,3 +706,9 @@ CREATE TABLE web.uncertainty_eez(
   score smallint,
   CONSTRAINT uncertainty_eez_pkey PRIMARY KEY(eez_id, sector_type_id, period_id)
 );
+
+/* Type creation */
+CREATE TYPE t_stock_status_year_value AS (
+  year int[],
+  value numeric[]
+);

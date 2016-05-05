@@ -286,13 +286,13 @@ $body$
 $body$
 language sql;
 
-create or replace function web.f_stock_status_json(
+create or replace function web.get_collated_data_for_stock_status(
   i_entity_id int[], 
   i_entity_layer_id int default 1, 
   i_sub_area_id int[] default null::int[],
-  i_other_params json default null                                                                       
+  i_other_params json default null
 )
-returns setof json 
+returns table(data_set text, category_id int, year int, value numeric) 
 as
 $body$
 declare
@@ -323,7 +323,7 @@ begin
      group by t.category_id, t.year
   ),
   stock_count(year, year_taxon_count, year_catch_sum) as (
-    select t.year, count(distinct taxon), sum(t.catch_sum) 
+    select t.year, count(distinct taxon)::int, sum(t.catch_sum) 
       from categorized t
      where t.category_id != UNKNOWN
      group by t.year
@@ -342,53 +342,101 @@ begin
   category_lookup as (
     select u.category, u.ordinality as category_id
       from unnest(web.f_stock_status_category_heading()) with ordinality as u(category)
+  ),
+  css as (
+    select c.category_id, v.year, v.value
+      from (select c.category_id,
+                   (select (array_agg(t.time_business_key), array_agg(coalesce(val, 0.0)))::t_stock_status_year_value as yv_tuple
+                      from web.time t
+                      left join (select cst.year,
+                                        (case 
+                                         when cst.year in (yw.begin_year, yw.end_year) then cst.category_catch_sum 
+                                         else avg(cst.category_catch_sum) over(order by cst.year rows between 1 preceding and 1 following) 
+                                          end) as val
+                                   from catch_sum_tally cst
+                                   join stock_count sc on (sc.year = cst.year)
+                                  where cst.category_id = c.category_id) as v   
+                        on (v.year = t.time_business_key)        
+                   ) 
+              from category_lookup c
+              join year_window yw on (true)
+              join sum_data sd on (sd.should_be_displayed)
+             where exists (select 1 from catch_sum_tally cs where cs.category_id = c.category_id limit 1)) as c
+      join lateral unnest((c.yv_tuple).year, (c.yv_tuple).value) as v(year, value) on (true)
+  ),
+  css_sum_tally as (
+    select c.year, sum(c.value) as category_catch_sum
+      from css c
+     group by c.year
+  )
+  select 'css', c.category_id::int, c.year::int, case when cst.category_catch_sum is distinct from 0.0 then (c.value*100.0/cst.category_catch_sum) else 0.0 end as value
+    from css c
+    join css_sum_tally cst on (cst.year = c.year)
+  union all
+  select 'nss', c.category_id::int, v.year::int, v.value
+    from (select c.category_id,
+                 (select (array_agg(t.time_business_key order by t.time_business_key), array_agg(coalesce(val, 0.0) order by t.time_business_key))::t_stock_status_year_value
+                    from web.time t
+                    left join (select cz.year, (count(*)*100.0/sc.year_taxon_count) val
+                                 from categorized cz
+                                 join stock_count sc on (sc.year = cz.year) 
+                                where cz.category_id = c.category_id
+                                group by cz.year, sc.year_taxon_count) as v
+                      on (v.year = t.time_business_key)        
+                 ) as yv_tuple          
+            from category_lookup c
+            join sum_data sd on (sd.should_be_displayed)
+           where exists (select 1 from catch_sum_tally cs where cs.category_id = c.category_id limit 1)
+           order by c.category_id) as c 
+    join lateral unnest((c.yv_tuple).year, (c.yv_tuple).value) as v(year, value) on (true)
+  union all
+  select 'summary', null::int, null::int, (case when sd.should_be_displayed then sd.taxa_count else 0 end)::numeric from sum_data sd where sd.should_be_displayed;
+end
+$body$
+language plpgsql;
+
+create or replace function web.f_stock_status_json(
+  i_entity_id int[], 
+  i_entity_layer_id int default 1, 
+  i_sub_area_id int[] default null::int[],
+  i_other_params json default null                                                                       
+)
+returns setof json 
+as
+$body$
+  with collated as (
+    select t.*
+      from web.get_collated_data_for_stock_status(i_entity_id, i_entity_layer_id, i_sub_area_id, i_other_params) t
+  ),                                                                                                                 
+  category_lookup as (
+    select u.category, u.ordinality as category_id
+      from unnest(web.f_stock_status_category_heading()) with ordinality as u(category)
   )
   select json_build_object(
-           'css',                         
+           'css',
            (select json_agg(fd.*) 
-              from (select c.category as key,
-                           (select array_accum(array[array[t.time_business_key::numeric, coalesce(val, 0.0)]] order by t.time_business_key)
-                              from web.time t
-                              left join (select cst.year,
-                                                ((case when cst.year in (yw.begin_year, yw.end_year) then cst.category_catch_sum 
-                                                       else avg(cst.category_catch_sum) over(order by cst.year rows between 1 preceding and 1 following) 
-                                                   end)*100.0/sc.year_catch_sum)::numeric(8,2) as val
-                                           from catch_sum_tally cst
-                                           join stock_count sc on (sc.year = cst.year)
-                                          where cst.category_id = c.category_id) as v   
-                                on (v.year = t.time_business_key)        
-                           ) as values
+              from (select MAX(c.category) as key,
+                           array_accum(array[array[ds.year::numeric, ds.value::numeric(8,2)]] order by ds.year) as values
                       from category_lookup c
-                      join year_window yw on (true)
-                     where sd.should_be_displayed
-                       and exists (select 1 from catch_sum_tally cs where cs.category_id = c.category_id limit 1)
+                      join collated ds on (ds.data_set = 'css' and ds.category_id = c.category_id)
+                     group by c.category_id
                      order by c.category_id) as fd                                               
            ),                    
            'nss',
            (select json_agg(fd.*)  
-              from (select c.category as key,
-                           (select array_accum(array[array[t.time_business_key::numeric, coalesce(val, 0.0)]] order by t.time_business_key)
-                              from web.time t
-                              left join (select cz.year, (count(*)*100.0/sc.year_taxon_count)::numeric(8,2) val
-                                           from categorized cz
-                                           join stock_count sc on (sc.year = cz.year) 
-                                          where cz.category_id = c.category_id
-                                          group by cz.year, sc.year_taxon_count) as v
-                                on (v.year = t.time_business_key)        
-                           ) as values
+              from (select MAX(c.category) as key,
+                           array_accum(array[array[ds.year, ds.value::numeric(8,2)]] order by ds.year)
                       from category_lookup c
-                     where sd.should_be_displayed
-                       and exists (select 1 from catch_sum_tally cs where cs.category_id = c.category_id limit 1)
+                      join collated ds on (ds.data_set = 'nss' and ds.category_id = c.category_id)
+                     group by c.category_id
                      order by c.category_id) as fd 
            ),
            'summary',
-           json_build_object('n', (select (case when should_be_displayed then taxa_count else 0 end)::int from sum_data))
-         )                                                             
-    from sum_data sd 
-   where sd.should_be_displayed;
-end
+           json_build_object('n', (select ds.value::int from collated ds where data_set = 'summary'))
+         )
+   where exists (select 1 from collated limit 1);
 $body$
-language plpgsql;
+language sql;
 
 create or replace function web.f_stock_status_csv(
   i_entity_id int[], 
@@ -399,115 +447,28 @@ create or replace function web.f_stock_status_csv(
 returns setof text 
 as
 $body$
-declare
-  COLLAPSED constant smallint := 1; 
-  OVER_EXPLOITED constant smallint := 2; 
-  EXPLOITED constant smallint := 3; 
-  DEVELOPING constant smallint := 4; 
-  REBUILDING constant smallint := 5;
-  UNKNOWN constant smallint := 6;
-begin
-  return query
-  with categorized as (
-    select t.year, t.taxon, t.catch_sum,
-           (case 
-            when (t.peak_year = t.final_year) or ((t.year <= t.peak_year) and (t.catch_sum <= (t.peak_catch_sum * .50))) then DEVELOPING
-            when t.catch_sum > (t.peak_catch_sum * .50) then EXPLOITED
-            when (t.catch_sum > (t.peak_catch_sum * .10)) and (t.catch_sum < (t.peak_catch_sum * .50)) and (t.post_peak_min_catch_sum < (t.peak_catch_sum * 0.1)) and (t.year > t.post_peak_min_year) then REBUILDING
-            when (t.catch_sum > (t.peak_catch_sum * .10)) and (t.catch_sum < (t.peak_catch_sum * .50)) and (t.year > t.peak_year) then OVER_EXPLOITED
-            when (t.catch_sum <= (t.peak_catch_sum * .10)) and (t.year > t.peak_year) then COLLAPSED
-            else UNKNOWN
-             end) as category_id
-      from web.get_data_for_stock_status(i_entity_id, i_entity_layer_id, i_sub_area_id, i_other_params) t
-  ),
-  catch_sum_tally(category_id, year, category_catch_sum) as (
-    select t.category_id, t.year, sum(t.catch_sum)  
-      from categorized t
-     where t.category_id != UNKNOWN
-     group by t.category_id, t.year
-  ),
-  stock_count(year, year_taxon_count, year_catch_sum) as (
-    select t.year, count(distinct taxon), sum(t.catch_sum) 
-      from categorized t
-     where t.category_id != UNKNOWN
-     group by t.year
-  ),
-  year_window(begin_year, end_year) as ( 
-    select min(t.year), max(t.year) 
-      from categorized t
-     where t.category_id != UNKNOWN
-  ),                
-  sum_data(taxa_count, should_be_displayed) as (
-    select taxa_count,
-           case when i_entity_layer_id = 1 then case when t.cellCount > 30 and t.taxa_count > 10 then true else false end else true end 
-      from (select (select count(distinct taxon)::int from categorized) as taxa_count,
-                   (select sum(a.number_of_cells) from web.area a where a.main_area_id = any(i_entity_id) and a.marine_layer_id = i_entity_layer_id and coalesce(a.sub_area_id = any(i_sub_area_id), true)) as cellCount) as t
-  ),                                                                                                                 
-  category_lookup as (
-    select u.category, u.ordinality as category_id
-      from unnest(web.f_stock_status_category_heading()) with ordinality as u(category)
-  )
+  with collated as (
+    select t.*
+      from web.get_collated_data_for_stock_status(i_entity_id, i_entity_layer_id, i_sub_area_id, i_other_params) t
+  )                                                                                                                 
   (select array_to_string(array['Data_Set', 'Year'] || web.f_stock_status_category_heading(), ','))
   union all
-  (select array_to_string(array['css', t.time_business_key::text] ||
-                          array(select coalesce(v.val, 0.0)
-                             from category_lookup cl
-                             left join (select cst.category_id,
-                                               ((case when cst.year in (yw.begin_year, yw.end_year) then cst.category_catch_sum 
-                                                 else avg(cst.category_catch_sum) over(order by cst.year rows between 1 preceding and 1 following) 
-                                                  end)*100.0/sc.year_catch_sum)::numeric(8,2) as val
-                                          from catch_sum_tally cst  
-                                          join stock_count sc on (sc.year = cst.year)
-                                         where cst.year = t.time_business_key) as v
-                                    on (v.category_id = cl.category_id)
-                                 order by cl.category_id   
-                          )::text[],
-                          ','
-                         ) as values
-     from web.time t
-     join year_window yw on (true)
-     join sum_data sd on (sd.should_be_displayed)
+  (select array_to_string(array['css'] || c.year::text || array_agg((c.value::numeric(8,2))::text order by c.category_id), ',')
+     from collated c
+    where c.data_set = 'css'
+    group by c.year
+    order by c.year
   )
   union all
-  (select array_to_string(array['nss', t.time_business_key::text] ||
-                          array(select coalesce(v.val, 0.0)
-                             from category_lookup cl
-                             left join (select cz.category_id, (count(*)*100.0/sc.year_taxon_count)::numeric(8,2) val
-                                          from categorized cz
-                                          join stock_count sc on (sc.year = cz.year) 
-                                         where cz.year = t.time_business_key  
-                                         group by cz.category_id, sc.year_taxon_count) as v
-                                    on (v.category_id = cl.category_id)
-                                 order by cl.category_id   
-                          )::text[],
-                          ','
-                         ) as values
-     from web.time t
-     join sum_data sd on (sd.should_be_displayed)
+  (select array_to_string(array['nss'] || c.year::text || array_agg((c.value::numeric(8,2))::text order by c.category_id), ',')
+     from collated c
+    where c.data_set = 'nss'
+    group by c.year
+    order by c.year
   )
-  /*
-  union all 
-  (select 'nss',
-     from (select c.category as key,
-                  (select array_accum(array[array[t.time_business_key::numeric, coalesce(val, 0.0)]] order by t.time_business_key)
-                     from web.time t
-                     left join (select cz.year, (count(*)*100.0/sc.year_taxon_count)::numeric(8,2) val
-                                  from categorized cz
-                                  join stock_count sc on (sc.year = cz.year) 
-                                 where cz.category_id = c.category_id
-                                 group by cz.year, sc.year_taxon_count) as v
-                       on (v.year = t.time_business_key)        
-                  ) as values
-             from category_lookup c
-             join sum_data sd on sd.should_be_displayed
-            where exists (select 1 from catch_sum_tally cs where cs.category_id = c.category_id limit 1)
-            order by c.category_id) as fd 
-  )
-  */
   ;
-end
 $body$
-language plpgsql;
+language sql;
 
 /* 
     f_multinational_footprint 
