@@ -338,7 +338,9 @@ CREATE TABLE web.sub_geo_entity(
 
 CREATE TABLE web.time(
   time_key int PRIMARY KEY,
-  time_business_key int NOT NULL
+  time_business_key int NOT NULL,
+  is_used_for_allocation BOOLEAN NOT NULL DEFAULT TRUE,
+  is_used_for_web BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE web.estuary(
