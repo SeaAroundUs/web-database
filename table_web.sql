@@ -92,6 +92,13 @@ CREATE TABLE web.cube_dim_taxon(
   scientific_name varchar(255) NOT NULL,
   common_name varchar(255),
   phylum varchar(255),
+  sub_phylum varchar(255),
+  super_class varchar(255),
+  class varchar(255),
+  super_order varchar(255),
+  "order" varchar(255),
+  suborder_infraorder varchar(255),
+  family varchar(255),
   genus varchar(255),
   species varchar(255),
   comments_names text,
@@ -143,10 +150,6 @@ CREATE TABLE web.cube_dim_taxon(
   resilience text,
   updated_by varchar(255),
   date_updated date,
-  x_min int,
-  x_max int,
-  y_min int,
-  y_max int,
   lineage ltree
 );
 
