@@ -253,8 +253,8 @@ CREATE OR REPLACE FUNCTION allocation.generate_insert_cell_catch_partition_state
 RETURNS SETOF TEXT AS
 $body$
 DECLARE
-  PARTITION_BATCH_SIZE constant smallint := 50;
-  UDI_BATCH_SIZE constant smallint := 150;
+  PARTITION_BATCH_SIZE constant smallint := 250;
+  UDI_BATCH_SIZE constant smallint := 600;
   rec record;
   allocation_data_partition_udi_id int[] := '{}';
   partition_count smallint := 0;
