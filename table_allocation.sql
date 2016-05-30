@@ -159,7 +159,7 @@ CREATE TABLE allocation.ifa(
     ifa_is_located_in_this_fao int NOT NULL
 );
                        
-CREATE TABLE allocation.allocation_data_partition_udi(
+CREATE UNLOGGED TABLE allocation.allocation_data_partition_udi(
     id serial primary key,                                     
     fishing_entity_id int, 
     taxon_key int, 
