@@ -238,7 +238,8 @@ CREATE TABLE web.geo_entity(
   jurisdiction_id int NULL,
   started_eez_at varchar(50) NULL,
   Legacy_c_number int NOT NULL,
-  legacy_admin_c_number int NOT NULL
+  legacy_admin_c_number int NOT NULL,
+  continent_code char(2)
 );
 
 
@@ -710,6 +711,12 @@ CREATE TABLE web.uncertainty_eez(
   period_id smallint,
   score smallint,
   CONSTRAINT uncertainty_eez_pkey PRIMARY KEY(eez_id, sector_type_id, period_id)
+);
+
+CREATE TABLE web.continent(
+  code char(2) primary key,
+  name varchar(128) not null,
+  geo_name_id int not null        
 );
 
 /* Type creation */

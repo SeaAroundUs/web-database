@@ -28,6 +28,7 @@ VALUES
 ,('sau_int', 'master.fishing_entity', 'WHERE is_currently_used_for_reconstruction', 'web', 'fishing_entity', '{}'::TEXT[])
 ,('sau_int', 'master.functional_groups', NULL, 'web', 'functional_groups', '{}'::TEXT[])
 ,('sau_int', 'master.gear', NULL, 'web', 'gear', '{}'::TEXT[])
+,('sau_int', 'master.continent', NULL, 'web', 'continent', '{}'::TEXT[])
 ,('sau_int', 'master.geo_entity', NULL, 'web', 'geo_entity', '{}'::TEXT[])
 ,('sau_int', 'master.jurisdiction', NULL, 'web', 'jurisdiction', '{}'::TEXT[])
 ,('sau_int', 'master.lme', NULL, 'web', 'lme', '{}'::TEXT[])
