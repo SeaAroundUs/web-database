@@ -5,6 +5,7 @@
 \i get_primary_key_where_clause.sql
 \i get_table_index.sql
 \i get_table_foreign_key.sql
+\i get_foreign_key_cmd_by_db_owner.sql
 \i get_table_column.sql
 \i get_table_column_and_type.sql
 \i get_update_table_columns.sql
