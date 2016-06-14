@@ -13,6 +13,14 @@ CREATE TABLE admin.version (
   description text
 );
 
+CREATE TABLE admin.database_foreign_key (
+  drop_fk_cmd TEXT,
+  add_fk_cmd TEXT,
+  modified TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  one_row_condition BOOLEAN PRIMARY KEY DEFAULT TRUE,
+  CONSTRAINT database_foreign_key_one_row_condition_uk CHECK(one_row_condition)
+);
+
 /* For user registration/access control */
 CREATE TABLE admin.corsheaders_corsmodel (
     id serial PRIMARY KEY,
