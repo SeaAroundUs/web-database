@@ -56,6 +56,7 @@ CREATE TABLE admin.datatransfer_tables(
   source_database_name VARCHAR(256),
   source_table_name VARCHAR(256),
   source_key_column VARCHAR(256),
+  source_select_clause TEXT,
   source_where_clause TEXT,
   target_schema_name VARCHAR(256),
   target_table_name VARCHAR(256),
