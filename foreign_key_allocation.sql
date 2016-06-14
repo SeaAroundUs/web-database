@@ -13,8 +13,8 @@ FOREIGN KEY (reporting_status_id) REFERENCES web.reporting_status(reporting_stat
 ALTER TABLE allocation.allocation_data ADD CONSTRAINT sector_type_id_fk
 FOREIGN KEY (sector_type_id) REFERENCES web.sector_type(sector_type_id) ON DELETE CASCADE;
 
-ALTER TABLE allocation.allocation_data ADD CONSTRAINT allocation_area_type_id_fk
-FOREIGN KEY (allocation_area_type_id) REFERENCES allocation.allocation_area_type(allocation_area_type_id) ON DELETE CASCADE;
+--ALTER TABLE allocation.allocation_data ADD CONSTRAINT allocation_area_type_id_fk
+--FOREIGN KEY (allocation_area_type_id) REFERENCES allocation.allocation_area_type(allocation_area_type_id) ON DELETE CASCADE;
 -----
 ALTER TABLE allocation.allocation_result ADD CONSTRAINT universal_data_id_fk
 FOREIGN KEY (universal_data_id) REFERENCES allocation.allocation_data(universal_data_id) ON DELETE CASCADE;
