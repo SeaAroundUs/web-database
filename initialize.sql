@@ -49,6 +49,12 @@ CREATE SCHEMA admin;
 DROP SCHEMA IF EXISTS allocation CASCADE;
 CREATE SCHEMA allocation;
 
+DROP SCHEMA IF EXISTS allocation_partition CASCADE;
+CREATE SCHEMA allocation_partition;
+
+DROP SCHEMA IF EXISTS allocation_data_partition CASCADE;
+CREATE SCHEMA allocation_data_partition;
+
 DROP SCHEMA IF EXISTS web CASCADE;
 CREATE SCHEMA web;
 

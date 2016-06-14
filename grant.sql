@@ -48,6 +48,8 @@ BEGIN
   PERFORM admin.grant_privilege('feru', 'web', false, false);
   PERFORM admin.grant_privilege('expedition', 'web', false, false);
   PERFORM admin.grant_privilege('distribution', 'web', false, false);
+  PERFORM admin.grant_privilege('allocation_partition', 'web', false, false);
+  PERFORM admin.grant_privilege('allocation_data_partition', 'web', false, false);
   
    IF is_schema_exists('admin') THEN
    /* Writeable grants to specific tables in the admin schema to the web user */
@@ -66,6 +68,8 @@ BEGIN
   PERFORM admin.grant_privilege('feru', 'sau_reader', false, false);
   PERFORM admin.grant_privilege('expedition', 'sau_reader', false, false);
   PERFORM admin.grant_privilege('distribution', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('allocation_partition', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('allocation_data_partition', 'sau_reader', false, false);
   
   RETURN;
 END
