@@ -173,9 +173,9 @@ returns setof text as
 $body$
 begin
   if i_entity_layer_id = 4 and array_upper(i_entity_id, 1) = 1 then
-    if exists (select 1 from schema_v('web_cache') where table_name = 'catch_csv_4_' || i_entity_id[1] and ds_raw > 0 limit 1) then
+    if exists (select 1 from schema_v('web_cache') where table_name = format('catch_csv_%s_%s', i_entity_layer_id, i_entity_id[1]) and ds_raw > 0 limit 1) then
       return query
-      select csv_data from web.catch_data_in_csv_cache where entity_layer_id=4 and entity_id = i_entity_id[1] order by seq;
+      select csv_data from web.catch_data_in_csv_cache where entity_layer_id = i_entity_layer_id and entity_id = i_entity_id[1] order by seq;
       return;
     end if;
   end if;
