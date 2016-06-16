@@ -215,17 +215,6 @@ CREATE TABLE geo.mariculture_points (
     geom public.geometry(Point,4326)
 );
 
-CREATE TABLE geo.v_global( 
-  id           integer primary key, 
-  title        character varying(254), 
-  area         numeric,  
-  shelf_area   numeric,                 
-  ifa          numeric,                 
-  coral_reefs  numeric,                 
-  sea_mounts   numeric,                 
-  ppr          numeric,                 
-  geom_geojson json                    
-);
 
 CREATE TABLE geo.ne_country (
     gid integer primary key,
