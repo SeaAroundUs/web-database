@@ -59,7 +59,7 @@ VALUES
 ,('sau_int', 'geo.ne_country', '*', NULL, 'geo', 'ne_country', '{}'::TEXT[])
 ,('sau_int', 'geo.area', '*', NULL, 'geo', 'area', '{}'::TEXT[])
 ,('sau_int', 'geo.worldsq', 'seq, lat, lon, geom', NULL, 'geo', 'cell_grid', '{}'::TEXT[])
-,('sau_int', 'geo.fao', 'fao_area_id, f_level, ocean, sub_ocean, label, geom', NULL, 'geo', 'fao', '{}'::TEXT[])
+,('sau_int', 'geo.fao', 'gid, fao_area_id, f_level, ocean, sub_ocean, label, geom', NULL, 'geo', 'fao', '{}'::TEXT[])
 ,('sau_int', 'geo.high_seas', '*', NULL, 'geo', 'high_seas', '{}'::TEXT[])
 ,('sau_int', 'geo.ifa', '*', NULL, 'geo', 'ifa', '{}'::TEXT[])
 ,('sau_int', 'geo.lme', '*', NULL, 'geo', 'lme', '{}'::TEXT[])
