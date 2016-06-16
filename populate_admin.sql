@@ -62,6 +62,6 @@ VALUES
 ,('sau_int', 'geo.fao', 'gid, fao_area_id, f_level, ocean, sub_ocean, label, geom', NULL, 'geo', 'fao', '{}'::TEXT[])
 ,('sau_int', 'geo.high_seas', '*', NULL, 'geo', 'high_seas', '{}'::TEXT[])
 ,('sau_int', 'geo.ifa', '*', NULL, 'geo', 'ifa', '{}'::TEXT[])
-,('sau_int', 'geo.lme', '*', NULL, 'geo', 'lme', '{}'::TEXT[])
+,('sau_int', 'geo.lme', 'gid, object_id ,  lme_number, lme_name, shape_leng, shape_area, geom', NULL, 'geo', 'lme', '{}'::TEXT[])
 ,('sau_int', 'geo.rfmo', '*', NULL, 'geo', 'rfmo', '{}'::TEXT[])
 ;
