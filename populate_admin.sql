@@ -63,5 +63,5 @@ VALUES
 ,('sau_int', 'geo.high_seas', '*', NULL, 'geo', 'high_seas', '{}'::TEXT[])
 ,('sau_int', 'geo.ifa', 'gid, object_id, eez_id, c_name, a_name, a_num, area_km2, shape_leng, shape_area, geom', NULL, 'geo', 'ifa', '{}'::TEXT[])
 ,('sau_int', 'geo.lme', 'gid, object_id ,  lme_number, lme_name, shape_leng, shape_area, geom', NULL, 'geo', 'lme', '{}'::TEXT[])
-,('sau_int', 'geo.rfmo', '*', NULL, 'geo', 'rfmo', '{}'::TEXT[])
+,('sau_int', 'geo.rfmo', '*', 'WHERE rfmo_id <> 19', 'geo', 'rfmo', '{}'::TEXT[])
 ;
