@@ -20,15 +20,7 @@ else
   DbPort=$2
 fi
 
-if [ -d db_dump ]; then
-  if [ ! -f db_dump/toc.dat ]; then
-    echo Database dump directory (db_dump) is empty. Please execute dump_db before executing this script.
-    ExitWithError
-  fi
-else
-  echo No prior database dump directory exists. Please execute dump_db before executing this script.
-  ExitWithError
-fi
+
 
 echo Password for user sau
 psql -h $DbHost -p $DbPort -c "DROP SCHEMA IF EXISTS web,web_cache,fao,geo,feru,expedition,distribution,admin CASCADE" sau sau
