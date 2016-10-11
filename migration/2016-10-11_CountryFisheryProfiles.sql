@@ -1,7 +1,13 @@
-﻿ALTER TABLE web.country_fishery_profile
-alter url_fish_mgt_plan type character varying(1024),
-alter url_major_law_plan type character varying(1024),
-alter url_gov_protect_marine_env type character varying(1024);
+drop view if exists web.v_country_profile;
+
+alter table web.country_fishery_profile
+alter fish_mgt_plan type text,
+alter url_fish_mgt_plan type text,
+alter gov_marine_fish type text,
+alter major_law_plan type text,
+alter url_major_law_plan type text,
+alter gov_protect_marine_env type text,
+alter url_gov_protect_marine_env type text;
 
 create or replace view web.v_country_profile
 as
@@ -17,7 +23,7 @@ as
 
 truncate web.country_fishery_profile;
 
-\copy web.country_fishery_profile from 'country_fishery_profile_updated_2016-07-27_v2.txt' with (format csv, header, delimiter E'\t')
+\copy web.country_fishery_profile from 'country_fishery_profile_updated_2016-10-11.txt' with (format csv, header, delimiter E'\t')
 
 VACUUM FULL ANALYZE web.country_fishery_profile;
 
