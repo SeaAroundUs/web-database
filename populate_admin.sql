@@ -34,6 +34,7 @@ VALUES
 ,('sau_int', 'master.geo_entity', '*', NULL, 'web', 'geo_entity', '{}'::TEXT[])
 ,('sau_int', 'master.jurisdiction', '*', NULL, 'web', 'jurisdiction', '{}'::TEXT[])
 ,('sau_int', 'master.lme', '*', NULL, 'web', 'lme', '{}'::TEXT[])
+,('sau_int', 'master.country_fishery_profile', '*', NULL, 'web', 'country_fishery_profile', '{}'::TEXT[])
 ,('sau_int', 'master.mariculture_entity', '*', NULL, 'web', 'mariculture_entity', '{}'::TEXT[])
 ,('sau_int', 'master.mariculture_sub_entity', '*', NULL, 'web', 'mariculture_sub_entity', '{}'::TEXT[])
 ,('sau_int', 'master.marine_layer', '*', NULL, 'web', 'marine_layer', '{}'::TEXT[])

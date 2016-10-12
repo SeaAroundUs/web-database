@@ -524,13 +524,13 @@ CREATE TABLE web.country_fishery_profile(
   c_number int NULL,
   count_code varchar(4) NOT NULL,
   country_name varchar(50) NULL,
-  fish_mgt_plan varchar(255) NULL,
-  url_fish_mgt_plan varchar(1024) NULL,
-  gov_marine_fish varchar(255) NULL,
-  major_law_plan varchar(255) NULL,
-  url_major_law_plan varchar(1024) NULL,
-  gov_protect_marine_env varchar(255) NULL,
-  url_gov_protect_marine_env varchar(1024) NULL
+  fish_mgt_plan text NULL,
+  url_fish_mgt_plan text NULL,
+  gov_marine_fish text NULL,
+  major_law_plan text NULL,
+  url_major_law_plan text NULL,
+  gov_protect_marine_env text NULL,
+  url_gov_protect_marine_env text NULL
 );
 
 CREATE TABLE web.habitat_index(
