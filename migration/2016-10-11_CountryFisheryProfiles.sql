@@ -27,4 +27,10 @@ truncate web.country_fishery_profile;
 
 VACUUM FULL ANALYZE web.country_fishery_profile;
 
+INSERT INTO admin.datatransfer_tables(source_database_name, source_table_name, source_select_clause, source_where_clause, target_schema_name, target_table_name, target_excluded_columns)
+VALUES     
+('sau_int', 'master.country_fishery_profile', '*', NULL, 'web', 'country_fishery_profile', '{}'::TEXT[]);
+
+VACUUM FULL ANALYZE admin.datatransfer_tables;
+
 select admin.grant_access();
