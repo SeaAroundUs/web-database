@@ -46,6 +46,13 @@ CREATE TABLE geo.lme (
 );
 
 
+CREATE TABLE geo.fao_lme_combo(
+  fao_lme_combo_id int PRIMARY KEY,
+  fao_area_id smallint NOT NULL,
+  lme_number int NOT NULL
+);
+
+
 CREATE TABLE geo.rfmo (  
     gid          serial PRIMARY KEY,
     name         character varying(15), 
