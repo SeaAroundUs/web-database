@@ -46,7 +46,7 @@ CREATE TABLE geo.lme (
 );
 
 
-CREATE TABLE geo.fao_lme_combo(
+CREATE TABLE geo.fao_lme(
   fao_lme_combo_id int PRIMARY KEY,
   fao_area_id smallint NOT NULL,
   lme_number int NOT NULL
