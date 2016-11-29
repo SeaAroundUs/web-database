@@ -65,4 +65,6 @@ VALUES
 ,('sau_int', 'geo.ifa', 'gid, object_id, eez_id, c_name, a_name, a_num, area_km2, shape_leng, shape_area, geom', NULL, 'geo', 'ifa', '{}'::TEXT[])
 ,('sau_int', 'geo.lme', 'gid, object_id ,  lme_number, lme_name, shape_leng, shape_area, geom', NULL, 'geo', 'lme', '{}'::TEXT[])
 ,('sau_int', 'geo.rfmo', '*', 'WHERE rfmo_id <> 19', 'geo', 'rfmo', '{}'::TEXT[])
+,('sau_int', 'geo.fao_lme_combo', '*', NULL, 'geo', 'fao_lme', '{}'::TEXT[])
+,('sau_int', 'master.price', 'year,fishing_entity_id,taxon_key,price', NULL, 'allocation', 'price', '{}'::TEXT[])
 ;
