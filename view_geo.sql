@@ -267,7 +267,7 @@ as
          ee.area,ee.shelf_area,ee.ifa,ee.coral_reefs,ee.sea_mounts,ee.ppr,
          st_asgeojson(st_multi(st_simplify(e.wkb_geometry, 0.02::double precision)), 3)::json,
          ee.fishbase_id,ee.ohi_link,
-         (select array_agg(distinct f.fao_area_id) from geo.high_seas f where e.ogc_fid = any(f.eez_ogc_fid_intersects)),
+         (select array_agg(distinct f.fao_area_id) from web.area a, web.fao_area f where a.marine_layer_id=1 and a.main_area_id = ee.id and a.area_key = any(f.area_key)),
          coalesce(ge.started_eez_at::int, 9999),
          (case when fe2.geo_entity_id is not null then fe2.date_allowed_to_fish_other_eezs
                when fe3.geo_entity_id is not null then fe3.date_allowed_to_fish_other_eezs
