@@ -547,6 +547,7 @@ CREATE TABLE web.habitat_index(
   effective_d decimal(50,20) NULL,
   estuaries decimal(50,20) NULL,
   coral decimal(50,20) NULL,
+  front decimal(50,20) NULL,
   seagrass decimal(50,20) NULL,
   seamount decimal(50,20) NULL,
   others decimal(50,20) NULL,
@@ -645,6 +646,7 @@ CREATE TABLE web.cell(
   seamount_saup decimal(50,20) NULL,
   seamount decimal(50,20) NULL,
   coral decimal(50,20) NULL,
+  front decimal(50,20) NULL,
   p_prod decimal(50,20) NULL,
   ice_con decimal(50,20) NULL,      
   sst decimal(50,20) NULL,
@@ -717,6 +719,13 @@ CREATE TABLE web.continent(
   code char(2) primary key,
   name varchar(128) not null,
   geo_name_id int not null        
+);
+
+CREATE TABLE master.front(
+  front_id smallint PRIMARY KEY,
+  abbreviation char(10) NOT NULL,
+  name varchar(50) NOT NULL,
+  lme_id smallserial NOT NULL
 );
 
 /* Type creation */
