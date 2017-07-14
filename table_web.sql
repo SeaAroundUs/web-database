@@ -721,13 +721,6 @@ CREATE TABLE web.continent(
   geo_name_id int not null        
 );
 
-CREATE TABLE master.front(
-  front_id smallint PRIMARY KEY,
-  abbreviation char(10) NOT NULL,
-  name varchar(50) NOT NULL,
-  lme_id smallserial NOT NULL
-);
-
 /* Type creation */
 CREATE TYPE t_stock_status_year_value AS (
   year int[],
