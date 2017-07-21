@@ -555,7 +555,8 @@ CREATE TABLE web.habitat_index(
   slope decimal(50,20) NULL,
   abyssal decimal(50,20) NULL,
   inshore decimal(50,20) NULL,
-  offshore decimal(50,20) NULL
+  offshore decimal(50,20) NULL,
+  temperature decimal(50,20) NULL
 );
 
 CREATE TABLE web.eez_to_fishbase_url(
