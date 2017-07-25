@@ -22,7 +22,7 @@ GOTO End
 
 :RestoreDB
 ECHO Password for user sau
-psql -h %DbHost% -p %DbPort% -c "DROP SCHEMA IF EXISTS web,web_cache,fao,geo,feru,expedition,distribution,admin CASCADE" sau sau
+psql -h %DbHost% -p %DbPort% -c "DROP SCHEMA IF EXISTS web,web_cache,fao,geo,feru,expedition,distribution,admin,web_partition CASCADE" sau sau
 ECHO Password for user sau
 pg_restore -h %DbHost% -p %DbPort% -Fd -j 8 -d sau -O --disable-triggers -U sau db_dump
 
