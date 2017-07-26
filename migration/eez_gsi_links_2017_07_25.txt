@@ -1,0 +1,283 @@
+eez_id	name	alternate_name	geo_entity_id	area_status_id	legacy_c_number	legacy_count_code	fishbase_id	coords	can_be_displayed_on_web	is_currently_used_for_web	is_currently_used_for_reconstruction	declaration_year	earliest_access_agreement_date	is_home_eez_of_fishing_entity_id	allows_coastal_fishing_for_layer2_data	ohi_link	is_retired	gsi_link
+8	Albania		2	1	8	8	8		t	t	t	2002	1990	1	t	http://www.oceanhealthindex.org/Countries/Albania	f	https://www.globalslaveryindex.org/country/Albania
+12	Algeria		3	1	12	12	12	"336,116,358,134,372,124,369,121,368,113,369,107,366,102,365,98,365,95,354,94,349,96,348,101,347,106,341,110"	t	t	t	1994	1980	2	t	http://www.oceanhealthindex.org/Countries/Algeria	f	https://www.globalslaveryindex.org/country/Algeria
+24	Angola		6	1	24	24	24	"367,211,377,212,384,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1980	1970	4	t	http://www.oceanhealthindex.org/Countries/Angola	f	https://www.globalslaveryindex.org/country/Angola
+32	Argentina		9	1	32	32	32	"252,293,252,283,251,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1967	1966	6	t	http://www.oceanhealthindex.org/Countries/Argentina	f	https://www.globalslaveryindex.org/country/Argentina
+37	Macquarie Isl. (Australia)	Australia (Macquarie Isl.)	230	2	37	I11	I11		t	t	t	1979	1980	7	t	http://www.oceanhealthindex.org/Countries/Macquarie_Island	f	https://www.globalslaveryindex.org/country/Australia
+38	Lord Howe Isl. (Australia)	Australia (Lord Howe Isl.)	123	1	38	I557	I557		t	t	t	1979	1979	7	t	http://www.oceanhealthindex.org/Countries/Australia	f	https://www.globalslaveryindex.org/country/Australia
+162	Christmas Isl. (Australia)	Australia (Christmas Isl.)	38	1	162	162	162		t	t	t	1979	1987	33	t	http://www.oceanhealthindex.org/Countries/Christmas_Island	f	https://www.globalslaveryindex.org/country/Australia
+166	Cocos (Keeling) Isl. (Australia)	Australia (Cocos (Keeling) Isl.)	40	1	166	166	166		t	t	t	1979	1969	34	t	http://www.oceanhealthindex.org/Countries/Cocos_Islands	f	https://www.globalslaveryindex.org/country/Australia
+334	Heard & McDonald Isl. (Australia)	Australia (Heard & McDonald Isl.)	91	1	334	334	334		t	t	t	1979	1980	7	t	http://www.oceanhealthindex.org/Countries/Heard_and_McDonald_Islands	f	https://www.globalslaveryindex.org/country/Australia
+574	Norfolk Isl. (Australia)	Australia (Norfolk Isl.)	155	1	574	574	574		t	t	t	1979	1972	127	t	http://www.oceanhealthindex.org/Countries/Norfolk_Island	f	https://www.globalslaveryindex.org/country/Australia
+36	Australia		12	1	36	36	36	"609,273,624,257,633,251,638,247,653,246,655,237,649,233,655,216,651,210,651,206,632,196,626,196,621,196,612,194,605,197,597,197,590,199,586,202,581,203,571,210,561,217,557,230,556,240,556,245,556,252,571,255,578,255,587,252,590,250,592,255,597,261,599,266,600,270"	t	t	t	1979	1954	7	t	http://www.oceanhealthindex.org/Countries/Australia	f	https://www.globalslaveryindex.org/country/Australia
+48	Bahrain		15	1	48	48	48		t	t	t	1985	1985	9	t	http://www.oceanhealthindex.org/Countries/Bahrain	f	https://www.globalslaveryindex.org/country/Bahrain
+50	Bangladesh		17	1	50	50	50		t	t	t	1974	1974	10	t	http://www.oceanhealthindex.org/Countries/Bangladesh	f	https://www.globalslaveryindex.org/country/Bangladesh
+52	Barbados		18	1	52	52	52		t	t	t	1979	2002	11	t	http://www.oceanhealthindex.org/Countries/Barbados	f	https://www.globalslaveryindex.org/country/Barbados
+56	Belgium		19	1	56	56	56		t	t	t	1979	1950	12	t	http://www.oceanhealthindex.org/Countries/Belgium	f	https://www.globalslaveryindex.org/country/Belgium
+204	Benin		21	1	204	204	204		t	t	t	1976	1976	45	t	http://www.oceanhealthindex.org/Countries/Benin	f	https://www.globalslaveryindex.org/country/Benin
+70	Bosnia & Herzegovina		23	1	70	70	70		t	t	t	1994	1949	14	t	http://www.oceanhealthindex.org/Countries/Bosnia_and_Herzegovina	f	https://www.globalslaveryindex.org/country/Bosnia and Herzegovina
+77	Trindade & Martim Vaz Isl. (Brazil)	Brazil (Trindade & Martim Vaz Isl.)	207	1	77	I558	I558		t	t	t	1970	1970	15	t	http://www.oceanhealthindex.org/Countries/Brazil_+_Trindade	f	https://www.globalslaveryindex.org/country/Brazil
+76	Brazil (mainland)		25	1	76	76	76	"258,161,265,166,271,171,277,172,283,173,288,173,294,168,298,164,306,168,306,175,300,180,295,191,291,200,285,212,286,220,281,228,276,234,270,235,269,243,261,254,259,249,254,243,251,238,252,232,249,224,245,219,242,209,229,199,228,198,221,199,215,188,218,184,219,177,223,175,229,173,242,168,250,168,253,167,261,162,262,160"	t	t	t	1970	1950	15	t	http://www.oceanhealthindex.org/Countries/Brazil_+_Trindade	f	https://www.globalslaveryindex.org/country/Brazil
+969	Fernando de Noronha (Brazil)	Brazil (Fernando de Noronha)	246	1	76	76	76		t	t	t	1970		15	t		f	https://www.globalslaveryindex.org/country/Brazil
+970	St Paul and St. Peter Archipelago (Brazil)	Brazil (St Paul and St. Peter Archipelago)	247	1	76	76	76		t	t	t	1970		15	t		f	https://www.globalslaveryindex.org/country/Brazil
+96	Brunei Darussalam		27	1	96	96	96		t	t	t	1983	1983	20	t	http://www.oceanhealthindex.org/Countries/Brunei	f	https://www.globalslaveryindex.org/country/Brunei
+100	Bulgaria		28	1	100	100	100		t	t	t	1987	1960	21	t	http://www.oceanhealthindex.org/Countries/Bulgaria	f	https://www.globalslaveryindex.org/country/Bulgaria
+116	Cambodia		29	1	116	116	116		t	t	t	1978	1975	24	t	http://www.oceanhealthindex.org/Countries/Cambodia	f	https://www.globalslaveryindex.org/country/Cambodia
+120	Cameroon		30	1	120	120	120	"369,173,367,166,369,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	2000	1973	25	t	http://www.oceanhealthindex.org/Countries/Cameroon	f	https://www.globalslaveryindex.org/country/Cameroon
+924	Canada (Arctic)		31	1	124	124	124		t	t	t	1977	1950	26	f	http://www.oceanhealthindex.org/Countries/Canada	f	https://www.globalslaveryindex.org/country/Canada
+926	Canada (East Coast)		31	1	124	124	124		t	t	t	1977	1950	26	f	http://www.oceanhealthindex.org/Countries/Canada	f	https://www.globalslaveryindex.org/country/Canada
+925	Canada (Pacific)		31	1	124	124	124		t	t	t	1977	1950	26	f	http://www.oceanhealthindex.org/Countries/Canada	f	https://www.globalslaveryindex.org/country/Canada
+132	Cape Verde		33	1	132	132	132		t	t	t	1977	1979	27	t	http://www.oceanhealthindex.org/Countries/Cape_Verde	f	https://www.globalslaveryindex.org/country/Cape Verde
+152	Chile (mainland)		36	1	152	152	152	"212,222,215,230,208,224,200,222,197,227,199,232,203,237,211,240,201,244,201,248,203,250,212,253,210,262,213,268,216,275,218,282,221,287,230,290,241,298,247,302,251,292,242,288,235,283,233,277,227,266,226,257,224,246,223,241,223,234,223,229,225,222,223,215,220,211,215,212,212,213"	t	t	t	1950	1970	30	t	http://www.oceanhealthindex.org/Countries/Chile_+_Easter_Island	f	https://www.globalslaveryindex.org/country/Chile
+153	Easter Isl. (Chile)	Chile (Easter Isl.)	57	1	153	152A	152A		t	t	t	1950	1990	30	t	http://www.oceanhealthindex.org/Countries/Chile_+_Easter_Island	f	https://www.globalslaveryindex.org/country/Chile
+154	Desventuradas Isl. (Chile)	Chile (Desventuradas Isl.)	53	1	154	154	154		t	t	t	1950		30	t	http://www.oceanhealthindex.org/Countries/Chile_+_Easter_Island	f	https://www.globalslaveryindex.org/country/Chile
+155	Juan Fernandez Islands (Chile)	Chile (Juan Fernandez Islands)	110	1	155	152B	152B		t	t	t	1950		30	t	http://www.oceanhealthindex.org/Countries/Chile_+_Easter_Island	f	https://www.globalslaveryindex.org/country/Chile
+156	China		37	1	156	156	156	"582,87,579,75,565,72,548,65,547,72,556,78,536,89,508,82,498,74,483,93,500,114,512,119,522,119,531,118,535,128,542,133,550,129,555,133,554,139,562,153,559,167,564,172,578,158,583,132,582,125,583,113,572,94,584,105"	t	t	t	1998	1955	31	t	http://www.oceanhealthindex.org/Countries/China	f	https://www.globalslaveryindex.org/country/China
+344	Hong Kong (China)	China (Hong Kong)	94	1	344	344	344		t	t	t	1998	1988	80	t	http://www.oceanhealthindex.org/Countries/China	f	https://www.globalslaveryindex.org/country/China
+927	Colombia (Caribbean)		41	1	170	170	170		t	t	t	1978	1950	35	f	http://www.oceanhealthindex.org/Countries/Colombia	f	https://www.globalslaveryindex.org/country/Colombia
+928	Colombia (Pacific)		41	1	170	170	170		t	t	t	1978	1950	35	f	http://www.oceanhealthindex.org/Countries/Colombia	f	https://www.globalslaveryindex.org/country/Colombia
+929	Costa Rica (Caribbean)		46	1	188	188	188		t	t	t	1975	1930	41	f	http://www.oceanhealthindex.org/Countries/Costa_Rica	f	https://www.globalslaveryindex.org/country/Costa Rica
+930	Costa Rica (Pacific)		46	1	188	188	188		t	t	t	1975	1930	41	f	http://www.oceanhealthindex.org/Countries/Costa_Rica	f	https://www.globalslaveryindex.org/country/Costa Rica
+191	Croatia		48	1	191	191	191		t	t	t	1994	1949	42	t	http://www.oceanhealthindex.org/Countries/Croatia	f	https://www.globalslaveryindex.org/country/Croatia
+192	Cuba		50	1	192	192	192		t	t	t	1977	1962	43	t	http://www.oceanhealthindex.org/Countries/Cuba	f	https://www.globalslaveryindex.org/country/Cuba
+197	Cyprus (North)	North Cyprus	51	1	196	196	196		t	t	t	2003	1948	207	t	http://www.oceanhealthindex.org/Countries/Cyprus	f	https://www.globalslaveryindex.org/country/Cyprus
+198	Cyprus (South)	South Cyprus	51	1	196	196	196		t	t	t	2003	1948	208	t	http://www.oceanhealthindex.org/Countries/Cyprus	f	https://www.globalslaveryindex.org/country/Cyprus
+180	Congo (ex-Zaire)		43	1	180	180	180	"377,188,386,184,388,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1992	1983	39	t	http://www.oceanhealthindex.org/Countries/Democratic_Republic_of_the_Congo	f	
+234	Faeroe Isl. (Denmark)	Denmark (Faeroe Isl.)	65	1	234	234	234		t	t	t	1977	1950	54	t	http://www.oceanhealthindex.org/Countries/Faeroe_Islands	f	https://www.globalslaveryindex.org/country/Denmark
+304	Greenland (Denmark)	Denmark (Greenland)	81	1	304	304	304	"324,33,334,30,339,24,344,21,350,18,355,12,364,10,350,6,300,5,290,5,284,6,266,5,255,5,254,11,260,17,265,24,268,26,270,36,270,48,270,51,283,56,288,56,297,50,302,46,306,43,312,37,315,34,322,29,333,30,341,24"	t	t	t	1977	1950	71	t	http://www.oceanhealthindex.org/Countries/Greenland	f	https://www.globalslaveryindex.org/country/Denmark
+932	Denmark (North Sea)		52	1	208	208	208		t	t	t	1977	1950	46	t	http://www.oceanhealthindex.org/Countries/Denmark	f	https://www.globalslaveryindex.org/country/Denmark
+931	Denmark (Baltic Sea)		52	1	208	208	208		t	t	t	1977	1950	46	t	http://www.oceanhealthindex.org/Countries/Denmark	f	https://www.globalslaveryindex.org/country/Denmark
+262	Djibouti		54	1	262	262	262		t	t	t	1979	1950	61	t	http://www.oceanhealthindex.org/Countries/Djibouti	f	https://www.globalslaveryindex.org/country/Djibouti
+214	Dominican Republic		56	1	214	214	214		t	t	t	1977	1978	48	t	http://www.oceanhealthindex.org/Countries/Dominican_Republic	f	https://www.globalslaveryindex.org/country/Dominican Republic
+218	Ecuador (mainland)		58	1	218	218	218	"198,172,193,171,191,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1952	1963	49	t	http://www.oceanhealthindex.org/Countries/Ecuador_+_Galapagos	f	https://www.globalslaveryindex.org/country/Ecuador
+219	Galapagos Isl. (Ecuador)	Ecuador (Galapagos Isl.)	73	1	219	218A	218A		t	t	t	1952	1952	49	t	http://www.oceanhealthindex.org/Countries/Ecuador_+_Galapagos	f	https://www.globalslaveryindex.org/country/Ecuador
+933	Egypt (Mediterranean)		59	1	818	818	818		t	t	t	1983	1967	182	t	http://www.oceanhealthindex.org/Countries/Egypt	f	https://www.globalslaveryindex.org/country/Egypt
+934	Egypt (Red Sea)		59	1	818	818	818		t	t	t	1983	1967	182	f	http://www.oceanhealthindex.org/Countries/Egypt	f	https://www.globalslaveryindex.org/country/Egypt
+222	El Salvador		60	1	222	222	222		t	t	t	1983	1951	50	t	http://www.oceanhealthindex.org/Countries/El_Salvador	f	https://www.globalslaveryindex.org/country/El Salvador
+226	Equatorial Guinea		61	1	226	226	226		t	t	t	1984	1973	51	t	http://www.oceanhealthindex.org/Countries/Equatorial_Guinea	f	https://www.globalslaveryindex.org/country/Equatorial Guinea
+111	Eritrea		62	1	111	F111	F111		t	t	t	1993	1958	23	t	http://www.oceanhealthindex.org/Countries/Eritrea	f	https://www.globalslaveryindex.org/country/Eritrea
+233	Estonia		63	1	233	233	233		t	t	t	1977	1950	53	t	http://www.oceanhealthindex.org/Countries/Estonia	f	https://www.globalslaveryindex.org/country/Estonia
+246	Finland		68	1	246	246	246	"387,31,392,31,399,36,399,42,399,47,395,50,390,50,386,48,388,43,387,40,388,37"	t	t	t	2005	1950	57	t	http://www.oceanhealthindex.org/Countries/Finland	f	https://www.globalslaveryindex.org/country/Finland
+899	Corsica (France)	France (Corsica)	234	1	250	250	250		t	t	t	1977	1951	58	t		f	https://www.globalslaveryindex.org/country/France
+896	Crozet Isl. (France)	France (Crozet Isl.)	49	1	896	I06	I06		t	t	t	1978	1978	58	t	http://www.oceanhealthindex.org/Countries/Crozet_Islands	f	https://www.globalslaveryindex.org/country/France
+897	Kerguelen Isl. (France)	France (Kerguelen Isl.)	112	1	897	I07	I07		t	t	t	1978	1970	58	t	http://www.oceanhealthindex.org/Countries/Kerguelen_Islands	f	https://www.globalslaveryindex.org/country/France
+251	Mozambique Channel Isl. (France)	France (Mozambique Channel Isl.)	143	1	251	251	251		t	t	t	1978	1969	58	t	http://www.oceanhealthindex.org/Countries/Mozambique	f	https://www.globalslaveryindex.org/country/France
+254	French Guiana	France (French Guiana)	70	1	254	254	254		t	t	t	1977	1977	59	t	http://www.oceanhealthindex.org/Countries/French_Guiana	f	https://www.globalslaveryindex.org/country/France
+312	Guadeloupe  (France)	France (Guadeloupe)	83	1	312	312	312		t	t	t	1978	1993	73	t	http://www.oceanhealthindex.org/Countries/Guadeloupe_and_Martinique	f	https://www.globalslaveryindex.org/country/France
+258	French Polynesia	France (French Polynesia)	71	1	258	258	258		t	t	t	1978	1972	60	t	http://www.oceanhealthindex.org/Countries/French_Polynesia	f	https://www.globalslaveryindex.org/country/France
+540	New Caledonia (France)	France (New Caledonia)	150	1	540	540	540		t	t	t	1978	1962	121	t	http://www.oceanhealthindex.org/Countries/New_Caledonia	f	https://www.globalslaveryindex.org/country/France
+638	Réunion (France)	France (Réunion)	172	1	638	638	638		t	t	t	1978	1969	146	t	http://www.oceanhealthindex.org/Countries/Reunion	f	https://www.globalslaveryindex.org/country/France
+175	Mayotte (France)	France (Mayotte)	134	1	175	175	175		t	t	t	1978	1969	37	t	http://www.oceanhealthindex.org/Countries/Mayotte	f	https://www.globalslaveryindex.org/country/France
+252	Tromelin Isl. (France)	France (Tromelin Isl.)	210	1	252	252	252		t	t	t	1978	1969	58	t	http://www.oceanhealthindex.org/Countries/Ile_Tromelin	f	https://www.globalslaveryindex.org/country/France
+474	Martinique (France)	France (Martinique)	131	1	474	474	474		t	t	t	1978	1993	107	t	http://www.oceanhealthindex.org/Countries/Guadeloupe_+_Martinique	f	https://www.globalslaveryindex.org/country/France
+666	Saint Pierre & Miquelon (France)	France (Saint Pierre & Miquelon)	178	1	666	666	666		t	t	t	1977	1972	153	t	http://www.oceanhealthindex.org/Countries/Saint_Pierre_and_Miquelon	f	https://www.globalslaveryindex.org/country/France
+876	Wallis & Futuna Isl. (France)	France (Wallis & Futuna Isl.)	227	1	876	876	876		t	t	t	1978	1972	191	t	http://www.oceanhealthindex.org/Countries/Wallis_and_Futuna	f	https://www.globalslaveryindex.org/country/France
+895	St Paul & Amsterdam Isl. (France)	France (St Paul & Amsterdam Isl.);Amsterdam & St Paul Isl. (France)	194	1	895	I076	I076		t	t	t	1978	2000	58	t	http://www.oceanhealthindex.org/Countries/Amsterdam_Island_and_Saint_Paul_Island	f	https://www.globalslaveryindex.org/country/France
+972	Glorieuse Islands (France)	France (Glorieuse Islands)	250	1	251	251	251		t	t	t	1978	1989	58	f		f	https://www.globalslaveryindex.org/country/France
+918	France (Mediterranean)		69	1	250	250	250		t	t	t	1977	1951	58	f	http://www.oceanhealthindex.org/Countries/France	f	https://www.globalslaveryindex.org/country/France
+898	Clipperton Isl. (France)	France (Clipperton Isl.)	39	1	898	I250	I250		t	t	t	1978	1978	58	t	http://www.oceanhealthindex.org/Countries/Clipperton_Island	f	https://www.globalslaveryindex.org/country/France
+919	France (Atlantic Coast)		69	1	250	250	250		t	t	t	1977	1950	58	f	http://www.oceanhealthindex.org/Countries/France	f	https://www.globalslaveryindex.org/country/France
+266	Gabon		72	1	266	266	266	"371,190,376,181,382,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1984	1971	62	t	http://www.oceanhealthindex.org/Countries/Gabon	f	https://www.globalslaveryindex.org/country/Gabon
+270	Gambia		74	1	270	270	270		t	t	t	1977	1975	64	t	http://www.oceanhealthindex.org/Countries/Gambia	f	https://www.globalslaveryindex.org/country/Gambia
+268	Georgia		76	1	268	268	268		t	t	t	1977	1956	63	t	http://www.oceanhealthindex.org/Countries/Georgia	f	https://www.globalslaveryindex.org/country/Georgia
+277	Germany (North Sea)		77	1	277	277	277		t	t	t	1977	1950	66	t	http://www.oceanhealthindex.org/Countries/Germany	f	https://www.globalslaveryindex.org/country/Germany
+278	Germany (Baltic Sea)		77	1	278	278	278		t	t	t	1978	1950	66	t	http://www.oceanhealthindex.org/Countries/Germany	f	https://www.globalslaveryindex.org/country/Germany
+288	Ghana		78	1	288	288	288	"353,163,357,153,354,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1977	1973	67	t	http://www.oceanhealthindex.org/Countries/Ghana	f	https://www.globalslaveryindex.org/country/Ghana
+300	Greece (without Crete)		80	1	300	300	300		t	t	t	1995	1995	70	t	http://www.oceanhealthindex.org/Countries/Greece	f	https://www.globalslaveryindex.org/country/Greece
+900	Crete (Greece)	Greece (Crete)	235	1	300	300	300		t	t	t	1995		70	t		f	https://www.globalslaveryindex.org/country/Greece
+935	Guatemala (Caribbean)		85	1	320	320	320		t	t	t	1976	1993	75	t	http://www.oceanhealthindex.org/Countries/Guatemala	f	https://www.globalslaveryindex.org/country/Guatemala
+936	Guatemala (Pacific)		85	1	320	320	320		t	t	t	1976	1993	75	t	http://www.oceanhealthindex.org/Countries/Guatemala	f	https://www.globalslaveryindex.org/country/Guatemala
+324	Guinea		86	1	324	324	324		t	t	t	1980	1966	76	t	http://www.oceanhealthindex.org/Countries/Guinea	f	https://www.globalslaveryindex.org/country/Guinea
+624	Guinea-Bissau		87	1	624	624	624		t	t	t	1978	1975	142	t	http://www.oceanhealthindex.org/Countries/Guinea_Bissau	f	https://www.globalslaveryindex.org/country/Guinea-Bissau
+328	Guyana		88	1	328	328	328		t	t	t	1977	1972	77	t	http://www.oceanhealthindex.org/Countries/Guyana	f	https://www.globalslaveryindex.org/country/Guyana
+332	Haiti		89	1	332	332	332		t	t	t	1977	1977	78	t	http://www.oceanhealthindex.org/Countries/Haiti	f	https://www.globalslaveryindex.org/country/Haiti
+920	Honduras (Pacific)		93	1	340	340	340		t	t	t	1980	1930	79	t	http://www.oceanhealthindex.org/Countries/Honduras	f	https://www.globalslaveryindex.org/country/Honduras
+921	Honduras (Caribbean)		93	1	340	340	340		t	t	t	1980	1930	79	t	http://www.oceanhealthindex.org/Countries/Honduras	f	https://www.globalslaveryindex.org/country/Honduras
+352	Iceland		95	1	352	352	352	"310,41,316,33,322,30,331,32,336,30,341,32,345,34,343,40,340,43,337,45,333,47,330,50,325,50,315,48,310,46"	t	t	t	1979	1890	81	t	http://www.oceanhealthindex.org/Countries/Iceland	f	https://www.globalslaveryindex.org/country/Iceland
+356	India (mainland)		96	1	356	356	356	"493,101,491,105,490,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1977	1971	82	t	http://www.oceanhealthindex.org/Countries/India	f	https://www.globalslaveryindex.org/country/India
+357	Andaman & Nicobar Isl. (India)	India (Andaman & Nicobar Isl.)	5	1	357	I16	I16		t	t	t	1977	1977	82	t	http://www.oceanhealthindex.org/Countries/Andaman_and_Nicobar	f	https://www.globalslaveryindex.org/country/India
+361	Indonesia (Eastern)		97	2	360	360	360	"621,200,617,198,618,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1980	1957	83	t	http://www.oceanhealthindex.org/Countries/Indonesia	f	https://www.globalslaveryindex.org/country/Indonesia
+937	Indonesia (Central)		97	1	360	360	360		t	t	t	1977	1957	83	t	http://www.oceanhealthindex.org/Countries/Indonesia	f	https://www.globalslaveryindex.org/country/Indonesia
+938	Indonesia (Indian Ocean)		97	1	360	360	360		t	t	t	1977	1957	83	t	http://www.oceanhealthindex.org/Countries/Indonesia	f	https://www.globalslaveryindex.org/country/Indonesia
+923	Iran (Sea of Oman)		98	1	364	364	364		t	t	t	1973	1954	84	t	http://www.oceanhealthindex.org/Countries/Iran	f	https://www.globalslaveryindex.org/country/Iran
+922	Iran (Persian Gulf)		98	1	364	364	364		t	t	t	1973	1954	84	t	http://www.oceanhealthindex.org/Countries/Iran	f	https://www.globalslaveryindex.org/country/Iran
+368	Iraq		99	1	368	368	368		t	t	t	1985	1969	85	t	http://www.oceanhealthindex.org/Countries/Iraq	f	https://www.globalslaveryindex.org/country/Iraq
+372	Ireland		100	1	372	372	372	"332,56,327,60,327,68,329,73,335,73,343,68,344,61,343,57"	t	t	t	1977	1950	86	t	http://www.oceanhealthindex.org/Countries/Ireland	f	https://www.globalslaveryindex.org/country/Ireland
+939	Israel (Mediterranean)		102	1	376	376	376		t	t	t	2010	2012	87	f	http://www.oceanhealthindex.org/Countries/Israel	f	https://www.globalslaveryindex.org/country/Israel
+940	Israel (Red Sea)		102	1	376	376	376		t	t	t	2010	2012	87	f	http://www.oceanhealthindex.org/Countries/Israel	f	https://www.globalslaveryindex.org/country/Israel
+902	Sardinia (Italy)	Italy (Sardinia)	237	1	380	380	380		t	t	t	1995		88	t	http://www.oceanhealthindex.org/Countries/Italy	f	https://www.globalslaveryindex.org/country/Italy
+380	Italy (mainland)		103	1	380	380	380		t	t	t	1995	1950	88	t	http://www.oceanhealthindex.org/Countries/Italy	f	https://www.globalslaveryindex.org/country/Italy
+901	Sicily (Italy)	Italy (Sicily)	236	1	380	380	380		t	t	t	1995		88	t	http://www.oceanhealthindex.org/Countries/Italy	f	https://www.globalslaveryindex.org/country/Italy
+384	Côte d'Ivoire		47	1	384	384	384		t	t	t	1977	1961	89	t	http://www.oceanhealthindex.org/Countries/Ivory_Coast	f	https://www.globalslaveryindex.org/country/Ivory Coast
+388	Jamaica		104	1	388	388	388		t	t	t	1991	2000	90	t	http://www.oceanhealthindex.org/Countries/Jamaica	f	https://www.globalslaveryindex.org/country/Jamaica
+390	Japan (main islands)		106	2	390	390	392		t	t	t	1977	1955	91	t	http://www.oceanhealthindex.org/Countries/Japan	f	https://www.globalslaveryindex.org/country/Japan
+393	Japan (Daito Islands)		106	1	393	392B	392B		t	t	t	1977	1956	91	t	http://www.oceanhealthindex.org/Countries/Japan	f	https://www.globalslaveryindex.org/country/Japan
+971	Japan (Ogasawara Islands)		248	1	392	392	392		t	t	t	1977		91	f	http://www.oceanhealthindex.org/Countries/Japan	f	https://www.globalslaveryindex.org/country/Japan
+400	Jordan		109	1	400	400	400		t	t	t	1995		92	t	http://www.oceanhealthindex.org/Countries/Jordan	f	https://www.globalslaveryindex.org/country/Jordan
+404	Kenya		111	1	404	404	404	"436,186,432,183,428,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1979	1975	93	t	http://www.oceanhealthindex.org/Countries/Kenya	f	https://www.globalslaveryindex.org/country/Kenya
+414	Kuwait		117	1	414	414	414		t	t	t	1967	1974	96	t	http://www.oceanhealthindex.org/Countries/Kuwait	f	https://www.globalslaveryindex.org/country/Kuwait
+428	Latvia		118	1	428	428	428		t	t	t	1977	1950	98	t	http://www.oceanhealthindex.org/Countries/Latvia	f	https://www.globalslaveryindex.org/country/Latvia
+422	Lebanon		119	1	422	422	422		t	t	t	1995	1995	97	t	http://www.oceanhealthindex.org/Countries/Lebanon	f	https://www.globalslaveryindex.org/country/Lebanon
+430	Liberia		120	1	430	430	430		t	t	t	1977	1977	99	t	http://www.oceanhealthindex.org/Countries/Liberia	f	https://www.globalslaveryindex.org/country/Liberia
+434	Libya		121	1	434	434	434	"398,109,397,114,400,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	2009	1971	100	t	http://www.oceanhealthindex.org/Countries/Libya	f	https://www.globalslaveryindex.org/country/Libya
+440	Lithuania		122	1	440	440	440		t	t	t	1977	1950	101	t	http://www.oceanhealthindex.org/Countries/Lithuania	f	https://www.globalslaveryindex.org/country/Lithuania
+450	Madagascar		125	1	450	450	450	"428,231,437,235,441,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1985	1969	103	t	http://www.oceanhealthindex.org/Countries/Madagascar	f	https://www.globalslaveryindex.org/country/Madagascar
+459	Malaysia (Peninsula West)		127	1	459	459	458		t	t	t	1980	1965	104	t	http://www.oceanhealthindex.org/Countries/Malaysia	f	https://www.globalslaveryindex.org/country/Malaysia
+460	Malaysia (Peninsula East)		127	1	460	460	458		t	t	t	1980	1965	104	t	http://www.oceanhealthindex.org/Countries/Malaysia	f	https://www.globalslaveryindex.org/country/Malaysia
+461	Malaysia (Sabah)		127	1	461	461	458		t	t	t	1980	1975	104	t	http://www.oceanhealthindex.org/Countries/Malaysia	f	https://www.globalslaveryindex.org/country/Malaysia
+463	Malaysia (Sarawak)		127	1	463	463	458		t	t	t	1980	1975	104	t	http://www.oceanhealthindex.org/Countries/Malaysia	f	https://www.globalslaveryindex.org/country/Malaysia
+478	Mauritania		132	1	478	478	478	"332,120,341,120,343,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1978	1950	108	t	http://www.oceanhealthindex.org/Countries/Mauritania	f	https://www.globalslaveryindex.org/country/Mauritania
+480	Mauritius		133	1	480	480	480		t	t	t	1977	1969	109	t	http://www.oceanhealthindex.org/Countries/Mauritius	f	https://www.globalslaveryindex.org/country/Mauritius
+945	Mexico (Pacific)		135	1	484	484	484		t	t	t	1976	1968	110	f	http://www.oceanhealthindex.org/Countries/Mexico	f	https://www.globalslaveryindex.org/country/Mexico
+944	Mexico (Atlantic)		135	1	484	484	484		t	t	t	1976	1968	110	f	http://www.oceanhealthindex.org/Countries/Mexico	f	https://www.globalslaveryindex.org/country/Mexico
+891	Montenegro		139	1	891	891	891		t	t	t	1994	1949	194	t	http://www.oceanhealthindex.org/Countries/Montenegro	f	https://www.globalslaveryindex.org/country/Montenegro
+947	Morocco (Mediterranean)		141	1	504	504	504		t	t	t	1981	1972	113	t	http://www.oceanhealthindex.org/Countries/Morocco	f	https://www.globalslaveryindex.org/country/Morocco
+948	Morocco (South)		141	1	504	504	504		t	t	t	1981	1972	113	t	http://www.oceanhealthindex.org/Countries/Morocco	f	https://www.globalslaveryindex.org/country/Morocco
+946	Morocco (Central)		141	1	504	504	504		t	t	t	1981	1972	113	t	http://www.oceanhealthindex.org/Countries/Morocco	f	https://www.globalslaveryindex.org/country/Morocco
+508	Mozambique		142	1	508	508	508	"423,236,415,227,412,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1976	1969	114	t	http://www.oceanhealthindex.org/Countries/Mozambique	f	https://www.globalslaveryindex.org/country/Mozambique
+104	Myanmar		144	1	104	104	104	"532,117,536,117,536,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1977	1965	22	t	http://www.oceanhealthindex.org/Countries/Myanmar	f	https://www.globalslaveryindex.org/country/Myanmar
+516	Namibia		145	1	516	516	516	"367,210,377,212,388,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1977	1960	116	t	http://www.oceanhealthindex.org/Countries/Namibia	f	https://www.globalslaveryindex.org/country/Namibia
+528	Netherlands		148	1	528	528	528		t	t	t	1977	1950	118	t	http://www.oceanhealthindex.org/Countries/Netherlands	f	https://www.globalslaveryindex.org/country/Netherlands
+967	Aruba (Netherlands)	Netherlands (Aruba)	10	1	533	533	533		t	t	t	1993	1993	120	t	http://www.oceanhealthindex.org/Countries/Aruba	f	https://www.globalslaveryindex.org/country/Netherlands
+554	New Zealand		151	1	554	554	554	"599,292,597,296,617,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1978	1959	123	t	http://www.oceanhealthindex.org/Countries/New_Zealand	f	https://www.globalslaveryindex.org/country/New Zealand
+184	Cook Islands		45	1	184	184	184		t	t	t	1977	1972	40	t	http://www.oceanhealthindex.org/Countries/Cook_Islands	f	https://www.globalslaveryindex.org/country/New Zealand
+555	Kermadec Isl. (New Zealand)	New Zealand (Kermadec Isl.)	113	1	555	554	554A		t	t	t	1978	1978	123	t	http://www.oceanhealthindex.org/Countries/New_Zealand	f	https://www.globalslaveryindex.org/country/New Zealand
+570	Niue (New Zealand)	New Zealand (Niue)	154	1	570	570	570		t	t	t	1978	1960	126	t	http://www.oceanhealthindex.org/Countries/Niue	f	https://www.globalslaveryindex.org/country/New Zealand
+772	Tokelau (New Zealand)	New Zealand (Tokelau)	205	1	772	772	772		t	t	t	1980	1972	173	t	http://www.oceanhealthindex.org/Countries/Tokelau	f	https://www.globalslaveryindex.org/country/New Zealand
+950	Nicaragua (Pacific)		152	1	558	558	558		t	t	t	1965	1930	124	t	http://www.oceanhealthindex.org/Countries/Nicaragua	f	https://www.globalslaveryindex.org/country/Nicaragua
+949	Nicaragua (Caribbean)		152	1	558	558	558		t	t	t	1965	1930	124	t	http://www.oceanhealthindex.org/Countries/Nicaragua	f	https://www.globalslaveryindex.org/country/Nicaragua
+566	Nigeria		153	1	566	566	566	"359,161,362,150,367,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1978	1950	125	t	http://www.oceanhealthindex.org/Countries/Nigeria	f	https://www.globalslaveryindex.org/country/Nigeria
+408	Korea (North)		115	1	408	408	408		t	t	t	1977	1959	94	t	http://www.oceanhealthindex.org/Countries/North_Korea	f	https://www.globalslaveryindex.org/country/North Korea
+579	Jan Mayen Isl. (Norway)	Norway (Jan Mayen Isl.)	105	1	579	579	579		t	t	t	1980	1980	128	t	http://www.oceanhealthindex.org/Countries/Jan_Mayen	f	https://www.globalslaveryindex.org/country/Norway
+744	Svalbard Isl. (Norway)	Norway (Svalbard Isl.)	197	1	744	744	744		t	t	t	1977	1977	128	t	http://www.oceanhealthindex.org/Countries/Jan_Mayen	f	https://www.globalslaveryindex.org/country/Norway
+578	Norway		157	1	578	578	578	"396,31,399,23,378,25,372,24,367,24,362,28,357,35,355,38,353,41,354,47,354,49,357,54,359,55,365,55,373,47,372,42,374,39,376,37,381,33,382,31,387,30,392,30"	t	t	t	1977	1950	128	t	http://www.oceanhealthindex.org/Countries/Norway	f	https://www.globalslaveryindex.org/country/Norway
+74	Bouvet Isl. (Norway)	Norway (Bouvet Isl.)	24	1	74	74	74		t	t	t	1977	1977	128	t	http://www.oceanhealthindex.org/Countries/Bouvet_Island	f	https://www.globalslaveryindex.org/country/Norway
+512	Oman		158	1	512	512	512	"454,135,454,138,456,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1981	1975	115	t	http://www.oceanhealthindex.org/Countries/Oman	f	https://www.globalslaveryindex.org/country/Oman
+911	Oman (Musandam)		158	1	512	512	512		t	t	t	1981		115	f	http://www.oceanhealthindex.org/Countries/Oman	f	https://www.globalslaveryindex.org/country/Oman
+586	Pakistan		159	1	586	586	586	"478,131,479,121,486,114,487,108,489,104,491,101,491,99,489,96,486,97,482,100,479,106,477,108,472,112,470,114,468,117,470,120,470,125,474,129"	t	t	t	1976	1975	134	t	http://www.oceanhealthindex.org/Countries/Pakistan	f	https://www.globalslaveryindex.org/country/Pakistan
+952	Panama (Pacific)		162	1	591	591	591		t	t	t	1967	1978	135	t	http://www.oceanhealthindex.org/Countries/Panama	f	https://www.globalslaveryindex.org/country/Panama
+951	Panama (Caribbean)		162	1	591	591	591		t	t	t	1967	1978	135	t	http://www.oceanhealthindex.org/Countries/Panama	f	https://www.globalslaveryindex.org/country/Panama
+598	Papua New Guinea		163	1	598	598	598	"626,181,627,186,627,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1978	1969	136	t	http://www.oceanhealthindex.org/Countries/Papua_New_Guinea	f	https://www.globalslaveryindex.org/country/Papua New Guinea
+604	Peru		164	1	604	604	604	"190,185,201,183,207,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1950	1950	137	t	http://www.oceanhealthindex.org/Countries/Peru	f	https://www.globalslaveryindex.org/country/Peru
+608	Philippines		165	1	608	608	608	"583,134,591,139,595,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1979	1950	138	t	http://www.oceanhealthindex.org/Countries/Philippines	f	https://www.globalslaveryindex.org/country/Philippines
+616	Poland		167	1	616	616	616		t	t	t	1977	1950	140	t	http://www.oceanhealthindex.org/Countries/Poland	f	https://www.globalslaveryindex.org/country/Poland
+621	Madeira Isl. (Portugal)	Portugal (Madeira Isl.)	126	1	621	620A	620A		t	t	t	1977	1950	217	t	http://www.oceanhealthindex.org/Countries/Madeira	f	https://www.globalslaveryindex.org/country/Portugal
+622	Azores Isl. (Portugal)	Portugal (Azores Isl.)	13	1	622	620B	620B		t	t	t	1977	1950	218	t	http://www.oceanhealthindex.org/Countries/Azores	f	https://www.globalslaveryindex.org/country/Portugal
+620	Portugal (mainland)		168	1	620	620	620	"337,97,330,96,328,89,332,87,337,87,337,91"	t	t	t	1977	1950	141	t	http://www.oceanhealthindex.org/Countries/Portugal	f	https://www.globalslaveryindex.org/country/Portugal
+634	Qatar		171	1	634	634	634		t	t	t	1974	1980	145	t	http://www.oceanhealthindex.org/Countries/Qatar	f	https://www.globalslaveryindex.org/country/Qatar
+178	"Congo, R. of"		44	1	178	178	178	"377,185,388,176,390,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1977	1971	38	t	http://www.oceanhealthindex.org/Countries/Republique_du_Congo	f	https://www.globalslaveryindex.org/country/Republic of the Congo
+642	Romania		173	1	642	642	642		t	t	t	1986	1960	147	t	http://www.oceanhealthindex.org/Countries/Romania	f	https://www.globalslaveryindex.org/country/Romania
+647	Russia (Black Sea)		174	1	647	647	643		t	t	t	1977	1950	148	t	http://www.oceanhealthindex.org/Countries/Russia	f	https://www.globalslaveryindex.org/country/Russia
+648	Russia (Baltic Sea)		174	2	643	643	643		t	t	t	1977	1950	148	t	http://www.oceanhealthindex.org/Countries/Russia	f	https://www.globalslaveryindex.org/country/Russia
+645	Russia (Barents Sea)		174	1	645	645	643		t	t	t	1977	1950	148	t	http://www.oceanhealthindex.org/Countries/Russia	f	https://www.globalslaveryindex.org/country/Russia
+649	Russia (Far East)		174	2	643	643	643	"582,87,548,65,558,45,606,36,629,51,624,58,628,59,629,68,613,92,595,81,590,93"	t	t	t	1977	1956	148	t	http://www.oceanhealthindex.org/Countries/Russia	f	https://www.globalslaveryindex.org/country/Russia
+912	Russia (Kara Sea)		174	1	643	643	643		t	t	t	1977	1956	148	f	http://www.oceanhealthindex.org/Countries/Russia	f	https://www.globalslaveryindex.org/country/Russia
+913	Russia (Laptev to Chukchi Sea)		174	1	643	643	643		t	t	t	1977	1956	148	f	http://www.oceanhealthindex.org/Countries/Russia	f	https://www.globalslaveryindex.org/country/Russia
+684	Saudi Arabia (Persian Gulf)		182	1	684	684	682	"435,117,439,127,450,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	2011	2011	156	t	http://www.oceanhealthindex.org/Countries/Saudi_Arabia	f	https://www.globalslaveryindex.org/country/Saudi Arabia
+683	Saudi Arabia (Red Sea)		182	1	683	683	682	"416,118,423,110,434,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	2011	1974	156	t	http://www.oceanhealthindex.org/Countries/Saudi_Arabia	f	https://www.globalslaveryindex.org/country/Saudi Arabia
+686	Senegal		183	1	686	686	686		t	t	t	1976	1965	157	t	http://www.oceanhealthindex.org/Countries/Senegal	f	https://www.globalslaveryindex.org/country/Senegal
+694	Sierra Leone		185	1	694	694	694		t	t	t	1971	1955	159	t	http://www.oceanhealthindex.org/Countries/Sierra_Leone	f	https://www.globalslaveryindex.org/country/Sierra Leone
+702	Singapore		186	1	702	702	702		t	t	t	2008	1975	160	t	http://www.oceanhealthindex.org/Countries/Singapore	f	https://www.globalslaveryindex.org/country/Singapore
+705	Slovenia		187	1	705	705	705		t	t	t	2005	1949	162	t	http://www.oceanhealthindex.org/Countries/Slovenia	f	https://www.globalslaveryindex.org/country/Slovenia
+706	Somalia		189	1	706	706	706	"438,183,435,177,436,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1972	1950	163	t	http://www.oceanhealthindex.org/Countries/Somalia	f	https://www.globalslaveryindex.org/country/Somalia
+711	Prince Edward Isl. (South Africa)	South Africa (Prince Edward Isl.)	169	1	711	I04	I04		t	t	t	1977	1977	164	t	http://www.oceanhealthindex.org/Countries/Prince_Edward_Islands	f	https://www.globalslaveryindex.org/country/South Africa
+954	South Africa (Indian Ocean Coast)		190	1	710	710	710		t	t	t	1977	1971	164	f	http://www.oceanhealthindex.org/Countries/South_Africa	f	https://www.globalslaveryindex.org/country/South Africa
+953	South Africa (Atlantic and Cape)		190	1	710	710	710		t	t	t	1977	1971	164	f	http://www.oceanhealthindex.org/Countries/South_Africa	f	https://www.globalslaveryindex.org/country/South Africa
+410	Korea (South)		116	1	410	410	410		t	t	t	1996	1952	95	t	http://www.oceanhealthindex.org/Countries/South_Korea	f	https://www.globalslaveryindex.org/country/South Korea
+903	Balearic Island (Spain)	Spain (Balearic Island)	238	1	724	724	724		t	t	t	1978	1950	165	t		f	https://www.globalslaveryindex.org/country/Spain
+723	Canary Isl. (Spain)	Spain (Canary Isl.)	32	1	723	724A	724A		t	t	t	1978	2004	165	t	http://www.oceanhealthindex.org/Countries/Canary_Islands	f	https://www.globalslaveryindex.org/country/Spain
+962	"Spain (mainland, Med and Gulf of Cadiz)"		192	1	724	724	724		t	t	t	1978	1967	165	t	http://www.oceanhealthindex.org/Countries/Spain	f	https://www.globalslaveryindex.org/country/Spain
+963	Spain (Northwest)		192	1	724	724	724		t	t	t	1978	1950	165	t	http://www.oceanhealthindex.org/Countries/Spain	f	https://www.globalslaveryindex.org/country/Spain
+144	Sri Lanka		193	1	144	144	144	"505,156,509,152,515,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1977	1971	29	t	http://www.oceanhealthindex.org/Countries/Sri_Lanka	f	https://www.globalslaveryindex.org/country/Sri Lanka
+736	Sudan		195	1	736	736	736	"419,167,412,165,406,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1970	1976	167	t	http://www.oceanhealthindex.org/Countries/Sudan	f	https://www.globalslaveryindex.org/country/Sudan
+740	Suriname		196	1	740	740	740		t	t	t	1978	1973	168	t	http://www.oceanhealthindex.org/Countries/Suriname	f	https://www.globalslaveryindex.org/country/Suriname
+915	Sweden (West Coast)		198	1	752	752	752		t	t	t	1978	1950	169	t	http://www.oceanhealthindex.org/Countries/Sweden	f	https://www.globalslaveryindex.org/country/Sweden
+914	Sweden (Baltic)		198	1	752	752	752		t	t	t	1978	1950	169	t	http://www.oceanhealthindex.org/Countries/Sweden	f	https://www.globalslaveryindex.org/country/Sweden
+760	Syria		199	1	760	760	760		t	t	t	2003		170	t	http://www.oceanhealthindex.org/Countries/Syria	f	https://www.globalslaveryindex.org/country/Syria
+157	Taiwan		200	1	157	156A	156A		t	t	t	1979	1977	32	t	http://www.oceanhealthindex.org/Countries/Taiwan	f	https://www.globalslaveryindex.org/country/Taiwan
+834	Tanzania		201	1	834	834	834	"433,196,427,195,420,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000"	t	t	t	1989	1965	186	t	http://www.oceanhealthindex.org/Countries/Tanzania	f	https://www.globalslaveryindex.org/country/Tanzania
+956	Thailand (Andaman Sea)		202	1	764	764	764		t	t	t	1981	1972	171	f	http://www.oceanhealthindex.org/Countries/Thailand	f	https://www.globalslaveryindex.org/country/Thailand
+957	Thailand (Gulf of Thailand)		202	1	764	764	764		t	t	t	1981	1972	171	f	http://www.oceanhealthindex.org/Countries/Thailand	f	https://www.globalslaveryindex.org/country/Thailand
+626	Timor Leste		203	1	626	626	626		t	t	t	2002	2004	143	t	http://www.oceanhealthindex.org/Countries/East_Timor	f	https://www.globalslaveryindex.org/country/Timor-Leste
+768	Togo		204	1	768	768	768		t	t	t	1977	1976	172	t	http://www.oceanhealthindex.org/Countries/Togo	f	https://www.globalslaveryindex.org/country/Togo
+780	Trinidad & Tobago		208	1	780	780	780		t	t	t	1983	1950	175	t	http://www.oceanhealthindex.org/Countries/Trinidad_and_Tobago	f	https://www.globalslaveryindex.org/country/Trinidad and Tobago
+788	Tunisia		211	1	788	788	788		t	t	t	2005	1963	177	t	http://www.oceanhealthindex.org/Countries/Tunisia	f	https://www.globalslaveryindex.org/country/Tunisia
+794	Turkey (Black Sea)		212	1	794	794	792	"399.92,412,95,424,90,414,85,406,85"	t	t	t	1986	1990	178	t	http://www.oceanhealthindex.org/Countries/Turkey	f	https://www.globalslaveryindex.org/country/Turkey
+793	Turkey (Mediterranean Sea)		212	1	793	793	792	"399,92,412,95,409,100,398,100,393,94"	t	t	t	1982	1951	178	t	http://www.oceanhealthindex.org/Countries/Turkey	f	https://www.globalslaveryindex.org/country/Turkey
+966	Turkey (Marmara Sea)		212	1	792	792	792		t	t	t	1982		178	f	http://www.oceanhealthindex.org/Countries/Turkey	f	https://www.globalslaveryindex.org/country/Turkey
+804	Ukraine		215	1	804	804	804		t	t	t	1977	1956	181	t	http://www.oceanhealthindex.org/Countries/Ukraine	f	https://www.globalslaveryindex.org/country/Ukraine
+784	United Arab Emirates		216	1	784	784	784		t	t	t	1980		176	t	http://www.oceanhealthindex.org/Countries/United_Arab_Emirates	f	https://www.globalslaveryindex.org/country/United Arab Emirates
+968	United Arab Emirates (Fujairah)	Fujairah (United Arab Emirates)	216	1	784	784	784		t	t	t	1980		176	f	http://www.oceanhealthindex.org/Countries/United_Arab_Emirates	f	https://www.globalslaveryindex.org/country/United Arab Emirates
+830	Channel Isl. (UK)	UK (Channel Isl.)	35	1	830	830	830		t	t	t	1977	1950	184	t	http://www.oceanhealthindex.org/Countries/United_Kingdom	f	https://www.globalslaveryindex.org/country/United Kingdom
+855	Ascension Isl. (UK)	UK (Ascension Isl.)	11	1	855	826E	826E		t	t	t	1978	1978	219	t	http://www.oceanhealthindex.org/Countries/Ascension	f	https://www.globalslaveryindex.org/country/United Kingdom
+856	Tristan da Cunha Isl. (UK)	UK (Tristan da Cunha Isl.)	209	1	856	826G	826G		t	t	t	1977	1977	220	t	http://www.oceanhealthindex.org/Countries/Tristan_da_Cunha	f	https://www.globalslaveryindex.org/country/United Kingdom
+136	Cayman Isl. (UK)	UK (Cayman Isl.)	34	1	136	136	136		t	t	t	1977	1977	28	t	http://www.oceanhealthindex.org/Countries/Cayman_Islands	f	https://www.globalslaveryindex.org/country/United Kingdom
+238	Falkland Isl. (UK)	UK (Falkland Isl.)	66	1	238	238	238		t	t	t	1986	1975	55	t	http://www.oceanhealthindex.org/Countries/Falkland_Islands	f	https://www.globalslaveryindex.org/country/United Kingdom
+500	Montserrat (UK)	UK (Montserrat)	140	1	500	500	500		t	t	t	1983	1984	112	t	http://www.oceanhealthindex.org/Countries/Montserrat	f	https://www.globalslaveryindex.org/country/United Kingdom
+612	Pitcairn (UK)	UK (Pitcairn)	166	1	612	612	612		t	t	t	1997	1958	139	t	http://www.oceanhealthindex.org/Countries/Pitcairn	f	https://www.globalslaveryindex.org/country/United Kingdom
+654	Saint Helena (UK)	UK (Saint Helena)	175	1	654	654	654		t	t	t	1977	1988	149	t	http://www.oceanhealthindex.org/Countries/Saint_Helena	f	https://www.globalslaveryindex.org/country/United Kingdom
+660	Anguilla (UK)	UK (Anguilla)	7	1	660	660	660		t	t	t	1981	2006	151	t	http://www.oceanhealthindex.org/Countries/Anguilla	f	https://www.globalslaveryindex.org/country/United Kingdom
+239	South Georgia & Sandwich Isl. (UK)	UK (South Georgia & Sandwich Isl.)	191	1	239	239	239		t	t	t	1993	1950	183	t	http://www.oceanhealthindex.org/Countries/South_Georgia_and_the_South_Sandwich_Islands	f	https://www.globalslaveryindex.org/country/United Kingdom
+796	Turks & Caicos Isl. (UK)	UK (Turks & Caicos Isl.)	213	1	796	796	796		t	t	t	1978	1978	179	t	http://www.oceanhealthindex.org/Countries/Turks_and_Caicos_Islands	f	https://www.globalslaveryindex.org/country/United Kingdom
+826	United Kingdom (UK)	UK (United Kingdom)	217	1	826	826	826	"334,51,342,48,348,49,350,53,354,60,360,66,357,68,354,70,350,69,345,69,347,63,344,57,339,55,335,55,332,54"	t	t	t	1977	1950	183	t	http://www.oceanhealthindex.org/Countries/United_Kingdom	f	https://www.globalslaveryindex.org/country/United Kingdom
+60	Bermuda (UK)	UK (Bermuda)	22	1	60	60	60		t	t	t	1977	2002	13	t	http://www.oceanhealthindex.org/Countries/Bermuda	f	https://www.globalslaveryindex.org/country/United Kingdom
+86	Chagos Archipelago (UK)	UK (Chagos Archipelago)	26	1	86	86	86		t	t	t	2003	2000	17	t	http://www.oceanhealthindex.org/Countries/British_Indian_Ocean_Territory	f	https://www.globalslaveryindex.org/country/United Kingdom
+92	British Virgin Isl. (UK)	UK (British Virgin Isl.)	225	1	92	92	92		t	t	t	1977	1978	19	t	http://www.oceanhealthindex.org/Countries/British_Virgin_Islands	f	https://www.globalslaveryindex.org/country/United Kingdom
+848	USA (West Coast)		221	2	840	840	840	"171,74,169,92,156,111,146,112,137,109,131,113,126,113,122,93,130,79,141,74,145,74"	t	t	t	1983	1953	187	t	http://www.oceanhealthindex.org/Countries/United_States	f	https://www.globalslaveryindex.org/country/United States
+580	Northern Marianas (USA)	USA (Northern Marianas)	156	1	580	580	580		t	t	t	1983	1983	129	t	http://www.oceanhealthindex.org/Countries/Northern_Mariana_Islands_and_Guam	f	https://www.globalslaveryindex.org/country/United States
+851	USA (East Coast)		221	2	840	840	840	"169,92,171,74,191,74,202,75,209,81,206,89,221,82,234,78,235,92,225,97,221,104,209,118,204,119,201,127,187,101"	t	t	t	1983	1964	187	t	http://www.oceanhealthindex.org/Countries/United_States	f	https://www.globalslaveryindex.org/country/United States
+852	USA (Gulf of Mexico)		221	2	840	840	840	"187,101,201,127,195,128,188,124,168,123,169,92"	t	t	t	1983	1964	187	t	http://www.oceanhealthindex.org/Countries/United_States	f	https://www.globalslaveryindex.org/country/United States
+842	Hawaii Main Islands (USA)	USA (Hawaii Main Islands)	90	1	842	840B	840B		t	t	t	1983	2003	187	t	http://www.oceanhealthindex.org/Countries/United_States	f	https://www.globalslaveryindex.org/country/United States
+845	Jarvis Isl. (USA)	USA (Jarvis Isl.)	107	1	845	845	845		t	t	t	1983	1972	187	t	http://www.oceanhealthindex.org/Countries/Jarvis_Island	f	https://www.globalslaveryindex.org/country/United States
+846	Howland & Baker Isl. (USA)	USA (Howland & Baker Isl.)	16	1	846	846	846		t	t	t	1983	1972	187	t	http://www.oceanhealthindex.org/Countries/Howland_Island_and_Baker_Island	f	https://www.globalslaveryindex.org/country/United States
+872	Wake Isl. (USA)	USA (Wake Isl.)	226	1	872	872	872		t	t	t	1983		187	t	http://www.oceanhealthindex.org/Countries/Wake_Island	f	https://www.globalslaveryindex.org/country/United States
+316	Guam (USA)	USA (Guam)	84	1	316	316	316		t	t	t	1983	1972	74	t	http://www.oceanhealthindex.org/Countries/Northern_Mariana_Islands_and_Guam	f	https://www.globalslaveryindex.org/country/United States
+850	US Virgin Isl.	USA (US Virgin Isl.)	220	1	850	850	850		t	t	t	1983	1983	188	t	http://www.oceanhealthindex.org/Countries/Puerto_Rico_and_Virgin_Islands_of_the_United_States	f	https://www.globalslaveryindex.org/country/United States
+396	Johnston Atoll (USA)	USA (Johnston Atoll)	108	1	396	396	396		t	t	t	1983	1983	216	t	http://www.oceanhealthindex.org/Countries/Johnston_Atoll	f	https://www.globalslaveryindex.org/country/United States
+488	Hawaii Northwest Islands (USA)	USA (Hawaii Northwest Islands)	90	1	488	488	488		t	t	t	1983		187	t	http://www.oceanhealthindex.org/Countries/United_States	f	https://www.globalslaveryindex.org/country/United States
+630	Puerto Rico (USA)	USA (Puerto Rico)	170	1	630	630	630		t	t	t	1983	2002	144	t	http://www.oceanhealthindex.org/Countries/Puerto_Rico_and_Virgin_Islands_of_the_United_States	f	https://www.globalslaveryindex.org/country/United States
+844	Palmyra Atoll & Kingman Reef (USA)	USA (Palmyra Atoll & Kingman Reef)	161	1	844	844	844		t	t	t	1983	1972	187	t	http://www.oceanhealthindex.org/Countries/Palmyra_Atoll	f	https://www.globalslaveryindex.org/country/United States
+16	American Samoa	USA (American Samoa)	4	1	16	16	16		t	t	t	1983	1911	3	t	http://www.oceanhealthindex.org/Countries/American_Samoa	f	https://www.globalslaveryindex.org/country/United States
+958	"USA (Alaska, Arctic)"	"Alaska, Arctic (USA)"	1	1	841	840A	840A		t	t	t	1983	1953	187	f	http://www.oceanhealthindex.org/Countries/United_States	f	https://www.globalslaveryindex.org/country/United States
+959	"USA (Alaska, Subarctic)"	"Alaska, Subarctic (USA)"	1	1	841	840A	840A		t	t	t	1983	1953	187	f	http://www.oceanhealthindex.org/Countries/United_States	f	https://www.globalslaveryindex.org/country/United States
+858	Uruguay		218	1	858	858	858		t	t	t	1969	1971	189	t	http://www.oceanhealthindex.org/Countries/Uruguay	f	https://www.globalslaveryindex.org/country/Uruguay
+862	Venezuela		223	1	862	862	862		t	t	t	1978	1966	190	t	http://www.oceanhealthindex.org/Countries/Venezuela	f	https://www.globalslaveryindex.org/country/Venezuela
+704	Viet Nam		224	1	704	704	704		t	t	t	1977	1965	161	t	http://www.oceanhealthindex.org/Countries/Vietnam	f	https://www.globalslaveryindex.org/country/Vietnam
+916	Yemen (Red Sea)		229	1	887	887	887		t	t	t	1978	1967	193	t	http://www.oceanhealthindex.org/Countries/Yemen	f	https://www.globalslaveryindex.org/country/Yemen
+917	Yemen (Arabian Sea)		229	1	887	887	887		t	t	t	1978	1967	193	t	http://www.oceanhealthindex.org/Countries/Yemen	f	https://www.globalslaveryindex.org/country/Yemen
+583	Micronesia (Federated States of)		136	1	583	583	583		t	t	t	1988	1979	131	t	http://www.oceanhealthindex.org/Countries/Micronesia	f	
+584	Marshall Isl.		130	1	584	584	584		t	t	t	1984	1978	132	t	http://www.oceanhealthindex.org/Countries/Marshall_Islands	f	
+585	Palau		160	1	585	585	585		t	t	t	1978	1978	133	t	http://www.oceanhealthindex.org/Countries/Palau	f	
+798	Tuvalu		214	1	798	798	798		t	t	t	1979	1972	180	t	http://www.oceanhealthindex.org/Countries/Tuvalu	f	
+882	Samoa		180	1	882	882	882		t	t	t	1977	1962	192	t	http://www.oceanhealthindex.org/Countries/Samoa	f	
+548	Vanuatu		222	1	548	548	548		t	t	t	1982	1950	122	t	http://www.oceanhealthindex.org/Countries/Vanuatu	f	
+174	Comoros Isl.		42	1	174	174	174		t	t	t	1976	1969	36	t	http://www.oceanhealthindex.org/Countries/Comoro_Islands	f	
+212	Dominica		55	1	212	212	212		t	t	t	1981	1986	47	t	http://www.oceanhealthindex.org/Countries/Dominica	f	
+274	Gaza Strip		75	1	274	274	274		t	t	t	2010		65	t		f	
+242	Fiji		67	1	242	242	242		t	t	t	1981	1972	56	t	http://www.oceanhealthindex.org/Countries/Fiji	f	
+308	Grenada		82	1	308	308	308		t	t	t	1978	2002	72	t	http://www.oceanhealthindex.org/Countries/Grenada	f	
+462	Maldives		128	1	462	462	462		t	t	t	1976	1971	105	t	http://www.oceanhealthindex.org/Countries/Maldives	f	
+470	Malta		129	1	470	470	470		t	t	t	1978	1978	106	t	http://www.oceanhealthindex.org/Countries/Malta	f	
+520	Nauru		146	1	520	520	520		t	t	t	1978	1972	117	t	http://www.oceanhealthindex.org/Countries/Nauru	f	
+659	Saint Kitts & Nevis		176	1	659	659	659		t	t	t	1984	1993	150	t	http://www.oceanhealthindex.org/Countries/Saint_Kitts_and_Nevis	f	
+670	Saint Vincent & the Grenadines		179	1	670	670	670		t	t	t	1983	1983	154	t	http://www.oceanhealthindex.org/Countries/Saint_Vincent_and_the_Grenadines	f	
+678	Sao Tome & Principe		181	1	678	678	678		t	t	t	1978	1978	155	t	http://www.oceanhealthindex.org/Countries/Sao_Tome_and_Principe	f	
+0	High Seas		0	2	0	0	0		f	f	t	1982		0	f		f	
+690	Seychelles		184	1	690	690	690		t	t	t	1977	1969	158	t	http://www.oceanhealthindex.org/Countries/Seychelles	f	
+776	Tonga		206	1	776	776	776		t	t	t	1979	1972	174	t	http://www.oceanhealthindex.org/Countries/Tonga	f	
+999	Outside of EEZ		0	2	0	0	0		f	f	t	1982		0	t		f	
+662	Saint Lucia		177	1	662	662	662		t	t	t	1984	1964	152	t	http://www.oceanhealthindex.org/Countries/Saint_Lucia	f	
+904	St Barthelemy (France)	France (St Barthelemy)	239	1	312	312	312		t	t	t	1978	1977	209	t		f	
+905	St Martin (France)	France (St Martin)	240	1	312	312	312		t	t	t	1978	1977	210	t		f	
+908	Saba and Sint Eustaius (Netherlands)	Netherlands (Saba and Sint Eustatius)	243	1	532	532	532		t	t	t	1993	1993	221	f		f	
+910	South Orkney Islands (UK)	UK (South Orkney Islands)	245	1	238	238	238		t	t	t	1982	1977	183	t		f	
+28	Antigua & Barbuda		8	1	28	28	28		t	t	t	1982	1993	5	t	http://www.oceanhealthindex.org/Countries/Antigua_and_Barbuda	f	
+44	Bahamas		14	1	44	44	44		t	t	t	1977	1977	8	t	http://www.oceanhealthindex.org/Countries/Bahamas	f	
+941	Kiribati (Gilbert Islands)		114	1	296	296	296		t	t	t	1979	1950	69	t	http://www.oceanhealthindex.org/Countries/Kiribati	f	
+943	Kiribati (Phoenix Islands)		114	1	296	296	296		t	t	t	1979	1950	69	t	http://www.oceanhealthindex.org/Countries/Kiribati	f	
+909	Sint Maarten (Netherlands)	Netherlands (Sint Maarten)	244	1	533	533	533		t	t	t	1993	1993	215	f	http://www.oceanhealthindex.org/Countries/Sint-Maarten	f	
+84	Belize		20	1	84	84	84		t	t	t	1992	1970	16	t	http://www.oceanhealthindex.org/Countries/Belize	f	
+90	Solomon Isl.		188	1	90	90	90		t	t	t	1979	1971	18	t	http://www.oceanhealthindex.org/Countries/Solomon_Islands	f	
+942	Kiribati (Line Islands)		114	1	296	296	296		t	t	t	1979	1950	69	t	http://www.oceanhealthindex.org/Countries/Kiribati	f	
+906	Curacao (Netherlands)	Netherlands (Curaçao)	241	1	532	532	532		t	t	t	1993	1993	214	f	http://www.oceanhealthindex.org/Countries/Curacao	f	
+907	Bonaire (Netherlands)	Netherlands (Bonaire)	242	1	533	533	533		t	t	t	1993	1993	222	f	http://www.oceanhealthindex.org/Countries/Bonaire	f	
