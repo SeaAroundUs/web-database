@@ -178,7 +178,8 @@ CREATE TABLE web.eez(
   is_home_eez_of_fishing_entity_id smallint NOT NULL,
   allows_coastal_fishing_for_layer2_data boolean DEFAULT true NOT NULL,
   ohi_link VARCHAR(400),
-  is_retired BOOLEAN NOT NULL DEFAULT false
+  is_retired BOOLEAN NOT NULL DEFAULT false,
+  gsi_link VARCHAR(400)
 );
 
 COMMENT ON COLUMN web.eez.alternate_name IS 'semicolon separated: alt_name1;alt_name2;alt_name3';
