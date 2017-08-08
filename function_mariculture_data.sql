@@ -88,7 +88,7 @@ begin
   max_year(year_threshold) as (
     select max(year) from mariculture_data
   )
-  select array_to_string('Year'::text || array_agg((case when is_scientific_name then t.scientific_name else t.common_name end)::text order by top.production_rank) || 'Mixed group'::text || 'Total'::text, E'\t') 
+  select array_to_string('Year'::text || array_agg(csv_escape(case when is_scientific_name then t.scientific_name else t.common_name end)::text order by top.production_rank) || 'Mixed group'::text || 'Total'::text, E'\t') 
     from top_taxon top
     join web.cube_dim_taxon t on (t.taxon_key = top.taxon_key)
   union all
