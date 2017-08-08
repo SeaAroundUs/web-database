@@ -171,9 +171,9 @@ $body$
     select mds.year, sum(mds.production) from md_summary mds group by mds.year
   ),
   max_year(year_threshold) as (
-    select max(year) from mariculture_data
+    select max(year) from web.mariculture_data
   )
-  select array_to_string('Year'::text || array_agg(cg.name::text order by top.production_rank) || 'Total'::text, E'\t') 
+  select array_to_string('Year'::text || array_agg(csv_escape(cg.name)::text order by top.production_rank) || 'Total'::text, E'\t')
     from top_cgroup top
     join web.commercial_groups cg on (cg.commercial_group_id = top.commercial_group_id)
   union all
@@ -255,9 +255,9 @@ $body$
     select mds.year, sum(mds.production) from md_summary mds group by mds.year
   ),
   max_year(year_threshold) as (
-    select max(year) from mariculture_data
+    select max(year) from web.mariculture_data
   )
-  select array_to_string('Year'::text || array_agg(fg.description::text order by top.production_rank) || 'Total'::text, E'\t') 
+  select array_to_string('Year'::text || array_agg(csv_escape(fg.description)::text order by top.production_rank) || 'Total'::text, E'\t') 
     from top_fgroup top
     join web.functional_groups fg on (fg.functional_group_id = top.functional_group_id)
   union all
