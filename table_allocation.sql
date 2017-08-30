@@ -71,6 +71,7 @@ CREATE TABLE allocation.allocation_data (
     catch_type_id smallint DEFAULT 0 NOT NULL,
     reporting_status_id smallint DEFAULT 0 NOT NULL,
     input_type_id smallint DEFAULT 0 NOT NULL,
+    gear_type_id integer DEFAULT 0 NOT NULL,
     unique_area_id_auto_gen integer,
     original_fishing_entity_id integer NOT NULL,
     unit_price double precision not null default 1466
@@ -83,7 +84,8 @@ CREATE TABLE allocation.allocation_data_eez_hs (
     taxon_key integer NOT NULL,
     sector_type_id smallint DEFAULT 0 NOT NULL,
     catch_type_id smallint DEFAULT 0 NOT NULL,
-    reporting_status_id smallint DEFAULT 0 NOT NULL
+    reporting_status_id smallint DEFAULT 0 NOT NULL,
+    gear_type_id integer DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE allocation.price(
@@ -167,7 +169,8 @@ CREATE UNLOGGED TABLE allocation.allocation_data_partition_udi(
     reporting_status_id smallint, 
     sector_type_id smallint, 
     partition_id int[], 
-    udi int[]
+    udi int[],
+    gear_type_id int
 );
 
 CREATE TABLE allocation.catch_by_taxon(
