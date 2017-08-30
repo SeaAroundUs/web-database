@@ -236,14 +236,15 @@ BEGIN
   TRUNCATE TABLE allocation.allocation_data_partition_udi;
               
   EXECUTE 
-  format('INSERT INTO allocation.allocation_data_partition_udi(fishing_entity_id, taxon_key, catch_type_id, reporting_status_id, sector_type_id, partition_id, udi)
+  format('INSERT INTO allocation.allocation_data_partition_udi(fishing_entity_id, taxon_key, catch_type_id, reporting_status_id, sector_type_id, partition_id, udi, gear_type_id)
           SELECT ad.fishing_entity_id, ad.taxon_key, ad.catch_type_id, ad.reporting_status_id, ad.sector_type_id, 
                  array_agg(distinct m.partition_id order by m.partition_id) partition_id, 
-                 array_agg(distinct ad.universal_data_id order by ad.universal_data_id) uid
+                 array_agg(distinct ad.universal_data_id order by ad.universal_data_id) uid,
+                 ad.gear_type_id
             FROM allocation_data_partition.allocation_data_%s ad
             JOIN allocation.allocation_result_partition_map m 
               ON (ad.universal_data_id between m.begin_universal_data_id and m.end_universal_data_id)
-           GROUP BY ad.fishing_entity_id, ad.taxon_key, ad.catch_type_id, ad.reporting_status_id, ad.sector_type_id',
+           GROUP BY ad.fishing_entity_id, ad.taxon_key, ad.catch_type_id, ad.reporting_status_id, ad.sector_type_id, ad.gear_type_id',
          i_year); 
 END;
 $body$
@@ -316,14 +317,14 @@ BEGIN
       FROM unnest(adpu.partition_id) AS u(partition_id);  
       
     cell_catch_query := format(
-      'INSERT INTO web_partition.cell_catch_p%s(year,fishing_entity_id,taxon_key,cell_id,commercial_group_id,functional_group_id,sector_type_id,catch_status,reporting_status,catch_sum)
-       SELECT %1$s, $1, $2, t.cell_id, $3, $4, $5, $6, $7, sum(ac)
+      'INSERT INTO web_partition.cell_catch_p%s(year,fishing_entity_id,taxon_key,cell_id,commercial_group_id,functional_group_id,sector_type_id,catch_status,reporting_status,catch_sum,gear_type_id)
+      SELECT %1$s, $1, $2, t.cell_id, $3, $4, $5, $6, $7, sum(ac), $9
          FROM (%s) AS t
         GROUP BY t.cell_id',
       i_year, ar_query);
       
     EXECUTE cell_catch_query 
-      USING adpu.fishing_entity_id, adpu.taxon_key, c_group, f_group, adpu.sector_type_id, c_status, r_status, adpu.udi;
+      USING adpu.fishing_entity_id, adpu.taxon_key, c_group, f_group, adpu.sector_type_id, c_status, r_status, adpu.udi, adpu.gear_type_id;
   END IF;
 END;
 $body$
