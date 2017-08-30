@@ -91,6 +91,8 @@ begin
       additional_join_clause := additional_join_clause || ' join web.fao_area fa on (fa.fao_area_id = any($1) and f.area_key = any(fa.area_key))';
     when i_entity_layer_id = 1000 then
       main_area_col_name := 'f.data_layer_id';
+    when i_entity_layer_id = 1100 then
+      main_area_col_name := 'f.gear_type';
     else
       raise exception 'Invalid entity layer id input received: %', i_entity_layer_id;
   end case;
@@ -112,7 +114,7 @@ $body$
            else array['year']::text[] 
            end ||
            case when i_entity_layer_id is distinct from 100 then array['fishing_entity']::text[] else array[]::text[] end ||
-           array['fishing_sector','catch_type', 'reporting_status', 'tonnes', 'landed_value'],
+           array['fishing_sector','catch_type', 'reporting_status', 'gear_type', 'tonnes', 'landed_value'],
            E'\t');
 $body$
 language sql;
@@ -148,6 +150,7 @@ begin
   when 600 then return query select 'functional_group_id'::varchar, cg.functional_group_id::int, 'functional_group_name'::varchar, cg.description, 'functional_group'::varchar FROM web.functional_groups fg WHERE fg.functional_group_id = ANY(i_entity_id);
   when 900 then return query select 'fao_area_id'::varchar, f.fao_area_id, 'fao_area_name'::varchar, f.name, 'fao_area'::varchar FROM web.fao_area f WHERE f.fao_area_id = ANY(i_entity_id);
   when 1000 then return query select 'data_layer_id'::varchar, l.data_layer_id, 'data_layer_name'::varchar, l.name, 'data_layer'::varchar FROM web.data_layer l WHERE l.data_layer_id = ANY(i_entity_id);
+  when 1100 then return query select 'gear_type_id'::varchar, f.gear_id, 'gear_name'::varchar, f.super_code, 'gear'::varchar FROM web.gear f WHERE f.gear_id = ANY(i_entity_id);  
   else raise exception 'Invalid entity layer id input received: %', i_entity_layer_id;
   end case;
 end
@@ -2308,6 +2311,163 @@ $body$
 language plpgsql;
 -----------------
 
+-----------------
+create or replace function web.f_dimension_gear_type_catch_query 
+(
+  i_measure varchar(20),
+  i_entity_id int[],
+  i_sub_entity_id int[],
+  i_entity_layer_id int default 1,
+  i_area_bucket_id_layer int default null,
+  i_output_area_id boolean default false,
+  i_other_params json default null
+)
+returns table(year int, entity_id int, dimension_member_id int, measure numeric) as
+$body$
+declare
+  rtn_sql text;
+  main_area_col_name text;
+  additional_join_clause text := '';
+begin
+  select *
+    into main_area_col_name, additional_join_clause
+    from web.f_dimension_catch_query_layer_preprocessor(i_entity_layer_id, i_area_bucket_id_layer, i_other_params);
+
+  rtn_sql := 
+    'select f.year,' || 
+    case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
+    ',f.gear_id::int' ||
+    case when i_measure = 'catch' then ',sum(f.catch_sum)' else ',sum(f.real_value)::numeric' end ||  
+    ' from web.v_fact_data f' ||
+    additional_join_clause ||
+    ' where' ||   
+    case 
+    when i_entity_layer_id < 100 then ' f.marine_layer_id = ' || i_entity_layer_id || ' and f.main_area_id = any($1) and'
+    when i_entity_layer_id = 100 then ' f.fishing_entity_id = any($1) and'
+    when i_entity_layer_id = 300 then ' f.taxon_key = any($1) and'
+    else ''
+     end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
+    ' group by f.year' || 
+    case when coalesce(i_output_area_id, false) 
+    then
+      ',' || main_area_col_name
+    else 
+      '' 
+    end ||
+    ',f.gear_id';
+
+  return query execute rtn_sql
+   using i_entity_id, i_sub_entity_id;
+end
+$body$
+language plpgsql;
+
+create or replace function web.f_dimension_gear_type_json
+(
+  i_measure varchar(20),
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_sub_entity_id int[] default null::int[],
+  i_other_params json default null
+)
+returns json as
+$body$
+declare
+  area_bucket_id_layer int := case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end;
+begin
+  return (
+    with catch(year, entity_id, gear_type_id, measure) as (
+      select * from web.f_dimension_gear_type_catch_query(i_measure, i_entity_id, i_sub_entity_id, i_entity_layer_id, area_bucket_id_layer, false, i_other_params)
+    ),
+    ranking(gear_type_id, measure_rank) as (
+      select c.gear_type_id, row_number() over(order by sum(c.measure) desc)
+        from catch c
+       group by c.gear_type_id
+    )
+    select json_agg(fd.*)       
+      from (select max(g.super_code) as key, array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 2)]] order by tm.time_business_key) as values
+              from web.time tm 
+              join ranking r on (true)
+              join web.gear g on (g.gear_id = r.gear_type_id)
+              left join catch c on (c.year = tm.time_business_key and c.gear_type_id = g.gear_id)
+             where tm.time_business_key >= (select min(ci.year) from catch ci)
+             group by g.gear_id
+             order by max(r.measure_rank)
+           )
+        as fd
+  );
+end
+$body$
+language plpgsql;
+
+create or replace function web.f_dimension_gear_type_tsv
+(
+  i_measure varchar(20),
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_sub_entity_id int[] default null::int[], 
+  i_output_area_id boolean default false,
+  i_other_params json default null
+)
+returns setof text as
+$body$
+declare
+  area_bucket_id_layer int := case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end;
+begin
+  if coalesce(i_output_area_id, false) then
+    return query
+    with catch(year, main_area_id, gear_type_id, measure) as (
+      select * from web.f_dimension_gear_type_catch_query(i_measure, i_entity_id, i_sub_entity_id, i_entity_layer_id, area_bucket_id_layer, true, i_other_params)
+    ),
+    ranking(gear_type_id, measure_rank) as (
+      select c.gear_type_id, row_number() over(order by sum(c.measure) desc)
+        from catch c
+       group by c.gear_type_id
+    ),
+    area_name as (
+      select * from web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as t
+    )
+    select array_to_string(array['year'::text, max(an.name_heading)] || array_agg(t.name::text order by r.measure_rank), E'\t') 
+      from ranking r
+      join web.gear t on (t.gear_id = r.gear_type_id)
+      join (select * from area_name limit 1) an on (true)
+    union all
+    select array_to_string(array[tm.time_business_key::text, max(an.name)] || 
+                           array_agg(coalesce((c.measure::numeric(20, 3))::text, '')::text order by r.measure_rank), E'\t')
+      from web.time tm 
+      join ranking r on (true)
+      join area_name an on (true)
+      left join catch c on (c.year = tm.time_business_key and c.main_area_id = an.entity_id and c.gear_type_id = r.gear_type_id)
+     where tm.time_business_key >= (select min(ci.year) from catch ci)
+     group by tm.time_business_key, an.entity_id;
+  else
+    return query
+    with catch(year, entity_id, gear_type_id, measure) as (
+      select * from web.f_dimension_gear_type_catch_query(i_measure, i_entity_id, i_sub_entity_id, i_entity_layer_id, area_bucket_id_layer, false, i_other_params)
+    ),
+    ranking(gear_type_id, measure_rank) as (
+      select c.gear_type_id, row_number() over(order by sum(c.measure) desc)
+        from catch c
+       group by c.gear_type_id
+    )
+    select array_to_string('year'::text || array_agg(t.name::text order by r.measure_rank), E'\t') 
+      from ranking r
+      join web.gear t on (t.gear_id = r.gear_type_id)
+    union all
+    select array_to_string(tm.time_business_key::text || array_agg(coalesce((c.measure::numeric(20, 3))::text, '')::text order by r.measure_rank), E'\t')
+      from web.time tm 
+      join ranking r on (true) 
+      left join catch c on (c.year = tm.time_business_key and c.gear_type_id = r.gear_type_id)
+     where tm.time_business_key >= (select min(ci.year) from catch ci)
+     group by tm.time_business_key;
+  end if;
+end
+$body$
+language plpgsql;
+-----------------
+
 -----
 create or replace function web.f_catch_data_in_json 
 (
@@ -2344,6 +2504,8 @@ $body$
   select f.* from web.f_dimension_fao_json(i_measure, i_entity_id, i_entity_layer_id, i_sub_entity_id, i_top_count, i_other_params) as f where i_dimension = 'fao' and i_entity_layer_id >= 100
   union all
   select f.* from web.f_dimension_data_layer_json(i_measure, i_entity_id, i_entity_layer_id, i_sub_entity_id, i_other_params) as f where i_dimension = 'data_layer'
+  union all
+  select f.* from web.f_dimension_gear_type_json(i_measure, i_entity_id, i_entity_layer_id, i_sub_entity_id, i_other_params) as f where i_dimension = 'gear_type'
    ;    
 $body$
 language sql;
