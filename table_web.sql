@@ -614,7 +614,8 @@ CREATE TABLE web.v_fact_data(
   real_value double precision,
   primary_production_required double precision,
   catch_trophic_level numeric,
-  catch_max_length numeric
+  catch_max_length numeric,
+  gear_id integer
 );
 
 CREATE TABLE web.cell(
@@ -676,7 +677,8 @@ CREATE TABLE web.cell_catch(
   catch_status character(1),
   reporting_status character(1),
   sector_type_id smallint,
-  catch_sum numeric
+  catch_sum numeric,
+  gear_type_id int
 );
 
 CREATE TABLE web.cell_catch_global_cache(
