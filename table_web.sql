@@ -229,7 +229,8 @@ CREATE TABLE web.functional_groups(
 CREATE TABLE web.gear(
   gear_id smallint PRIMARY KEY,
   name varchar(50) NOT NULL,
-  super_code varchar(20) NOT NULL                              
+  super_code varchar(20) NOT NULL,
+  notes text
 );
 
 CREATE TABLE web.geo_entity(
