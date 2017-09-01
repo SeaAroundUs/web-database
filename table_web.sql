@@ -598,7 +598,7 @@ CREATE TABLE web.v_fact_data(
   area_data_key serial primary key, 
   taxon_key integer,
   fishing_entity_id smallint,
-  gear_id smallint,
+  gear_id integer,
   time_key integer,
   year integer,
   area_key integer,
@@ -615,8 +615,7 @@ CREATE TABLE web.v_fact_data(
   real_value double precision,
   primary_production_required double precision,
   catch_trophic_level numeric,
-  catch_max_length numeric,
-  gear_id integer
+  catch_max_length numeric
 );
 
 CREATE TABLE web.cell(
