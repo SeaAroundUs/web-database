@@ -51,3 +51,16 @@ log/
 data_dump/allocation.allocation_data
 data_dump/allocation.allocation_result_eez
 /rmv.sql
+data_dump/test dumps/.schema
+data_dump/test dumps/admin.schema
+data_dump/test dumps/allocation.schema
+data_dump/test dumps/expedition.schema
+data_dump/test dumps/fao.schema
+data_dump/test dumps/feru.schema
+data_dump/test dumps/sau.schema
+data_dump/test dumps/web.schema
+data_dump/allocation.cell
+data_dump/allocation_data.txt
+data_dump/allocation_partition.schema
+data_dump/allocation_v46.allocation_data
+data_dump/calhost
