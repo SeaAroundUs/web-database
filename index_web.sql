@@ -10,6 +10,7 @@ CREATE UNIQUE INDEX time_ak_cl ON web.Time(time_business_key ASC);
 
 CREATE INDEX cell_fao_area_id_idx ON web.cell(fao_area_id);
 CREATE INDEX cell_lme_id_idx ON web.cell(lme_id);
+CREATE INDEX cell_meow_id_idx ON web.cell(meow_id);
 
 CREATE UNIQUE INDEX nc_unique ON web.geo_entity_mariculture_entity_mapping
 (

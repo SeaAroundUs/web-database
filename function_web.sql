@@ -74,7 +74,7 @@ RETURNS TABLE(marine_layer_id int
              ,number_of_cells int)
 AS
 $body$
-  --for the entire EEZs/LMEs/Global/Mariculture/persian_gulf/Tropics
+  --for the entire EEZs/LMEs/Global/Mariculture/persian_gulf/Tropics/MEOW
   SELECT marine_layer_id
          ,main_area_id
          ,0
@@ -85,7 +85,7 @@ $body$
          ,SUM(sea_mounts)
          ,SUM(number_of_cells)::INT
     FROM web.area
-   WHERE marine_layer_id IN (1,3,6, 8, 9,10)
+   WHERE marine_layer_id IN (1,3,6, 8, 9,10,19)
      AND web.get_area_status(marine_layer_id, main_area_id, sub_area_id)
   GROUP BY main_area_id, marine_layer_id
   UNION ALL
@@ -116,7 +116,7 @@ RETURNS TABLE(marine_layer_id int
              ,number_of_cells int)			
 AS
 $body$
-  --for the entire EEZs/LMEs/Global
+  --for the entire EEZs/LMEs/Global/MEOW
   (SELECT marine_layer_iD
         ,main_area_id
         ,0
@@ -126,7 +126,7 @@ $body$
         ,SUM(sea_mounts)
         ,SUM(number_of_cells)::INT
     FROM web.area
-   WHERE marine_layer_id IN (1,3,6)
+   WHERE marine_layer_id IN (1,3,6,19)
      AND web.get_area_status(marine_layer_id, main_area_id, sub_area_id)
   GROUP BY main_area_id, marine_layer_id)
   UNION ALL
@@ -235,6 +235,15 @@ $body$
 $body$
 LANGUAGE sql;
 
+CREATE OR REPLACE FUNCTION web.etl_validation_get_meow_name 
+(
+  i_meow_id int
+)
+RETURNS varchar(50) AS
+$body$
+  SELECT ' [' || coalesce((SELECT name FROM web.meow WHERE meow_id = i_meow_id LIMIT 1), '?') || ']';
+$body$
+LANGUAGE sql;
 
 CREATE OR REPLACE FUNCTION web.get_area_primary_production_rate 
 (
@@ -316,7 +325,7 @@ RETURNS TABLE(area_key int,
               sub_area_id int)	
 AS
 $body$
-  --for the entire EEZs/LMEs
+  --for the entire EEZs/LMEs/MEOWs
   SELECT area_key, main_area_id, sub_area_id
     FROM web.area
    WHERE (marine_layer_id = i_marine_layer_id) AND (web.get_area_status(marine_layer_id, main_area_id, sub_area_id));
@@ -330,7 +339,7 @@ RETURNS TABLE(area_key int,
               sub_area_id int) 
 AS
 $body$
-   --for the entire EEZs/LMEs
+   --for the entire EEZs/LMEs/MEOWs
    SELECT * FROM web.get_marine_entities(1); 
 $body$
 LANGUAGE sql;
@@ -359,7 +368,7 @@ RETURNS TABLE(area_key int,
               sub_area_id int)	
 AS
 $body$
-  --for the entire EEZs/LMEs                                               
+  --for the entire EEZs/LMEs/MEOWs                                               
   SELECT * FROM web.get_marine_entities(2); 
 $body$
 LANGUAGE sql;
@@ -371,11 +380,21 @@ RETURNS TABLE(area_key int,
               sub_area_id int)	
 AS
 $body$
-  --for the entire EEZs/LMEs
+  --for the entire EEZs/LMEs/MEOWs
   SELECT * FROM web.get_marine_entities(3); 
 $body$
 LANGUAGE sql;
 
+CREATE OR REPLACE FUNCTION web.get_meow()
+RETURNS TABLE(area_key int, 
+              main_area_id int,
+              sub_area_id int)	
+AS
+$body$
+  --for the entire EEZs/LMEs/MEOWs
+  SELECT * FROM web.get_marine_entities(19); 
+$body$
+LANGUAGE sql;
 
 CREATE OR REPLACE FUNCTION web.ppr 
 (

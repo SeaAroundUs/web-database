@@ -257,6 +257,11 @@ CREATE TABLE web.lme(
   profile_url varchar(255) DEFAULT 'http://www.lme.noaa.gov/' NOT NULL
 );
 
+CREATE TABLE web.meow(
+	meow_id int PRIMARY KEY,
+	name varchar(70) NOT NULL,
+	profile_url varchar(255) DEFAULT 'https://www.worldwildlife.org/publications/marine-ecoregions-of-the-world-a-bioregionalization-of-coastal-and-shelf-areas' NOT NULL
+);	
 
 CREATE TABLE web.mariculture_entity(
   mariculture_entity_id serial PRIMARY KEY,
@@ -658,7 +663,8 @@ CREATE TABLE web.cell(
   bt_2001 double precision,
   pp_10yr_avg double precision,
   sst_avg double precision,
-  pp_annual double precision
+  pp_annual double precision,
+  meow_id int
 );
 
 CREATE TABLE web.entity_layer(

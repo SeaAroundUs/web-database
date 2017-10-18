@@ -60,6 +60,26 @@ as
    group by wl.lme_id
 with no data;
 
+create materialized view geo.v_meow
+as
+  select max(wm.meow_id) as id,
+         max(wm.name::text) as title,
+        -- ('http://www.fishbase.org/trophiceco/FishEcoList.php?ve_code=' || max(lfl.e_code)) as fishbase_link,
+         sum(a.area) as area,
+         sum(a.shelf_area) as shelf_area,
+         sum(a.ifa) as ifa,
+         sum(a.coral_reefs) as coral_reefs,
+         sum(a.sea_mounts) as sea_mounts,
+         sum(a.ppr) as ppr,
+         st_asgeojson(st_simplify(st_union(gm.geom), 0.02::double precision), 3)::json as geom_geojson
+    from geo.meow gm
+    join web.meow wm on (gm.meow_id = wm.meow_id)
+    join web.area a on (wm.meow_id = a.main_area_id and a.marine_layer_id = 19)
+    --left join web.lme_fishbase_link lfl on (lfl.lme_id = wl.lme_id)
+   group by wm.meow_id
+with no data;
+
+
 create materialized view geo.v_ifa                
 as
   select i.eez_id,

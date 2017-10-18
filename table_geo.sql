@@ -45,6 +45,19 @@ CREATE TABLE geo.lme (
     geom public.geometry(MultiPolygon, 4326)
 );
 
+CREATE TABLE geo.meow (
+	gid serial primary key,
+	meow_id integer,
+	eco_id integer,
+	ecoregion character varying(70),
+	prov_id integer,
+	province character varying(70),
+	realm_id integer,
+	realm character varying(70),
+	lat_zone character varying(70),
+	shape_area numeric,
+	geom public.geometry(MultiPolygon, 4326)
+);
 
 CREATE TABLE geo.fao_lme(
   fao_lme_combo_id int PRIMARY KEY,
@@ -53,6 +66,12 @@ CREATE TABLE geo.fao_lme(
   CONSTRAINT unique_fao_lme UNIQUE (fao_area_id, lme_number)
 );
 
+CREATE TABLE geo.fao_meow(
+	fao_meow_combo_id int PRIMARY KEY,
+	fao_area_id smallint NOT NULL,
+	ecoregion_id int NOT NULL,
+	CONSTRAINT unique_fao_meow UNIQUE (fao_area_id, ecoregion_id)
+);
 
 CREATE TABLE geo.rfmo (  
     gid          serial PRIMARY KEY,

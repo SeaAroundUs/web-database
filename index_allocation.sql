@@ -28,3 +28,6 @@ CREATE INDEX allocation_result_lme_lme_id_idx ON allocation.allocation_result_lm
 
 CREATE INDEX allocation_result_rfmo_universal_data_id_idx ON allocation.allocation_result_rfmo(universal_data_id);
 CREATE INDEX allocation_result_rfmo_rfmo_id_idx ON allocation.allocation_result_rfmo(rfmo_id);
+
+CREATE INDEX allocation_result_meow_universal_data_id_idx ON allocation.allocation_result_meow(universal_data_id);
+CREATE INDEX allocation_result_meow_meow_id_idx ON allocation.allocation_result_meow(meow_id);

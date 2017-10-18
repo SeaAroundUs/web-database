@@ -66,5 +66,7 @@ VALUES
 ,('sau_int', 'geo.lme', 'gid, object_id ,  lme_number, lme_name, shape_leng, shape_area, geom', NULL, 'geo', 'lme', '{}'::TEXT[])
 ,('sau_int', 'geo.rfmo', '*', 'WHERE rfmo_id <> 19', 'geo', 'rfmo', '{}'::TEXT[])
 ,('sau_int', 'geo.fao_lme_combo', '*', NULL, 'geo', 'fao_lme', '{}'::TEXT[])
+,('sau_int', 'geo.meow', 'gid, ecoregion_id, ecoregion, province_id, province, realm_id, realm, lat_zone, geom', NULL, 'geo', 'meow', '{}'::TEXT[])
+,('sau_int', 'geo.fao_meow_combo', '*', NULL, 'geo', 'fao_meow', '{}'::TEXT[])
 ,('sau_int', 'master.price', 'year,fishing_entity_id,taxon_key,price', NULL, 'allocation', 'price', '{}'::TEXT[])
 ;

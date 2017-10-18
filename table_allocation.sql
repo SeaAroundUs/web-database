@@ -131,7 +131,13 @@ CREATE TABLE allocation.allocation_result_lme(
 	lme_id int null,
 	total_catch float null
 );
-                           
+
+CREATE TABLE allocation.allocation_result_meow(
+	universal_data_id int not null,
+	meow_id int null,
+	total_catch float null
+);
+
 CREATE TABLE allocation.allocation_result_rfmo(
 	universal_data_id int not null,
 	rfmo_id int not null,            
