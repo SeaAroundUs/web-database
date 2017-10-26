@@ -25,6 +25,7 @@ begin
          when 'eez id' then 1
          when 'fao area id' then 2 
          when 'lme id' then 3
+		 when 'meow id' then 19
          when 'area key' then 400
          end;
 end
@@ -140,6 +141,7 @@ begin
   when   1 then return query select 'eez_id'::varchar, e.eez_id, 'eez_name'::varchar, e.name, 'eez'::varchar FROM web.eez e WHERE e.eez_id = ANY(i_entity_id);
   when   2 then return query select 'fao_area_id'::varchar, f.fao_area_id, 'fao_area_name'::varchar, f.name, 'high_seas'::varchar FROM web.fao_area f WHERE f.fao_area_id = ANY(i_entity_id);
   when   3 then return query select 'lme_id'::varchar, l.lme_id, 'lme_name'::varchar, l.name, 'lme'::varchar FROM web.lme l WHERE l.lme_id = ANY(i_entity_id);
+  when  19 then return query select 'meow_id'::varchar, m.meow_id, 'meow_name'::varchar, m.name, 'meow'::varchar FROM web.meow m WHERE m.meow_id = ANY(i_entity_id);
   when   4 then return query select 'rfmo_id'::varchar, r.rfmo_id, 'rfmo_name'::varchar, r.name, 'rfmo'::varchar FROM web.rfmo r WHERE r.rfmo_id = ANY(i_entity_id);
   when   6 then return query select 'global_id'::varchar, 1, 'global_name'::varchar, 'global'::varchar, 'global'::varchar;
   when 100 then return query select 'fishing_entity_id'::varchar, f.fishing_entity_id::int, 'fishing_entity_name'::varchar, f.name, 'fishing_entity'::varchar FROM web.fishing_entity f WHERE f.fishing_entity_id = ANY(i_entity_id);
@@ -1846,6 +1848,232 @@ begin
                                from ranking r 
                                left join catch c on (c.year = tm.time_business_key and c.main_area_id = r.lme_id and c.marine_layer_id = 3)) || 
                             (select array[coalesce((tby.mixed_total::numeric(20, 2))::text, ''), coalesce((tby.non_lme_total::numeric(20, 2))::text, '')] 
+                               from total tby 
+                              where tby.year = tm.time_business_key), 
+                            E'\t')
+       from web.time tm
+      where tm.time_business_key >= (select min(ci.year) from catch ci)
+      order by tm.time_business_key);
+  end if;
+end
+$body$
+language plpgsql;
+-----------------
+
+-----------------
+create or replace function web.f_dimension_meow_catch_query 
+(
+  i_measure varchar(20),
+  i_entity_id int[],
+  i_sub_entity_id int[],
+  i_entity_layer_id int default 1,
+  i_area_bucket_id_layer int default null,
+  i_output_area_id boolean default false,
+  i_other_params json default null
+)
+returns table(year int, entity_id int, dimension_member_id int, dimension_member_layer_id int, measure numeric) as
+$body$
+declare
+  rtn_sql text;
+  main_area_col_name text;
+  additional_join_clause text := '';
+begin
+  select *
+    into main_area_col_name, additional_join_clause
+    from web.f_dimension_catch_query_layer_preprocessor(i_entity_layer_id, i_area_bucket_id_layer, i_other_params);
+
+  rtn_sql := 
+    'select f.year,' || 
+    case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
+    ',f.main_area_id, f.marine_layer_id' ||
+    case when i_measure = 'catch' then ',sum(f.catch_sum)' else ',sum(f.real_value)::numeric' end ||  
+    ' from web.v_fact_data f' || 
+    additional_join_clause ||
+    ' where f.marine_layer_id in (19, 6)' ||   
+    case 
+    when i_entity_layer_id = 100 then ' and f.fishing_entity_id = any($1)'
+    when i_entity_layer_id = 300 then ' and f.taxon_key = any($1)'
+    else ''
+     end ||
+    ' and (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
+    ' group by f.year' || 
+    case when coalesce(i_output_area_id, false)
+    then
+      ',' || main_area_col_name
+    else 
+      '' 
+    end ||
+    ',f.main_area_id, f.marine_layer_id';
+    
+  --DEBUG ONLY
+raise info 'rtn_sql: %', rtn_sql;
+  --DEBUG ONLY
+  
+  return query execute rtn_sql
+   using i_entity_id, i_sub_entity_id;
+end
+$body$
+language plpgsql;
+
+create or replace function web.f_dimension_meow_json 
+(
+  i_measure varchar(20),
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_sub_entity_id int[] default null::int[], 
+  i_top_count int default 10,
+  i_other_params json default null
+)
+returns json as
+$body$
+declare
+  area_bucket_id_layer int := case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end;
+begin
+  return (
+    with catch(year, entity_id, main_area_id, marine_layer_id, measure) as ( 
+       select * from web.f_dimension_meow_catch_query(i_measure, i_entity_id, i_sub_entity_id, i_entity_layer_id, area_bucket_id_layer, false, i_other_params)
+    ),                                                 
+    ranking(meow_id, measure_rank) as (
+      select c.main_area_id, row_number() over(order by sum(c.measure) desc)
+        from catch c
+       where c.marine_layer_id = 19
+       group by c.main_area_id
+       order by sum(c.measure) desc
+       limit i_top_count
+    ),
+    l3_total(year, mixed_total) as (
+      select c.year, 
+             sum(case when r.meow_id is null then c.measure else 0 end) as mt
+        from catch c
+        left join ranking r on (r.meow_id = c.main_area_id)
+       where c.marine_layer_id = 19
+       group by c.year
+    ),
+    l6_total(year, non_meow_total) as (
+      select c.year, 
+             sum(case when c.marine_layer_id = 6 then c.measure else 0 end) - sum(case when c.marine_layer_id = 19 then c.measure else 0 end) as nlt
+        from catch c
+       group by c.year
+    )
+    select json_agg(fd.*) 
+      from ((select m.meow_id as entity_id, m.name as key, 
+                    (select array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 3)]] order by tm.time_business_key)
+                       from web.time tm                                                                                             
+                       left join catch c on (c.year = tm.time_business_key and c.main_area_id = r.meow_id and c.marine_layer_id = 19) 
+                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
+               from ranking r 
+               join web.meow m on (m.meow_id = r.meow_id)
+               order by r.measure_rank)
+            union all
+            (select null::int, 'Others'::text as key, 
+                    (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
+                       from web.time tm
+                       left join l3_total tby on (tby.year = tm.time_business_key)
+                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
+               where exists (select 1 from l3_total t where t.mixed_total is distinct from 0 limit 1)
+            )
+            union all
+            (select null::int, 'Non-MEOW'::text as key, 
+                    (select array_accum(array[array[tm.time_business_key, coalesce(tby.non_meow_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
+                       from web.time tm
+                       left join l6_total tby on (tby.year = tm.time_business_key)
+                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
+               where exists (select 1 from l6_total t where t.non_meow_total is distinct from 0 limit 1)
+            )
+           )
+        as fd
+  );
+end
+$body$
+language plpgsql;
+
+create or replace function web.f_dimension_meow_tsv 
+(
+  i_measure varchar(20),
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_sub_entity_id int[] default null::int[], 
+  i_top_count int default 10, 
+  i_output_area_id boolean default false,
+  i_other_params json default null
+)
+returns setof text as
+$body$
+declare
+  area_bucket_id_layer int := case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end;
+begin
+  if coalesce(i_output_area_id, false) then
+    return query
+    with catch(year, entity_id, main_area_id, marine_layer_id, measure) as (
+       select * from web.f_dimension_meow_catch_query(i_measure, i_entity_id, i_sub_entity_id, i_entity_layer_id, area_bucket_id_layer, true, i_other_params)
+    ),
+    ranking(meow_id, measure_rank) as (
+      select c.main_area_id, row_number() over(order by sum(c.measure) desc)
+        from catch c
+       where c.marine_layer_id = 19
+       group by c.main_area_id
+       order by sum(c.measure) desc
+       limit i_top_count
+    ),
+    total(year, entity_id, mixed_total, non_lme_total) as (
+      select c.year, 
+             c.entity_id, 
+             sum(case when c.marine_layer_id = 19 and r.lme_id is null then c.measure else 0 end),
+             sum(case when c.marine_layer_id = 6 then c.measure else 0 end) - sum(case when c.marine_layer_id = 19 then c.measure else 0 end)
+        from catch c
+        left join ranking r on (r.meow_id = c.main_area_id and c.marine_layer_id = 19)
+       group by c.year, c.entity_id
+    ),
+    area_name as (
+      select * from web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as t
+    )
+    select array_to_string(array['year'::text, max(an.name_heading)] || array_agg(m.name::text order by r.measure_rank) || 'Others'::text || 'Non-MEOW'::text, E'\t') 
+      from ranking r
+      join web.meow m on (m.meow_id = r.meow_id)
+      join (select * from area_name limit 1) an on (true)
+    union all
+    select array_to_string(array[tm.time_business_key::text, max(an.name)] || 
+                           array_agg(coalesce((c.measure::numeric(20, 2))::text, '')::text order by r.measure_rank) ||
+                           (select array[coalesce((tby.mixed_total::numeric(20, 2))::text, ''), coalesce((tby.non_meow_total::numeric(20, 2))::text, '')] 
+                              from total tby 
+                             where tby.year = tm.time_business_key and tby.entity_id = an.entity_id), 
+                           E'\t')
+      from web.time tm 
+      join ranking r on (true)
+      join area_name an on (true)
+      left join catch c on (c.year = tm.time_business_key and c.entity_id = an.entity_id and c.main_area_id = r.meow_id and c.marine_layer_id = 19)
+     where tm.time_business_key >= (select min(ci.year) from catch ci)
+     group by tm.time_business_key, an.entity_id;
+  else
+    return query
+    with catch(year, entity_id, main_area_id, marine_layer_id, measure) as (
+      select * from web.f_dimension_meow_catch_query(i_measure, i_entity_id, i_sub_entity_id, i_entity_layer_id, area_bucket_id_layer, false, i_other_params)
+    ),
+    ranking(meow_id, measure_rank) as (
+      select c.main_area_id, row_number() over(order by sum(c.measure) desc)
+        from catch c
+       where c.marine_layer_id = 19
+       group by c.main_area_id
+       order by sum(c.measure) desc
+       limit i_top_count
+    ),
+    total(year, mixed_total, non_meow_total) as (
+      select c.year, 
+             sum(case when c.marine_layer_id = 19 and r.meow_id is null then c.measure else 0 end),
+             sum(case when c.marine_layer_id = 6 then c.measure else 0 end) - sum(case when c.marine_layer_id = 3 then c.measure else 0 end)
+        from catch c
+        left join ranking r on (r.meow_id = c.main_area_id and c.marine_layer_id = 19)
+       group by c.year
+    )                                               
+    (select array_to_string('year'::text || array_agg(m.name::text order by r.measure_rank) || 'Others'::text || 'Non-MEOW'::text, E'\t') 
+      from ranking r
+      join web.meow m on (m.meow_id = r.meow_id))
+    union all
+    (select array_to_string(tm.time_business_key::text || 
+                            (select array_agg(coalesce((c.measure::numeric(20, 2))::text, '')::text order by r.measure_rank)
+                               from ranking r 
+                               left join catch c on (c.year = tm.time_business_key and c.main_area_id = r.meow_id and c.marine_layer_id = 19)) || 
+                            (select array[coalesce((tby.mixed_total::numeric(20, 2))::text, ''), coalesce((tby.non_meow_total::numeric(20, 2))::text, '')] 
                                from total tby 
                               where tby.year = tm.time_business_key), 
                             E'\t')
