@@ -69,4 +69,7 @@ VALUES
 ,('sau_int', 'geo.meow', 'gid, ecoregion_id, ecoregion, province_id, province, realm_id, realm, lat_zone, geom', NULL, 'geo', 'meow', '{}'::TEXT[])
 ,('sau_int', 'geo.fao_meow_combo', '*', NULL, 'geo', 'fao_meow', '{}'::TEXT[])
 ,('sau_int', 'master.price', 'year,fishing_entity_id,taxon_key,price', NULL, 'allocation', 'price', '{}'::TEXT[])
+,('sau_int', 'master.meow','*', NULL, 'web', 'meow', '{}', ::TEXT[])
+,('sau_int', 'geo.fao_meow_combo', '*', NULL, 'geo', 'fao_meow', '{}', ::TEXT[])
+,('sau_int', 'geo.meow', '*', NULL, 'geo', 'meow', '{}', ::TEXT[])
 ;
