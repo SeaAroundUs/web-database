@@ -594,6 +594,15 @@ CREATE TABLE web.lme_fishbase_link(
   lme_id int
 );
 
+CREATE TABLE web.meow_fishbase_link(
+  e_code int primary key,
+  eco_region_name text,
+  eco_region_type text,
+  ready boolean,
+  meow_id int,
+  ecoregion_id int
+);
+
 CREATE TABLE web.data_layer (
   data_layer_id smallint DEFAULT 0 PRIMARY KEY,
   name character varying(255) NOT NULL
