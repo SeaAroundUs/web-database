@@ -1,35 +1,40 @@
 /* materialzed views */
-create materialized view web.v_all_taxon
-as
-  select t.taxon_key, 
-         t.scientific_name, 
-         t.common_name, 
-         t.commercial_group_id, 
-         t.functional_group_id, 
-         t.tl,        
-         t.sl_max as sl_max_cm, 
-         t.taxon_level_id, 
-         t.taxon_group_id, 
-         t.isscaap_id, 
-         t.lat_north, 
-         t.lat_south, 
-         t.min_depth, 
-         t.max_depth, 
-         t.loo, 
-         t.woo, 
-         t.k, 
-         0::INT AS x_min, 
-         0::INT AS x_max, 
-         0::INT AS y_min, 
-         0::INT AS y_max, 
-         t.has_habitat_index, 
-         t.has_map,              
-         t.is_baltic_only,
-         (select td.is_backfilled 
-           from distribution.taxon_distribution td 
-          where td.taxon_key = t.taxon_key limit 1) as is_taxon_distribution_backfilled
-    from web.cube_dim_taxon t
-with no data;
+CREATE MATERIALIZED VIEW web.v_all_taxon AS
+ SELECT t.taxon_key,
+    t.scientific_name,
+    t.common_name,
+    t.commercial_group_id,
+    t.functional_group_id,
+    t.tl,
+    t.sl_max AS sl_max_cm,
+    t.taxon_level_id,
+    t.taxon_group_id,
+    t.isscaap_id,
+    t.lat_north,
+    t.lat_south,
+    t.min_depth,
+    t.max_depth,
+    t.loo,
+    t.woo,
+    t.k,
+    0 AS x_min,
+    0 AS x_max,
+    0 AS y_min,
+    0 AS y_max,
+    t.has_habitat_index,
+    t.has_map,
+    t.is_baltic_only,
+    t.fb_spec_code,
+    t.slb_spec_code,
+    t.fam_code,
+    t.ord_code,
+    t.slb_fam_code,
+    t.slb_ord_code,
+    ( SELECT td.is_backfilled
+           FROM distribution.taxon_distribution td
+          WHERE td.taxon_key = t.taxon_key
+         LIMIT 1) AS is_taxon_distribution_backfilled
+   FROM cube_dim_taxon t;
 
 /*
 create materialized view web.v_area_detail
