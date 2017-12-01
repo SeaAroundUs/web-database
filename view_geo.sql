@@ -64,7 +64,7 @@ create materialized view geo.v_meow
 as
   select max(wm.meow_id) as id,
          max(wm.name::text) as title,
-        -- ('http://www.fishbase.org/trophiceco/FishEcoList.php?ve_code=' || max(lfl.e_code)) as fishbase_link,
+        ('http://www.fishbase.org/trophiceco/FishEcoList.php?ve_code=' || max(mfl.e_code)) as fishbase_link,
          sum(a.area) as area,
          sum(a.shelf_area) as shelf_area,
          sum(a.ifa) as ifa,
@@ -75,7 +75,7 @@ as
     from geo.meow gm
     join web.meow wm on (gm.meow_id = wm.meow_id)
     join web.area a on (wm.meow_id = a.main_area_id and a.marine_layer_id = 19)
-    --left join web.lme_fishbase_link lfl on (lfl.lme_id = wl.lme_id)
+    left join web.meow_fishbase_link mfl on (mfl.meow_id = wm.meow_id)
    group by wm.meow_id
 with no data;
 
