@@ -254,6 +254,8 @@ create materialized view geo.v_eez(
   fishbase_id,
   ohi_link,
   gsi_link,
+  issf_link,
+  hdi_link,
   intersecting_fao_area_id,
   year_started_eez_at,
   year_allowed_to_fish_other_eezs,
@@ -261,7 +263,7 @@ create materialized view geo.v_eez(
   declaration_year
 )
 as
-  with ee(id,title,c_number,declaration_year,area,shelf_area,ifa,coral_reefs,sea_mounts,ppr,fishbase_id,ohi_link,gsi_link,geo_entity_id) as (
+  with ee(id,title,c_number,declaration_year,area,shelf_area,ifa,coral_reefs,sea_mounts,ppr,fishbase_id,ohi_link,gsi_link,issf_link,hdi_link,geo_entity_id) as (
     select d.eez_id,
            max(d.name::text),
            max(d.legacy_c_number),
@@ -275,6 +277,8 @@ as
            max(d.fishbase_id),
            max(d.ohi_link),
 		   max(d.gsi_link),
+		   max(d.issf_link),
+		   max(hdi_link),
            max(d.geo_entity_id) as geo_entity_id
       from web.eez d
       left join web.area a on (a.main_area_id = d.eez_id and a.marine_layer_id = 1)
@@ -288,7 +292,7 @@ as
          end,
          ee.area,ee.shelf_area,ee.ifa,ee.coral_reefs,ee.sea_mounts,ee.ppr,
          st_asgeojson(st_multi(st_simplify(e.wkb_geometry, 0.02::double precision)), 3)::json,
-         ee.fishbase_id,ee.ohi_link,gsi_link,
+         ee.fishbase_id,ee.ohi_link,gsi_link,issf_link,hdi_link,
          (select array_agg(distinct f.fao_area_id) from web.area a, web.fao_area f where a.marine_layer_id=1 and a.main_area_id = ee.id and a.area_key = any(f.area_key)),
          coalesce(ge.started_eez_at::int, 9999),
          (case when fe2.geo_entity_id is not null then fe2.date_allowed_to_fish_other_eezs
