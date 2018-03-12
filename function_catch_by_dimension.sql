@@ -2607,20 +2607,25 @@ begin
     with catch(time_business_key, entity_id, gear_type, measure) as (
       select * from web.f_dimension_gear_type_catch_query(i_measure, i_entity_id, i_sub_entity_id, i_entity_layer_id, area_bucket_id_layer, false, i_other_params)
     ),
-    ranking(gear_type, measure_rank) as (
-      select c.gear_type, row_number() over(order by sum(c.measure) desc)
-        from catch c
-       group by c.gear_type
+    catch2(time_business_key, entity_id, gear_type, measure) as (
+		select distinct generate_series(1950, 2014), entity_id, gear_type, 0 from catch order by generate_series, gear_type desc
+	),
+	catch3(time_business_key, entity_id, gear_type, measure) as (
+		select c2.time_business_key, c2.entity_id, c2.gear_type, coalesce(c.measure - c2.measure, 0) from catch2 c2 left join catch c on c.time_business_key = c2.time_business_key and c.gear_type = c2.gear_type
+	),
+	 ranking(gear_type, measure_rank) as (
+     select c.gear_type, row_number() over(order by sum(c.measure) desc)
+       from catch3 c
+      group by c.gear_type
     )
     select json_agg(fd.*)       
       from (select r.gear_type as key, array_accum(array[array[c.time_business_key::int, c.measure::numeric(20, 2)]] order by c.time_business_key) as values 
               from ranking r,
-              catch c 
+              catch3 c 
               where r.gear_type = c.gear_type
              group by r.gear_type
              order by max(r.measure_rank))
-        as fd
-  );
+        as fd);
 end
 $body$
 language plpgsql;
