@@ -749,3 +749,26 @@ CREATE TYPE t_stock_status_year_value AS (
   year int[],
   value numeric[]
 );
+
+CREATE TABLE web.meow_eez_combo(
+	meow_id smallint,
+	meow varchar (128) not null,
+	eez_id smallint,
+	eez varchar (128) not null,
+	intersection_area double precision,
+	meow_area double precision,
+	eez_area double precision,
+	percentage_meow_in_eez double precision,
+	percentage_eez_in_meow double precision
+);
+
+CREATE TABLE web.meow_pdf(
+	region varchar(300) not null,
+	meow_id int,
+	meow varchar(250) not null,
+	taxon_key int,
+	scientific_name varchar(128),
+	stock varchar(300),
+	b_bmsy double precision,
+	pdf_url varchar(500)
+);
