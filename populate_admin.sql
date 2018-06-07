@@ -72,4 +72,6 @@ VALUES
 ,('sau_int', 'master.meow','*', NULL, 'web', 'meow', '{}'::TEXT[])
 ,('sau_int', 'geo.fao_meow_combo', '*', NULL, 'geo', 'fao_meow', '{}'::TEXT[])
 ,('sau_int', 'geo.meow', '*', NULL, 'geo', 'meow', '{}'::TEXT[])
+,('sau_int', 'master.meow_pdf', '*', NULL, 'web', 'meow_pdf', '{}'::TEXT[])
+,('sau_int', 'master.meow_eez_combo', '*', NULL, 'web', 'meow_eez_combo', '{}'::TEXT[])
 ;
