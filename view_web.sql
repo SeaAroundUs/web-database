@@ -413,6 +413,18 @@ as
          ) as contracting_country
     from web.rfmo r;
 
+create or replace view web.v_meow_pdf
+as 
+select meow_id, json_agg(json_build_object(
+'meow_id', meow_id,
+'meow', meow,
+'taxon_key', taxon_key,
+'scientific_name',scientific_name,
+'stock',stock,
+'url', pdf_url)) as pdf
+from meow_pdf
+group by meow_id
+order by meow_id	
 /*
 The command below should be maintained as the last command in this entire script.
 */
