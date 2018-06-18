@@ -425,6 +425,20 @@ select meow_id, json_agg(json_build_object(
 from meow_pdf
 group by meow_id
 order by meow_id	
+
+create or replace view web.v_meow_eez_combo as
+ select meow_eez_combo.meow_id,
+    json_agg(json_build_object('meow_id', meow_eez_combo.meow_id, 'meow', meow_eez_combo.meow, 'eez_id', meow_eez_combo.eez_id, 'eez', meow_eez_combo.eez)) as meow_eez_combo
+   from meow_eez_combo
+  group by meow_eez_combo.meow_id
+  order by meow_eez_combo.meow_id;
+
+ create or replace view web.v_eez_meow_combo as
+ select meow_eez_combo.eez_id,
+    json_agg(json_build_object('meow_id', meow_eez_combo.meow_id, 'meow', meow_eez_combo.meow, 'eez_id', meow_eez_combo.eez_id, 'eez', meow_eez_combo.eez)) as eez_meow_combo
+   from meow_eez_combo
+  group by meow_eez_combo.eez_id
+  order by meow_eez_combo.eez_id;
 /*
 The command below should be maintained as the last command in this entire script.
 */
