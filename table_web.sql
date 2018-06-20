@@ -766,6 +766,7 @@ CREATE TABLE web.meow_pdf(
 	region varchar(300) not null,
 	meow_id int,
 	meow varchar(250) not null,
+	subregion varchar(500) not null,
 	taxon_key int,
 	scientific_name varchar(128),
 	stock varchar(300),
