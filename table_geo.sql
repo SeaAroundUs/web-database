@@ -346,3 +346,10 @@ CREATE TABLE geo.cell_grid (
     lon float,
     geom public.geometry(MultiPolygon,4326)
 );
+
+CREATE TABLE geo.eez_fao (
+  eez_fao_area_id SERIAL PRIMARY KEY,
+  reconstruction_eez_id int NOT NULL,
+  fao_area_id int NOT NULL,
+  socio_economic_area_id int
+);
