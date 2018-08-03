@@ -183,7 +183,10 @@ CREATE TABLE web.eez(
   issf_link VARCHAR(400),
   hdi_link VARCHAR(400),
   ISO_3 VARCHAR(3),
-  ISO_2 VARCHAR(2)
+  ISO_2 VARCHAR(2),
+  hdi numeric(4,3) NOT NULL DEFAULT 0,
+  hdi_source text,
+  hdi_publication_year integer
 );
 
 COMMENT ON COLUMN web.eez.alternate_name IS 'semicolon separated: alt_name1;alt_name2;alt_name3';
