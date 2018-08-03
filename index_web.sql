@@ -53,3 +53,8 @@ CREATE UNIQUE INDEX v_dim_area_area_key_uk ON web.v_dim_area(area_key);
 
 CREATE UNIQUE INDEX dictionary_word_idx ON web.dictionary(word);
 CREATE UNIQUE INDEX dictionary_word_ops_idx ON web.dictionary(word varchar_pattern_ops);
+
+CREATE INDEX v_eez_catch_idx ON web.v_eez_catch(id);
+CREATE INDEX v_meow_catch_idx ON web.v_meow_catch(id);
+CREATE INDEX v_lme_catch_idx ON web.v_lme_catch(id);
+CREATE INDEX v_rfmo_catch_idx ON web.v_rfmo_catch(id);
