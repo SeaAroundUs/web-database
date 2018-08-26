@@ -201,7 +201,7 @@ begin
   -- Global 
   --   global should NOT include area id/area type. in fact, this is the only format that does not include area id/name
   --
-  (select concat_ws(',', c.year::varchar, csv_escape(fe.name), st.name, cs.name, cr.name, g.super_code, c.catch_sum::varchar, c.real_value::varchar)
+  (select concat_ws(',', c.year::varchar, csv_escape(fe.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.fishing_entity fe on (fe.fishing_entity_id = c.fishing_entity)
      join web.sector_type st on (st.sector_type_id = c.fishing_sector)
@@ -217,7 +217,7 @@ begin
   --   we need to have one single row per year for All of High_seas, but break out separate row per year/eez combination
   --
   (select tsv                                      
-     from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), st.name, cs.name, cr.name, g.super_code, c.catch_sum::varchar, c.real_value::varchar) as tsv
+     from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar) as tsv
               from catch c
               join web.eez e on (e.eez_id = c.entity_id)
               join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
@@ -229,7 +229,7 @@ begin
               join web.gear g on (g.gear_id = c.gear_type_id)
              where c.entity_layer_id = 1 and i_entity_layer_id = 100)
            union all
-           (select c.year, 2, 1, concat_ws(',', 'All', 'high_seas', c.year::varchar, csv_escape(max(t.scientific_name)), csv_escape(max(t.common_name)), csv_escape(max(fg.description)), csv_escape(max(cg.name)), max(st.name), max(cs.name), max(cr.name), max(g.super_code), sum(c.catch_sum)::varchar, sum(c.real_value)::varchar)
+           (select c.year, 2, 1, concat_ws(',', 'All', 'high_seas', c.year::varchar, csv_escape(max(t.scientific_name)), csv_escape(max(t.common_name)), csv_escape(max(fg.description)), csv_escape(max(cg.name)), max(st.name), max(cs.name), max(cr.name), max(g.name), sum(c.catch_sum)::varchar, sum(c.real_value)::varchar)
               from catch c
               join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
               join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
@@ -248,7 +248,7 @@ begin
   --   we need to have one single row per year for All of High_seas, but break out separate row per year/eez combination
   --
   (select tsv                                      
-     from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.super_code, c.catch_sum::varchar, c.real_value::varchar) as tsv
+     from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar) as tsv
               from catch c
               join web.eez e on (e.eez_id = c.entity_id)
               join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
@@ -261,7 +261,7 @@ begin
               join web.gear g on (g.gear_id = c.gear_type_id)
              where c.entity_layer_id = 1 and i_entity_layer_id = 300)
            union all
-           (select c.year, 2, 1, concat_ws(',', 'All', 'high_seas', c.year::varchar, csv_escape(max(t.scientific_name)), csv_escape(max(t.common_name)), csv_escape(max(fg.description)), csv_escape(max(cg.name)), csv_escape(max(fe.name)), max(st.name), max(cs.name), max(cr.name), max(g.super_code), sum(c.catch_sum)::varchar, sum(c.real_value)::varchar)
+           (select c.year, 2, 1, concat_ws(',', 'All', 'high_seas', c.year::varchar, csv_escape(max(t.scientific_name)), csv_escape(max(t.common_name)), csv_escape(max(fg.description)), csv_escape(max(cg.name)), csv_escape(max(fe.name)), max(st.name), max(cs.name), max(cr.name), max(g.name), sum(c.catch_sum)::varchar, sum(c.real_value)::varchar)
               from catch c
               join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
               join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
@@ -280,7 +280,7 @@ begin
   -- EEZ 
   --   any other spatial entity layer beside (6, 100, 300) which needs to return Data_layer_id as well
   --
-  (select concat_ws(',', csv_escape(el.name), el.layer_name, dl.name, coalesce(u.score::varchar, ''), c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.super_code, c.catch_sum::varchar, c.real_value::varchar)
+  (select concat_ws(',', csv_escape(el.name), el.layer_name, dl.name, coalesce(u.score::varchar, ''), c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
      join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
@@ -299,7 +299,7 @@ begin
   --
   -- All other entity layers
   --   
-  (select concat_ws(',', csv_escape(el.name), el.layer_name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.super_code, c.catch_sum::varchar, c.real_value::varchar)
+  (select concat_ws(',', csv_escape(el.name), el.layer_name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
      join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
