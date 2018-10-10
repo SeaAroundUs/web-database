@@ -64,6 +64,7 @@ begin
     select md.taxon_key, md.year, sum(md.production)
       from web.mariculture_sub_entity se
       join web.mariculture_data md on (md.mariculture_sub_entity_id = se.mariculture_sub_entity_id)
+      join web.cube_dim_taxon ct on (md.taxon_key = ct.taxon_key)
      where se.mariculture_entity_id = i_mariculture_entity_id
        and se.mariculture_sub_entity_id = coalesce(i_sub_unit_id, se.mariculture_sub_entity_id)
      group by md.taxon_key, md.year
