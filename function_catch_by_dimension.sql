@@ -471,7 +471,6 @@ begin
               join ranking r on (true)
               join web.commercial_groups cg on (cg.commercial_group_id = r.commercial_group_id)
               left join catch c on (c.year = tm.time_business_key and c.commercial_group_id = r.commercial_group_id) 
-             where tm.time_business_key >= (select min(ci.year) from catch ci)
              group by cg.commercial_group_id
              order by max(r.measure_rank)
            )
@@ -639,7 +638,6 @@ begin
                join ranking r on (true)
                join web.functional_groups fg on (fg.functional_group_id = r.functional_group_id)
                left join catch c on (c.year = tm.time_business_key and c.functional_group_id = fg.functional_group_id) 
-              where tm.time_business_key >= (select min(ci.year) from catch ci)
               group by fg.functional_group_id
               order by max(r.measure_rank))
             union all
@@ -831,13 +829,13 @@ begin
     )
     select json_agg(fd.*) 
       from ((select fe.name as key, 
-                    (select array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 3)]] order by tm.time_business_key)
+                    array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 3)]] order by tm.time_business_key) as values
                        from web.time tm
+                       join ranking r on (true)
+                       join web.v_dim_fishing_entity fe on (fe.fishing_entity_id = r.fishing_entity_id)
                        left join catch c on (c.year = tm.time_business_key and c.fishing_entity_id = r.fishing_entity_id)
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
-               from ranking r
-               join web.v_dim_fishing_entity fe on (fe.fishing_entity_id = r.fishing_entity_id)
-              order by r.measure_rank)
+              		   group by r.measure_rank, fe.name
+                       order by max(r.measure_rank))
             union all
             (select 'Others'::text as key,                                                           
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
@@ -847,7 +845,7 @@ begin
               where exists (select 1 from total t where t.mixed_total is distinct from 0 limit 1)
             )
            )
-        as fd
+        as fd  
   );
 end
 $body$
@@ -1022,7 +1020,6 @@ begin
               join ranking r on (true)
               join web.sector_type st on (st.sector_type_id = r.sector_type_id)
               left join catch c on (c.year = tm.time_business_key and c.sector_type_id = st.sector_type_id)
-             where tm.time_business_key >= (select min(ci.year) from catch ci)
              group by st.sector_type_id
              order by max(r.measure_rank)
            )
@@ -1336,7 +1333,6 @@ begin
               from web.time tm
               join ranking r on (true)
               left join catch c on (c.year = tm.time_business_key and c.reporting_status = r.reporting_status)
-             where tm.time_business_key >= (select min(ci.year) from catch ci)
              group by r.reporting_status
              order by max(r.measure_rank)
            )
@@ -1499,15 +1495,23 @@ begin
         left join ranking r on (r.eez_id = c.main_area_id and c.marine_layer_id = 1)
        group by c.year
     )
-    select json_agg(fd.*) 
+select json_agg(fd.*) 
       from ((select e.eez_id as entity_id, e.name as key, 
-                    (select array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 3)]] order by tm.time_business_key)
+                   array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 2)]] order by tm.time_business_key) as values
+              from web.time tm
+              join ranking r on (true)
+              join web.eez e on (e.eez_id = r.eez_id)
+              left join catch c on (c.year = tm.time_business_key and c.main_area_id = r.eez_id and c.marine_layer_id = 1)
+             group by r.measure_rank, e.eez_id
+             order by max(r.measure_rank))
+            union all
+            (select null::int, 'Other EEZs'::text as key, 
+                    (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
                        from web.time tm
-                       left join catch c on (c.year = tm.time_business_key and c.main_area_id = r.eez_id and c.marine_layer_id = 1) 
+                       left join total tby on (tby.year = tm.time_business_key)
                       where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
-               from ranking r 
-               join web.eez e on (e.eez_id = r.eez_id)
-               order by r.measure_rank)
+               where exists (select 1 from total t where t.mixed_total is distinct from 0 limit 1)
+            )          
             union all
             (select null::int, 'Other EEZs'::text as key, 
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
@@ -1523,10 +1527,9 @@ begin
                        left join total tby on (tby.year = tm.time_business_key)
                       where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
                where exists (select 1 from total t where t.non_eez_total is distinct from 0 limit 1)
-                 and area_bucket_id_layer <> 1
+               
             )
-           )
-        as fd
+           )  as fd
   );
 end
 $body$
@@ -1731,13 +1734,13 @@ begin
     )
     select json_agg(fd.*) 
       from ((select l.lme_id as entity_id, l.name as key, 
-                    (select array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 3)]] order by tm.time_business_key)
+                    array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 3)]] order by tm.time_business_key) as values
                        from web.time tm                                                                                             
-                       left join catch c on (c.year = tm.time_business_key and c.main_area_id = r.lme_id and c.marine_layer_id = 3) 
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
-               from ranking r 
-               join web.lme l on (l.lme_id = r.lme_id)
-               order by r.measure_rank)
+              join ranking r on (true)
+              join web.lme l on (l.lme_id = r.lme_id)
+              left join catch c on (c.year = tm.time_business_key and c.main_area_id = l.lme_id and c.marine_layer_id = 3)
+             group by r.measure_rank, l.lme_id
+             order by max(r.measure_rank))
             union all
             (select null::int, 'Others'::text as key, 
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
@@ -1748,10 +1751,9 @@ begin
             )
             union all
             (select null::int, 'Non-LME'::text as key, 
-                    (select array_accum(array[array[tm.time_business_key, coalesce(tby.non_lme_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
+                    array_accum(array[array[tm.time_business_key, coalesce(tby.non_lme_total::numeric(20, 2), 0)]] order by tm.time_business_key) as values
                        from web.time tm
                        left join l6_total tby on (tby.year = tm.time_business_key)
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
                where exists (select 1 from l6_total t where t.non_lme_total is distinct from 0 limit 1)
             )
            )
@@ -2121,15 +2123,15 @@ begin
         left join ranking r on (r.fao_area_id = c.main_area_id and c.marine_layer_id = 2)
        group by c.year
     )
-    select json_agg(fd.*) 
+        select json_agg(fd.*) 
       from ((select f.fao_area_id as entity_id, f.name as key, 
-                    (select array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 3)]] order by tm.time_business_key)
+                    array_accum(array[array[tm.time_business_key::int, c.measure::numeric(20, 3)]] order by tm.time_business_key)  as values
                        from web.time tm
+                       join ranking r on (true)
+                       join web.fao_area f on (f.fao_area_id = r.fao_area_id)
                        left join catch c on (c.year = tm.time_business_key and c.main_area_id = r.fao_area_id and c.marine_layer_id = 2) 
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
-               from ranking r 
-               join web.fao_area f on (f.fao_area_id = r.fao_area_id)
-               order by r.measure_rank)
+               			group by r.measure_rank, f.fao_area_id
+                       order by max(r.measure_rank))
             union all
             (select null::int, 'Other High Seas'::text as key, 
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
@@ -2140,10 +2142,9 @@ begin
             )
             union all
             (select null::int, 'EEZs'::text as key, 
-                    (select array_accum(array[array[tm.time_business_key, coalesce(tby.eez_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
+                    array_accum(array[array[tm.time_business_key, coalesce(tby.eez_total::numeric(20, 2), null)]] order by tm.time_business_key) as values
                        from web.time tm
                        left join total tby on (tby.year = tm.time_business_key)
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
                where exists (select 1 from total t where t.eez_total is distinct from 0 limit 1)
             )
            )
