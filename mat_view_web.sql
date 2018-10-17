@@ -88,6 +88,17 @@ as
     join active_gear ag on (ag.gear_id = g.gear_id)
 with no data;
 
+/* BEGIN SORTIZ 10/12/18 */
+create materialized view web.v_dim_end_use
+as                    
+  with end_use as (
+    select distinct cad.end_use_type_id from web.v_fact_data cad
+  )
+  select eut.end_use_type_id, eut.end_use_name                               
+    from web.end_use_type eut
+    join end_use eu on (eu.end_use_type_id = eut.end_use_type_id)
+with no data;
+/* END SORTIZ 10/12/18 */
 
 create materialized view web.v_dim_taxon
 as
@@ -174,7 +185,7 @@ as
 with no data;
 
 create materialized view web.v_eez_catch as
-select vfd.main_area_id id,year, fe.name fishing_entity, e.name eez, vfd.sub_area_id fao_area_id ,cdt.scientific_name, cdt.common_name, st.name sector, ct.name catch_type, rs.name reporting_status, g.name gear, g.super_code gear_group, sum(catch_sum) catch, sum(real_value) landed_value
+select vfd.main_area_id id,year, fe.name fishing_entity, e.name eez, vfd.sub_area_id fao_area_id ,cdt.scientific_name, cdt.common_name, st.name sector, ct.name catch_type, rs.name reporting_status, g.name gear, g.super_code gear_group, eut.end_use_name end_use_name, sum(catch_sum) catch, sum(real_value) landed_value
 from web.v_fact_data vfd,
 web.cube_dim_taxon cdt,
 web.fishing_entity fe,
@@ -182,7 +193,8 @@ web.gear g,
 web.eez e,
 web.catch_type ct,
 web.reporting_status rs,
-web.sector_type st
+web.sector_type st,
+web.end_use_type eut
 where marine_layer_id = 1
 and cdt.taxon_key = vfd.taxon_key
 and g.gear_id = vfd.gear_id
@@ -191,9 +203,10 @@ and fe.fishing_entity_id = vfd.fishing_entity_id
 and ct.catch_type_id = vfd.catch_type_id
 and rs.reporting_status_id = vfd.reporting_status_id
 and st.sector_type_id = vfd.sector_type_id
-group by vfd.main_area_id, year, fe.name, e.name, vfd.sub_area_id ,cdt.scientific_name, cdt.common_name, st.name , ct.name , rs.name , g.name, g.super_code
+and eut.end_use_type_id = vfd.end_use_type_id
+group by vfd.main_area_id, year, fe.name, e.name, vfd.sub_area_id ,cdt.scientific_name, cdt.common_name, st.name , ct.name , rs.name , g.name, g.super_code, eut.end_use_name
 union all
-select vfd.sub_area_id id, year, fe.name fishing_entity, e.name eez, vfd.main_area_id fao_area_id, cdt.scientific_name, cdt.common_name, st.name sector, ct.name catch_type, rs.name reporting_status, g.name gear, g.super_code gear_group, sum(catch_sum) catch, sum(real_value) landed_value
+select vfd.sub_area_id id, year, fe.name fishing_entity, e.name eez, vfd.main_area_id fao_area_id, cdt.scientific_name, cdt.common_name, st.name sector, ct.name catch_type, rs.name reporting_status, g.name gear, g.super_code gear_group, eut.end_use_name end_use_name, sum(catch_sum) catch, sum(real_value) landed_value
 from web.v_fact_data vfd,
 web.cube_dim_taxon cdt,
 web.fishing_entity fe,
@@ -201,7 +214,8 @@ web.gear g,
 web.eez e,
 web.catch_type ct,
 web.reporting_status rs,
-web.sector_type st
+web.sector_type st,
+web.end_use_type eut
 where marine_layer_id = 2
 and cdt.taxon_key = vfd.taxon_key
 and g.gear_id = vfd.gear_id
@@ -210,11 +224,12 @@ and fe.fishing_entity_id = vfd.fishing_entity_id
 and ct.catch_type_id = vfd.catch_type_id
 and rs.reporting_status_id = vfd.reporting_status_id
 and st.sector_type_id = vfd.sector_type_id
-group by vfd.sub_area_id, year, fe.name,  e.name, vfd.main_area_id, cdt.scientific_name, cdt.common_name, st.name , ct.name , rs.name , g.name, g.super_code;
+and eut.end_use_type_id = vfd.end_use_type_id
+group by vfd.sub_area_id, year, fe.name,  e.name, vfd.main_area_id, cdt.scientific_name, cdt.common_name, st.name , ct.name , rs.name , g.name, g.super_code, eut.end_use_name;
 ;
 
 create materialized view web.v_meow_catch AS
-select m.meow_id id, year, fe.name fishing_entity, m.name me, cdt.scientific_name, cdt.common_name, st.name sector, ct.name catch_type, rs.name reporting_status, g.name gear, g.super_code gear_group, sum(catch_sum) catch, sum(real_value) landed_value
+select m.meow_id id, year, fe.name fishing_entity, m.name me, cdt.scientific_name, cdt.common_name, st.name sector, ct.name catch_type, rs.name reporting_status, g.name gear, g.super_code gear_group, eut.end_use_name end_use_name, sum(catch_sum) catch, sum(real_value) landed_value
 from web.v_fact_data vfd,
 web.cube_dim_taxon cdt,
 web.fishing_entity fe,
@@ -222,7 +237,8 @@ web.gear g,
 web.meow m,
 web.catch_type ct,
 web.reporting_status rs,
-web.sector_type st
+web.sector_type st,
+web.end_use_type eut
 where marine_layer_id = 19
 and cdt.taxon_key = vfd.taxon_key
 and g.gear_id = vfd.gear_id
@@ -231,10 +247,11 @@ and fe.fishing_entity_id = vfd.fishing_entity_id
 and ct.catch_type_id = vfd.catch_type_id
 and rs.reporting_status_id = vfd.reporting_status_id
 and st.sector_type_id = vfd.sector_type_id
-group by m.meow_id, year, fe.name, m.name, cdt.scientific_name, cdt.common_name, st.name , ct.name , rs.name , g.name, g.super_code;
+and eut.end_use_type_id = vfd.end_use_type_id
+group by m.meow_id, year, fe.name, m.name, cdt.scientific_name, cdt.common_name, st.name , ct.name , rs.name , g.name, g.super_code, eut.end_use_name;
 
 create materialized view web.v_lme_catch AS
-select l.lme_id id, year, fe.name fishing_entity, l.name lme, cdt.scientific_name, cdt.common_name, st.name sector, ct.name catch_type, rs.name reporting_status, g.name gear, g.super_code gear_group, sum(catch_sum) catch, sum(real_value) landed_value
+select l.lme_id id, year, fe.name fishing_entity, l.name lme, cdt.scientific_name, cdt.common_name, st.name sector, ct.name catch_type, rs.name reporting_status, g.name gear, g.super_code gear_group, eut.end_use_name end_use_name, sum(catch_sum) catch, sum(real_value) landed_value
 from web.v_fact_data vfd,
 web.cube_dim_taxon cdt,
 web.fishing_entity fe,
@@ -242,7 +259,8 @@ web.gear g,
 web.lme l,
 web.catch_type ct,
 web.reporting_status rs,
-web.sector_type st
+web.sector_type st,
+web.end_use_type eut
 where marine_layer_id = 3
 and l.lme_id = vfd.main_area_id
 and cdt.taxon_key = vfd.taxon_key
@@ -251,7 +269,8 @@ and fe.fishing_entity_id = vfd.fishing_entity_id
 and ct.catch_type_id = vfd.catch_type_id
 and rs.reporting_status_id = vfd.reporting_status_id
 and st.sector_type_id = vfd.sector_type_id
-group by l.lme_id, year, fe.name, l.name, vfd.sub_area_id ,cdt.scientific_name, cdt.common_name, st.name , ct.name , rs.name , g.name, g.super_code;
+and eut.end_use_type_id = vfd.end_use_type_id
+group by l.lme_id, year, fe.name, l.name, vfd.sub_area_id ,cdt.scientific_name, cdt.common_name, st.name , ct.name , rs.name , g.name, g.super_code, eut.end_use_name;
 
 create materialized view web.v_rfmo_catch AS
 select r.rfmo_id id, year, fe.name fishing_entity, r.name rfmo,cdt.scientific_name, cdt.common_name, st.name sector, ct.name catch_type, rs.name reporting_status, g.name gear, g.super_code gear_group, sum(catch_sum) catch, sum(real_value) landed_value
