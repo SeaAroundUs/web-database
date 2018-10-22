@@ -14,7 +14,7 @@ $body$
                 array['year', 'scientific_name', 'common_name', 'functional_group', 'commercial_group']::text[] 
            end ||
            case when i_entity_layer_id is distinct from 100 then array['fishing_entity']::text[] else array[]::text[] end ||
-           array['fishing_sector','catch_type', 'reporting_status', 'gear_type', 'tonnes', 'landed_value'],
+           array['fishing_sector','catch_type', 'reporting_status', 'gear_type', 'end_use_type', 'tonnes', 'landed_value'],
            ',');
 $body$
 language sql;
@@ -26,11 +26,11 @@ create or replace function web.get_csv_column_list
 )
 returns text as
 $body$
-  select 'f.year,' || 
+select 'f.year,' || 
          case when i_entity_layer_id is distinct from 6 then 'f.taxon_key,' else 'null::int,' end ||
          case when i_entity_layer_id is distinct from 100 then 'f.fishing_entity_id,' else 'null::smallint,' end || 
          case when i_entity_layer_id = 1 then 'f.data_layer_id::smallint,' else 'null::smallint,' end ||
-         'f.sector_type_id,f.catch_status,f.reporting_status,f.gear_id' || 
+         'f.sector_type_id,f.catch_status,f.reporting_status,f.gear_id,f.end_use_type_id' || 
          case when i_include_sum then ', sum(f.catch_sum)::numeric(20,10), sum(f.real_value)' else '' end;
 $body$
 language sql;
@@ -125,6 +125,7 @@ returns table(entity_id int,
               catch_status char(1), 
               reporting_status char(1),
               gear_type_id int,
+			  end_use_type_id int,
               catch_sum numeric, 
               real_value double precision) as
 $body$
@@ -201,15 +202,16 @@ begin
   -- Global 
   --   global should NOT include area id/area type. in fact, this is the only format that does not include area id/name
   --
-  (select concat_ws(',', c.year::varchar, csv_escape(fe.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar)
+  (select concat_ws(',', c.year::varchar, csv_escape(fe.name), st.name, cs.name, cr.name, g.name, eut.end_use_name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.fishing_entity fe on (fe.fishing_entity_id = c.fishing_entity)
      join web.sector_type st on (st.sector_type_id = c.fishing_sector)
      join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
      join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
      join web.gear g on (g.gear_id = c.gear_type_id)
+     join web.end_use_type eut on (eut.end_use_type_id = c.end_use_type_id)
     where i_entity_layer_id = 6
-    order by c.year, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id)
+    order by c.year, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id, c.end_use_type_id)
   union all
   --
   -- Fishing Entity 
@@ -217,7 +219,7 @@ begin
   --   we need to have one single row per year for All of High_seas, but break out separate row per year/eez combination
   --
   (select tsv                                      
-     from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar) as tsv
+     from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), st.name, cs.name, cr.name, g.name, eut.end_use_name, c.catch_sum::varchar, c.real_value::varchar) as tsv
               from catch c
               join web.eez e on (e.eez_id = c.entity_id)
               join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
@@ -227,9 +229,10 @@ begin
               join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
               join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
               join web.gear g on (g.gear_id = c.gear_type_id)
+              join web.end_use_type eut on (eut.end_use_type_id = c.end_use_type_id)
              where c.entity_layer_id = 1 and i_entity_layer_id = 100)
            union all
-           (select c.year, 2, 1, concat_ws(',', 'All', 'high_seas', c.year::varchar, csv_escape(max(t.scientific_name)), csv_escape(max(t.common_name)), csv_escape(max(fg.description)), csv_escape(max(cg.name)), max(st.name), max(cs.name), max(cr.name), max(g.name), sum(c.catch_sum)::varchar, sum(c.real_value)::varchar)
+           (select c.year, 2, 1, concat_ws(',', 'All', 'high_seas', c.year::varchar, csv_escape(max(t.scientific_name)), csv_escape(max(t.common_name)), csv_escape(max(fg.description)), csv_escape(max(cg.name)), max(st.name), max(cs.name), max(cr.name), max(g.name), max(eut.end_use_name), sum(c.catch_sum)::varchar, sum(c.real_value)::varchar)
               from catch c
               join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
               join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
@@ -238,8 +241,9 @@ begin
               join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
               join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
               join web.gear g on (g.gear_id = c.gear_type_id)
+              join web.end_use_type eut on (eut.end_use_type_id = c.end_use_type_id)
              where c.entity_layer_id = 2 and i_entity_layer_id = 100
-             group by c.year, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id)) as d
+             group by c.year, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id, c.end_use_type_id)) as d
     order by d.year, d.entity_layer_id, d.entity_id
   )
   union all
@@ -248,7 +252,7 @@ begin
   --   we need to have one single row per year for All of High_seas, but break out separate row per year/eez combination
   --
   (select tsv                                      
-     from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar) as tsv
+     from ((select c.year, c.entity_layer_id, c.entity_id, concat_ws(',', csv_escape(e.name), 'eez', c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.name, eut.end_use_name, c.catch_sum::varchar, c.real_value::varchar) as tsv
               from catch c
               join web.eez e on (e.eez_id = c.entity_id)
               join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
@@ -259,9 +263,10 @@ begin
               join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
               join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
               join web.gear g on (g.gear_id = c.gear_type_id)
+              join web.end_use_type eut on (eut.end_use_type_id = c.end_use_type_id)
              where c.entity_layer_id = 1 and i_entity_layer_id = 300)
            union all
-           (select c.year, 2, 1, concat_ws(',', 'All', 'high_seas', c.year::varchar, csv_escape(max(t.scientific_name)), csv_escape(max(t.common_name)), csv_escape(max(fg.description)), csv_escape(max(cg.name)), csv_escape(max(fe.name)), max(st.name), max(cs.name), max(cr.name), max(g.name), sum(c.catch_sum)::varchar, sum(c.real_value)::varchar)
+           (select c.year, 2, 1, concat_ws(',', 'All', 'high_seas', c.year::varchar, csv_escape(max(t.scientific_name)), csv_escape(max(t.common_name)), csv_escape(max(fg.description)), csv_escape(max(cg.name)), csv_escape(max(fe.name)), max(st.name), max(cs.name), max(cr.name), max(g.name), max(eut.end_use_name), sum(c.catch_sum)::varchar, sum(c.real_value)::varchar)
               from catch c
               join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
               join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
@@ -271,8 +276,9 @@ begin
               join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
               join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
               join web.gear g on (g.gear_id = c.gear_type_id)
+              join web.end_use_type eut on (eut.end_use_type_id = c.end_use_type_id)
              where c.entity_layer_id = 2 and i_entity_layer_id = 300
-             group by c.year, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id)) as d
+             group by c.year, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id, c.end_use_type_id)) as d
     order by d.year, d.entity_layer_id, d.entity_id
   )
   union all
@@ -280,7 +286,7 @@ begin
   -- EEZ 
   --   any other spatial entity layer beside (6, 100, 300) which needs to return Data_layer_id as well
   --
-  (select concat_ws(',', csv_escape(el.name), el.layer_name, dl.name, coalesce(u.score::varchar, ''), c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar)
+  (select concat_ws(',', csv_escape(el.name), el.layer_name, dl.name, coalesce(u.score::varchar, ''), c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.name, eut.end_use_name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
      join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
@@ -292,14 +298,15 @@ begin
      join web.gear g on (g.gear_id = c.gear_type_id)
      join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
      join web.data_layer dl on (dl.data_layer_id = c.data_layer_id)
+     join web.end_use_type eut on (eut.end_use_type_id = c.end_use_type_id)
      left join uncertainty u on (u.eez_id = c.entity_id and u.sector_type_id = c.fishing_sector and u.year_range @> c.year and c.data_layer_id = 1)
     where i_entity_layer_id = 1
-    order by c.year, dl.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id)
+    order by c.year, dl.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id, c.end_use_type_id)
   union all
   --
   -- All other entity layers
   --   
-  (select concat_ws(',', csv_escape(el.name), el.layer_name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.name, c.catch_sum::varchar, c.real_value::varchar)
+  (select concat_ws(',', csv_escape(el.name), el.layer_name, c.year::varchar, csv_escape(t.scientific_name), csv_escape(t.common_name), csv_escape(fg.description), csv_escape(cg.name), csv_escape(fe.name), st.name, cs.name, cr.name, g.name, eut.end_use_name, c.catch_sum::varchar, c.real_value::varchar)
      from catch c
      join web.cube_dim_taxon t on (t.taxon_key = c.taxon)
      join web.functional_groups fg on (fg.functional_group_id = t.functional_group_id)
@@ -309,9 +316,10 @@ begin
      join web.get_catch_and_reporting_status_name() cs on (cs.status_type = 'catch' and cs.status = c.catch_status)
      join web.get_catch_and_reporting_status_name() cr on (cr.status_type = 'reporting' and cr.status = c.reporting_status)
      join web.gear g on (g.gear_id = c.gear_type_id)
+     join web.end_use_type eut on (eut.end_use_type_id = c.end_use_type_id)
      join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
     where i_entity_layer_id not in (1, 6, 100, 300)
-    order by c.year, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id)
+    order by c.year, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id, c.end_use_type_id)
   ;
 end
 $body$
