@@ -2796,8 +2796,8 @@ begin
     case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
     ',eu.end_use_name::text' ||
     case when i_measure = 'catch' then ',sum(f.catch_sum)' else ',sum(f.real_value)::numeric' end ||  
-    ' from web.v_fact_data f, web.end_use_type eu' ||
-    additional_join_clause ||
+    ' from web.v_fact_data f' ||
+    additional_join_clause || ', web.end_use_type eu'
     ' where f.end_use_type_id = eu.end_use_type_id  and' ||   
     case 
     when i_entity_layer_id < 100 then ' f.marine_layer_id = ' || i_entity_layer_id || ' and f.main_area_id = any($1) and'
