@@ -93,7 +93,8 @@ CREATE TABLE geo.ifa (
     a_num      integer,               
     area_km2   numeric,                                                       
     shape_leng numeric,               
-    shape_area numeric,               
+    shape_area numeric,       
+    ifa_is_located_in_this_fao numeric,		
     geom       geometry(MultiPolygon, 4326)
 );
 
