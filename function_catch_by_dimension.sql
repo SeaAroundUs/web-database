@@ -2854,6 +2854,7 @@ begin
            )
         as fd
   );
+end
 $body$
 language plpgsql;
 ------
