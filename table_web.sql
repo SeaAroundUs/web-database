@@ -632,6 +632,7 @@ CREATE TABLE web.v_fact_data(
   reporting_status_id smallint,
   reporting_status character(1),
   sector_type_id smallint,
+  end_use_type_id integer,
   catch_sum numeric(50, 20),
   real_value double precision,
   primary_production_required double precision,
