@@ -2551,7 +2551,7 @@ create or replace function web.f_dimension_gear_type_catch_query
   i_output_area_id boolean default false,
   i_other_params json default null
 )
-returns table(year int, entity_id int, dimension_member_id int, measure numeric) as
+returns table(year int, entity_id int, dimension_member text, measure numeric) as
 $body$
 declare
   rtn_sql text;
@@ -2735,7 +2735,9 @@ $body$
   select f.* from web.f_dimension_data_layer_json(i_measure, i_entity_id, i_entity_layer_id, i_sub_entity_id, i_other_params) as f where i_dimension = 'data_layer'
   union all
   select f.* from web.f_dimension_gear_type_json(i_measure, i_entity_id, i_entity_layer_id, i_sub_entity_id, i_other_params) as f where i_dimension = 'gear_type'
-   ;    
+  union all
+  select f.* from web.f_dimension_end_use_type_json(i_measure, i_entity_id, i_entity_layer_id, i_sub_entity_id, i_other_params) as f where i_dimension = 'end_use_type'
+   ;   
 $body$
 language sql;
 
@@ -2794,7 +2796,7 @@ begin
   rtn_sql := 
     'select f.year,' || 
     case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
-    ',eu.end_use_name::text' ||
+    ',eu.end_use_type_id' ||
     case when i_measure = 'catch' then ',sum(f.catch_sum)' else ',sum(f.real_value)::numeric' end ||  
     ' from web.v_fact_data f' ||
     additional_join_clause || ', web.end_use_type eu'
