@@ -56,7 +56,11 @@ CREATE UNIQUE INDEX v_dim_area_area_key_uk ON web.v_dim_area(area_key);
 
 CREATE UNIQUE INDEX dictionary_word_idx ON web.dictionary(word);
 CREATE UNIQUE INDEX dictionary_word_ops_idx ON web.dictionary(word varchar_pattern_ops);
-------
+
+CREATE INDEX v_eez_catch_idx ON web.v_eez_catch(id);
+CREATE INDEX v_meow_catch_idx ON web.v_meow_catch(id);
+CREATE INDEX v_lme_catch_idx ON web.v_lme_catch(id);
+CREATE INDEX v_rfmo_catch_idx ON web.v_rfmo_catch(id);------
 ------ Foreign Keys
 ------
 
@@ -349,12 +353,9 @@ update web.fao_area f
  refresh materialized view web.v_dim_taxon;
  refresh materialized view web.v_dim_time;
  refresh materialized view web.v_functional_group;
+ refresh materialized view web.v_rfmo_catch;
  refresh materialized view web.v_saup_jurisdiction;
  refresh materialized view web.v_web_taxon;
- refresh materialized view web.v_eez_catch;
- refresh materialized view web.v_meow_catch;
- refresh materialized view web.v_lme_catch;
- refresh materialized view web.v_rfmo_catch;
  refresh materialized view geo.v_area;
  refresh materialized view geo.v_country;
  refresh materialized view geo.v_eez;
@@ -365,5 +366,5 @@ update web.fao_area f
  refresh materialized view geo.v_mariculture_entity;
  refresh materialized view geo.v_meow;
  refresh materialized view geo.v_rfmo;
- refresh materialized view geo.v_sub_mariculture_entity; 
+ refresh materialized view geo.v_sub_mariculture_entity;
 
