@@ -775,7 +775,9 @@ CREATE TABLE web.meow_pdf(
 	scientific_name varchar(128),
 	stock varchar(300),
 	b_bmsy double precision,
-	pdf_url varchar(500)
+	pdf_url varchar(500),
+	common_name varchar(128),
+	group_type varchar(128),
 );
 
 CREATE TABLE web.end_use(

@@ -421,10 +421,12 @@ select meow_id, json_agg(json_build_object(
 'taxon_key', taxon_key,
 'scientific_name',scientific_name,
 'stock',stock,
-'url', pdf_url)) as pdf
+'url', pdf_url,
+'common_name', common_name,
+'group_type', group_type)) as pdf
 from meow_pdf
 group by meow_id
-order by meow_id	
+order by meow_id
 
 create or replace view web.v_meow_eez_combo as
  select meow_eez_combo.meow_id,
