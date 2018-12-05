@@ -777,7 +777,7 @@ CREATE TABLE web.meow_pdf(
 	b_bmsy double precision,
 	pdf_url varchar(500),
 	common_name varchar(128),
-	group_type varchar(128),
+	group_type varchar(128)
 );
 
 CREATE TABLE web.end_use(
