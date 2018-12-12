@@ -2852,7 +2852,7 @@ begin
               join web.end_use_type eut on (eut.end_use_type_id = r.end_use_type_id)
               left join catch c on (c.year = tm.time_business_key and c.end_use_type_id = eut.end_use_type_id)
              group by eut.end_use_type_id
-             order by max(r.measure_rank)
+             order by (eut.end_use_type_id) ASC
            )
         as fd
   );
