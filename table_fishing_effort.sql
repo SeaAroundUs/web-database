@@ -25,3 +25,21 @@ CREATE TABLE fishing_effort.fishing_effort(
   source text NULL,
   notes text NULL
 );
+
+CREATE TABLE fishing_effort.length_class (
+  length_class_id int4 NULL,
+  length_class_range varchar(32767) NULL
+);
+
+CREATE TABLE fishing_effort.fuel_coeff (
+  "﻿year" int4 NULL,
+  fuel_coeff float8 NULL
+);
+
+CREATE TABLE fishing_effort.fishing_effort_gear (
+  gear_id int4 NULL,
+  gear_name varchar(32767) NULL,
+  effort_sector varchar(32767) NULL,
+  effort_gear_id varchar(32767) NULL,
+  effort_gear_name varchar(32767) NULL
+);
