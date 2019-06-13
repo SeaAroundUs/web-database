@@ -43,6 +43,7 @@ BEGIN
   PERFORM admin.grant_privilege('web', 'web', false, false);
   PERFORM admin.grant_privilege('web_partition', 'web', false, false);
   PERFORM admin.grant_privilege('web_cache', 'web', false, false);
+  PERFORM admin.grant_privilege('fishing_effort', 'web', false, false);
   PERFORM admin.grant_privilege('fao', 'web', false, false);
   PERFORM admin.grant_privilege('geo', 'web', false, false);
   PERFORM admin.grant_privilege('feru', 'web', false, false);
@@ -65,6 +66,7 @@ BEGIN
   PERFORM admin.grant_privilege('web_partition', 'sau_reader', false, false);
   PERFORM admin.grant_privilege('web_cache', 'sau_reader', false, false);
   PERFORM admin.grant_privilege('fao', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('fishing_effort', 'sau_reader', false, false);
   PERFORM admin.grant_privilege('geo', 'sau_reader', false, false);
   PERFORM admin.grant_privilege('feru', 'sau_reader', false, false);
   PERFORM admin.grant_privilege('expedition', 'sau_reader', false, false);
