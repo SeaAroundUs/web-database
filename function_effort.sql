@@ -196,7 +196,7 @@ begin
        group by e.length_code
     )
     select json_agg(fd.*)       
-      from (select max(st.name) as key, array_accum(array[array[tm.time_business_key::int, e.measure::numeric(20, 2)]] order by tm.time_business_key) as values
+      from (select max(lc.length_name) as key, array_accum(array[array[tm.time_business_key::int, e.measure::numeric(20, 2)]] order by tm.time_business_key) as values
               from web.time tm 
               join ranking r on (true)
               join fishing_effort.length_class lc on (lc.length_class_id = r.length_code)
@@ -267,21 +267,21 @@ declare
   area_bucket_id_layer int := case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end;
 begin
   return (
-    with effort(year, entity_id, effort_gear_id, measure) as (
+    with effort(year, entity_id, gear_id, measure) as (
       select * from fishing_effort.f_dimension_gear_effort_query(i_measure, i_entity_id, i_entity_layer_id, area_bucket_id_layer, false, i_other_params)
     ),
-    ranking(effort_gear_id, measure_rank) as (
-      select e.effort_gear_id, row_number() over(order by sum(e.measure) desc)
+    ranking(gear_id, measure_rank) as (
+      select e.gear_id, row_number() over(order by sum(e.measure) desc)
         from effort e
-       group by e.effort_gear_id
+       group by e.gear_id
     )
     select json_agg(fd.*)       
-      from (select max(st.name) as key, array_accum(array[array[tm.time_business_key::int, e.measure::numeric(20, 2)]] order by tm.time_business_key) as values
+      from (select max(g.name) as key, array_accum(array[array[tm.time_business_key::int, e.measure::numeric(20, 2)]] order by tm.time_business_key) as values
               from web.time tm 
               join ranking r on (true)
-              join fishing_effort.fishing_effort_gear feg on (feg.effort_gear_id = r.effort_gear_id)
-              left join effort e on (e.year = tm.time_business_key and feg.effort_gear_id = r.effort_gear_id)
-             group by feg.effort_gear_id
+              join web.gear g on (g.gear_id = r.gear_id)
+              left join effort e on (e.year = tm.time_business_key and g.gear_id = e.gear_id)
+             group by g.name
              order by max(r.measure_rank)
            )
         as fd
@@ -314,7 +314,7 @@ begin
   rtn_sql := 
     'select f.year,' || 
     case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
-    ',f.effort_gear_id::int' ||
+    ',f.gear_id::int' ||
     case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)' end ||  
     ' from fishing_effort.v_fishing_effort f' ||
     additional_join_clause ||
@@ -325,7 +325,7 @@ begin
     else 
       '' 
     end ||
-    ',f.effort_gear_id';
+    ',f.gear_id';
 
   return query execute rtn_sql
    using i_entity_id;
