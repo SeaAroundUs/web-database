@@ -43,6 +43,37 @@ $body$
 $body$
 language sql;
 
+
+create or replace function fishing_effort.f_boats_by_dimension_json
+(
+  i_dimension varchar(100), 
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_top_count int default 10,
+  i_other_params json default null
+)
+returns setof json as
+$body$
+  select f.data from fishing_effort.f_effort_data_in_json('boats', i_dimension, i_entity_id, i_entity_layer_id, i_top_count, i_other_params) as f(data) where f.data is not null;
+$body$
+language sql;
+
+
+create or replace function fishing_effort.f_co2_by_dimension_json
+(
+  i_dimension varchar(100), 
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_top_count int default 10,
+  i_other_params json default null
+)
+returns setof json as
+$body$
+  select f.data from fishing_effort.f_effort_data_in_json('co2', i_dimension, i_entity_id, i_entity_layer_id, i_top_count, i_other_params) as f(data) where f.data is not null;
+$body$
+language sql;
+
+
 create or replace function fishing_effort.f_effort_data_in_json 
 (
   i_measure varchar(20),
@@ -58,7 +89,7 @@ $body$
   union all
   select f.* from fishing_effort.f_dimension_effort_length_json(i_measure, i_entity_id, i_entity_layer_id, i_other_params) as f where i_dimension = 'length_class'
   union all
-  select f.* from fishing_effort.f_dimension_effort_gear_type_json(i_measure, i_entity_id, i_entity_layer_id, i_other_params) as f where i_dimension = 'gear_type'
+  select f.* from fishing_effort.f_dimension_effort_gear_json(i_measure, i_entity_id, i_entity_layer_id, i_other_params) as f where i_dimension = 'gear_type'
    ;   
 $body$
 language sql;
@@ -156,7 +187,7 @@ declare
   area_bucket_id_layer int := case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end;
 begin
   return (
-    with effort(year, entity_id, sector_type_id, measure) as (
+    with effort(year, entity_id, length_code, measure) as (
       select * from fishing_effort.f_dimension_length_effort_query(i_measure, i_entity_id, i_entity_layer_id, area_bucket_id_layer, false, i_other_params)
     ),
     ranking(length_code, measure_rank) as (
@@ -236,7 +267,7 @@ declare
   area_bucket_id_layer int := case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end;
 begin
   return (
-    with effort(year, entity_id, sector_type_id, measure) as (
+    with effort(year, entity_id, effort_gear_id, measure) as (
       select * from fishing_effort.f_dimension_gear_effort_query(i_measure, i_entity_id, i_entity_layer_id, area_bucket_id_layer, false, i_other_params)
     ),
     ranking(effort_gear_id, measure_rank) as (
