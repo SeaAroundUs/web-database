@@ -119,7 +119,7 @@ begin
     'select f.year,' || 
     case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
     ',f.sector_type_id::int' ||
-    case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)' end ||  
+    case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
     ' from fishing_effort.v_fishing_effort f' ||
     additional_join_clause ||
     ' where f.fishing_entity_id = any($1) group by f.year' || 
@@ -235,7 +235,7 @@ begin
     'select f.year,' || 
     case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
     ',f.length_code::int' ||
-    case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)' end ||  
+    case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
     ' from fishing_effort.v_fishing_effort f' ||
     additional_join_clause ||
     ' where f.fishing_entity_id = any($1) group by f.year' || 
@@ -315,7 +315,7 @@ begin
     'select f.year,' || 
     case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
     ',f.gear_id::int' ||
-    case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)' end ||  
+    case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
     ' from fishing_effort.v_fishing_effort f' ||
     additional_join_clause ||
     ' where f.fishing_entity_id = any($1) group by f.year' || 
