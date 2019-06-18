@@ -39,7 +39,7 @@ CREATE TABLE fishing_effort.fuel_coeff (
 CREATE TABLE fishing_effort.fishing_effort_gear (
   gear_id int4 NULL,
   gear_name varchar(32767) NULL,
-  effort_sector varchar(32767) NULL,
+  sector_type varchar(32767) NULL,
   effort_gear_id varchar(32767) NULL,
   effort_gear_name varchar(32767) NULL
 );
