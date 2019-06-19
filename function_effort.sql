@@ -332,3 +332,103 @@ begin
 end
 $body$
 language plpgsql;
+
+
+
+
+------
+create or replace function fishing_effort.f_effort_data_in_csv
+(
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_other_params json default null
+)
+returns setof text as            
+$body$
+begin
+  
+  return query
+  with effort as (
+    select e.*
+      from fishing_effort.f_effort_query_for_csv(i_entity_id, i_entity_layer_id, 0, i_other_params) as e
+  )
+
+  (select fishing_effort.get_csv_effort_headings(i_entity_layer_id) where exists (select 1 from effort limit 1))
+  union all
+  (select t.tsv                                      
+     from (select concat_ws(',',e.year, csv_escape(fe.name), st.name, csv_escape(g.name), csv_escape(l.length_name), e.kw::varchar, e.number_boats::varchar, e.co2::varchar) as tsv
+              from effort e
+              join fishing_effort.length_class l on (l.length_class_id = e.length_code)
+              join web.sector_type st on (st.sector_type_id = e.fishing_sector)
+              join web.fishing_entity fe on (fe.fishing_entity_id = e.fishing_entity_id)
+              join web.gear g on (g.gear_id = e.gear_id)
+  ) as t)
+     ;
+end
+$body$
+language plpgsql;
+------
+
+
+create or replace function fishing_effort.f_effort_query_for_csv 
+(
+  i_entity_id int[],
+  i_entity_layer_id int default 1,
+  i_area_bucket_id_layer int default null,
+  i_other_params json default null
+)
+returns table(
+              fishing_entity_id int,
+              year int,
+              fishing_sector int,
+              gear_id int,
+              length_code int,
+              kw numeric,
+              number_boats numeric,
+              co2 numeric) as
+$body$
+declare
+  rtn_sql text;
+  main_area_col_name text;
+  additional_join_clause text := '';
+begin
+                                                                                                                                                                              
+  rtn_sql := 
+    'select '|| fishing_effort.get_csv_effort_column_list(i_entity_layer_id, true) ||  
+    ' from fishing_effort.v_fishing_effort f
+     where f.fishing_entity_id = any($1) group by ' ||fishing_effort.get_csv_effort_column_list(i_entity_layer_id, false);
+  
+  -- DEBUG ONLY
+  -- raise info 'f_catch_query_for_csv rtn_sql: %', rtn_sql;
+  
+  return query execute rtn_sql
+   using i_entity_id ;
+end
+$body$
+language plpgsql;
+------
+
+create or replace function fishing_effort.get_csv_effort_column_list
+(
+  i_entity_layer_id int,
+  i_include_sum boolean
+)
+returns text as
+$body$
+select 'f.fishing_entity_id, f.year, f.sector_type_id, f.gear_id, f.length_code' ||
+         case when i_include_sum then ', sum(f.kw_boat)::numeric(20,10), sum(f.number_boats)::numeric(20,10), sum(f.co2)::double precision' else '' end;
+$body$
+language sql;
+
+
+create or replace function fishing_effort.get_csv_effort_headings 
+(
+  i_entity_layer_id int
+)
+returns text as
+$body$
+  select array_to_string(
+           array['fishing_entity', 'year', 'fishing_sector', 'gear_type', 'length_class', 'kw_boat', 'number_boats', 'co2'],
+           ',');
+$body$
+language sql;
