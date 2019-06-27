@@ -1,8 +1,6 @@
 /**
 helper functions
 **/
-
-
 create or replace function fishing_effort.f_dimension_effort_query_layer_preprocessor
 (
   i_entity_layer_id int,
@@ -29,72 +27,6 @@ $body$
 language plpgsql;
 
 
-create or replace function fishing_effort.f_kw_by_dimension_json
-(
-  i_dimension varchar(100), 
-  i_entity_id int[], 
-  i_entity_layer_id int default 1,
-  i_top_count int default 10,
-  i_other_params json default null
-)
-returns setof json as
-$body$
-  select f.data from fishing_effort.f_effort_data_in_json('kw', i_dimension, i_entity_id, i_entity_layer_id, i_top_count, i_other_params) as f(data) where f.data is not null;
-$body$
-language sql;
-
-
-create or replace function fishing_effort.f_boats_by_dimension_json
-(
-  i_dimension varchar(100), 
-  i_entity_id int[], 
-  i_entity_layer_id int default 1,
-  i_top_count int default 10,
-  i_other_params json default null
-)
-returns setof json as
-$body$
-  select f.data from fishing_effort.f_effort_data_in_json('boats', i_dimension, i_entity_id, i_entity_layer_id, i_top_count, i_other_params) as f(data) where f.data is not null;
-$body$
-language sql;
-
-
-create or replace function fishing_effort.f_co2_by_dimension_json
-(
-  i_dimension varchar(100), 
-  i_entity_id int[], 
-  i_entity_layer_id int default 1,
-  i_top_count int default 10,
-  i_other_params json default null
-)
-returns setof json as
-$body$
-  select f.data from fishing_effort.f_effort_data_in_json('co2', i_dimension, i_entity_id, i_entity_layer_id, i_top_count, i_other_params) as f(data) where f.data is not null;
-$body$
-language sql;
-
-
-create or replace function fishing_effort.f_effort_data_in_json 
-(
-  i_measure varchar(20),
-  i_dimension varchar(100), 
-  i_entity_id int[], 
-  i_entity_layer_id int default 1,
-  i_top_count int default 10,
-  i_other_params json default null
-)                 
-returns json as
-$body$
-  select f.* from fishing_effort.f_dimension_effort_fishing_sector_json(i_measure, i_entity_id, i_entity_layer_id, i_other_params) as f where i_dimension = 'fishing_sector'
-  union all
-  select f.* from fishing_effort.f_dimension_effort_length_json(i_measure, i_entity_id, i_entity_layer_id, i_other_params) as f where i_dimension = 'length_class'
-  union all
-  select f.* from fishing_effort.f_dimension_effort_gear_json(i_measure, i_entity_id, i_entity_layer_id, i_other_params) as f where i_dimension = 'gear_type'
-   ;   
-$body$
-language sql;
-
-
 create or replace function fishing_effort.f_dimension_fishing_sector_effort_query 
 (
   i_measure varchar(20),
@@ -119,7 +51,7 @@ begin
     'select f.year,' || 
     case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
     ',f.sector_type_id::int' ||
-    case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
+    case when i_measure = 'effort' then ',sum(f.effort)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
     ' from fishing_effort.v_fishing_effort f' ||
     additional_join_clause ||
     ' where f.fishing_entity_id = any($1) group by f.year' || 
@@ -130,6 +62,92 @@ begin
       '' 
     end ||
     ',f.sector_type_id';
+
+  return query execute rtn_sql
+   using i_entity_id;
+end
+$body$
+language plpgsql;
+
+
+create or replace function fishing_effort.f_dimension_length_effort_query 
+(
+  i_measure varchar(20),
+  i_entity_id int[],
+  i_entity_layer_id int default 1,
+  i_area_bucket_id_layer int default null,
+  i_output_area_id boolean default false,
+  i_other_params json default null
+)
+returns table(year int, entity_id int, dimension_member_id int, measure numeric) as
+$body$
+declare
+  rtn_sql text;
+  main_area_col_name text;
+  additional_join_clause text := '';
+begin
+  select *
+    into main_area_col_name, additional_join_clause
+    from fishing_effort.f_dimension_effort_query_layer_preprocessor(i_entity_layer_id, i_area_bucket_id_layer, i_other_params);
+
+  rtn_sql := 
+    'select f.year,' || 
+    case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
+    ',f.length_code::int' ||
+    case when i_measure = 'effort' then ',sum(f.effort)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
+    ' from fishing_effort.v_fishing_effort f' ||
+    additional_join_clause ||
+    ' where f.fishing_entity_id = any($1) group by f.year' || 
+    case when coalesce(i_output_area_id, false) 
+    then
+      ',' || main_area_col_name
+    else 
+      '' 
+    end ||
+    ',f.length_code';
+
+  return query execute rtn_sql
+   using i_entity_id;
+end
+$body$
+language plpgsql;
+
+
+create or replace function fishing_effort.f_dimension_gear_effort_query 
+(
+  i_measure varchar(20),
+  i_entity_id int[],
+  i_entity_layer_id int default 1,
+  i_area_bucket_id_layer int default null,
+  i_output_area_id boolean default false,
+  i_other_params json default null
+)
+returns table(year int, entity_id int, dimension_member_id int, measure numeric) as
+$body$
+declare
+  rtn_sql text;
+  main_area_col_name text;
+  additional_join_clause text := '';
+begin
+  select *
+    into main_area_col_name, additional_join_clause
+    from fishing_effort.f_dimension_effort_query_layer_preprocessor(i_entity_layer_id, i_area_bucket_id_layer, i_other_params);
+
+  rtn_sql := 
+    'select f.year,' || 
+    case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
+    ',f.gear_id::int' ||
+    case when i_measure = 'effort' then ',sum(f.effort)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
+    ' from fishing_effort.v_fishing_effort f' ||
+    additional_join_clause ||
+    ' where f.fishing_entity_id = any($1) group by f.year' || 
+    case when coalesce(i_output_area_id, false) 
+    then
+      ',' || main_area_col_name
+    else 
+      '' 
+    end ||
+    ',f.gear_id';
 
   return query execute rtn_sql
    using i_entity_id;
@@ -174,6 +192,7 @@ end
 $body$
 language plpgsql;
 
+
 create or replace function fishing_effort.f_dimension_effort_length_json
 (
   i_measure varchar(20),
@@ -206,49 +225,6 @@ begin
            )
         as fd
   );
-end
-$body$
-language plpgsql;
-
-
-create or replace function fishing_effort.f_dimension_length_effort_query 
-(
-  i_measure varchar(20),
-  i_entity_id int[],
-  i_entity_layer_id int default 1,
-  i_area_bucket_id_layer int default null,
-  i_output_area_id boolean default false,
-  i_other_params json default null
-)
-returns table(year int, entity_id int, dimension_member_id int, measure numeric) as
-$body$
-declare
-  rtn_sql text;
-  main_area_col_name text;
-  additional_join_clause text := '';
-begin
-  select *
-    into main_area_col_name, additional_join_clause
-    from fishing_effort.f_dimension_effort_query_layer_preprocessor(i_entity_layer_id, i_area_bucket_id_layer, i_other_params);
-
-  rtn_sql := 
-    'select f.year,' || 
-    case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
-    ',f.length_code::int' ||
-    case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
-    ' from fishing_effort.v_fishing_effort f' ||
-    additional_join_clause ||
-    ' where f.fishing_entity_id = any($1) group by f.year' || 
-    case when coalesce(i_output_area_id, false) 
-    then
-      ',' || main_area_col_name
-    else 
-      '' 
-    end ||
-    ',f.length_code';
-
-  return query execute rtn_sql
-   using i_entity_id;
 end
 $body$
 language plpgsql;
@@ -291,83 +267,97 @@ $body$
 language plpgsql;
 
 
-create or replace function fishing_effort.f_dimension_gear_effort_query 
+create or replace function fishing_effort.f_effort_data_in_json 
 (
   i_measure varchar(20),
-  i_entity_id int[],
-  i_entity_layer_id int default 1,
-  i_area_bucket_id_layer int default null,
-  i_output_area_id boolean default false,
-  i_other_params json default null
-)
-returns table(year int, entity_id int, dimension_member_id int, measure numeric) as
-$body$
-declare
-  rtn_sql text;
-  main_area_col_name text;
-  additional_join_clause text := '';
-begin
-  select *
-    into main_area_col_name, additional_join_clause
-    from fishing_effort.f_dimension_effort_query_layer_preprocessor(i_entity_layer_id, i_area_bucket_id_layer, i_other_params);
-
-  rtn_sql := 
-    'select f.year,' || 
-    case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
-    ',f.gear_id::int' ||
-    case when i_measure = 'kw' then ',sum(f.kw_boat)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
-    ' from fishing_effort.v_fishing_effort f' ||
-    additional_join_clause ||
-    ' where f.fishing_entity_id = any($1) group by f.year' || 
-    case when coalesce(i_output_area_id, false) 
-    then
-      ',' || main_area_col_name
-    else 
-      '' 
-    end ||
-    ',f.gear_id';
-
-  return query execute rtn_sql
-   using i_entity_id;
-end
-$body$
-language plpgsql;
-
-
-
-
-------
-create or replace function fishing_effort.f_effort_data_in_csv
-(
+  i_dimension varchar(100), 
   i_entity_id int[], 
   i_entity_layer_id int default 1,
+  i_top_count int default 10,
+  i_other_params json default null
+)                 
+returns json as
+$body$
+  select f.* from fishing_effort.f_dimension_effort_fishing_sector_json(i_measure, i_entity_id, i_entity_layer_id, i_other_params) as f where i_dimension = 'fishing_sector'
+  union all
+  select f.* from fishing_effort.f_dimension_effort_length_json(i_measure, i_entity_id, i_entity_layer_id, i_other_params) as f where i_dimension = 'length_class'
+  union all
+  select f.* from fishing_effort.f_dimension_effort_gear_json(i_measure, i_entity_id, i_entity_layer_id, i_other_params) as f where i_dimension = 'gear_type'
+   ;   
+$body$
+language sql;
+
+
+create or replace function fishing_effort.f_effort_by_dimension_json
+(
+  i_dimension varchar(100), 
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_top_count int default 10,
   i_other_params json default null
 )
-returns setof text as            
+returns setof json as
 $body$
-begin
-  
-  return query
-  with effort as (
-    select e.*
-      from fishing_effort.f_effort_query_for_csv(i_entity_id, i_entity_layer_id, 0, i_other_params) as e
-  )
+  select f.data from fishing_effort.f_effort_data_in_json('effort', i_dimension, i_entity_id, i_entity_layer_id, i_top_count, i_other_params) as f(data) where f.data is not null;
+$body$
+language sql;
 
-  (select fishing_effort.get_csv_effort_headings(i_entity_layer_id) where exists (select 1 from effort limit 1))
-  union all
-  (select t.tsv                                      
-     from (select concat_ws(',',e.year, csv_escape(fe.name), st.name, csv_escape(g.name), csv_escape(l.length_name), e.kw::varchar, e.number_boats::varchar, e.co2::varchar) as tsv
-              from effort e
-              join fishing_effort.length_class l on (l.length_class_id = e.length_code)
-              join web.sector_type st on (st.sector_type_id = e.fishing_sector)
-              join web.fishing_entity fe on (fe.fishing_entity_id = e.fishing_entity_id)
-              join web.gear g on (g.gear_id = e.gear_id)
-  ) as t)
-     ;
-end
+
+create or replace function fishing_effort.f_boats_by_dimension_json
+(
+  i_dimension varchar(100), 
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_top_count int default 10,
+  i_other_params json default null
+)
+returns setof json as
 $body$
-language plpgsql;
-------
+  select f.data from fishing_effort.f_effort_data_in_json('boats', i_dimension, i_entity_id, i_entity_layer_id, i_top_count, i_other_params) as f(data) where f.data is not null;
+$body$
+language sql;
+
+
+create or replace function fishing_effort.f_co2_by_dimension_json
+(
+  i_dimension varchar(100), 
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_top_count int default 10,
+  i_other_params json default null
+)
+returns setof json as
+$body$
+  select f.data from fishing_effort.f_effort_data_in_json('co2', i_dimension, i_entity_id, i_entity_layer_id, i_top_count, i_other_params) as f(data) where f.data is not null;
+$body$
+language sql;
+
+---CSV Functions
+
+create or replace function fishing_effort.get_csv_effort_column_list
+(
+  i_entity_layer_id int,
+  i_include_sum boolean
+)
+returns text as
+$body$
+select 'f.fishing_entity_id, f.year, f.sector_type_id, f.gear_id, f.length_code' ||
+         case when i_include_sum then ', sum(f.effort)::numeric(20,10), sum(f.number_boats)::numeric(20,10), sum(f.co2)::double precision' else '' end;
+$body$
+language sql;
+
+
+create or replace function fishing_effort.get_csv_effort_headings 
+(
+  i_entity_layer_id int
+)
+returns text as
+$body$
+  select array_to_string(
+           array['fishing_entity', 'year', 'fishing_sector', 'gear_type', 'length_class', 'effort', 'number_boats', 'co2'],
+           ',');
+$body$
+language sql;
 
 
 create or replace function fishing_effort.f_effort_query_for_csv 
@@ -406,29 +396,35 @@ begin
 end
 $body$
 language plpgsql;
-------
 
-create or replace function fishing_effort.get_csv_effort_column_list
+
+create or replace function fishing_effort.f_effort_data_in_csv
 (
-  i_entity_layer_id int,
-  i_include_sum boolean
+  i_entity_id int[], 
+  i_entity_layer_id int default 1,
+  i_other_params json default null
 )
-returns text as
+returns setof text as            
 $body$
-select 'f.fishing_entity_id, f.year, f.sector_type_id, f.gear_id, f.length_code' ||
-         case when i_include_sum then ', sum(f.kw_boat)::numeric(20,10), sum(f.number_boats)::numeric(20,10), sum(f.co2)::double precision' else '' end;
-$body$
-language sql;
+begin
+  
+  return query
+  with effort as (
+    select e.*
+      from fishing_effort.f_effort_query_for_csv(i_entity_id, i_entity_layer_id, 0, i_other_params) as e
+  )
 
-
-create or replace function fishing_effort.get_csv_effort_headings 
-(
-  i_entity_layer_id int
-)
-returns text as
+  (select fishing_effort.get_csv_effort_headings(i_entity_layer_id) where exists (select 1 from effort limit 1))
+  union all
+  (select t.tsv                                      
+     from (select concat_ws(',',e.year, csv_escape(fe.name), st.name, csv_escape(g.name), csv_escape(l.length_name), e.kw::varchar, e.number_boats::varchar, e.co2::varchar) as tsv
+              from effort e
+              join fishing_effort.length_class l on (l.length_class_id = e.length_code)
+              join web.sector_type st on (st.sector_type_id = e.fishing_sector)
+              join web.fishing_entity fe on (fe.fishing_entity_id = e.fishing_entity_id)
+              join web.gear g on (g.gear_id = e.gear_id)
+  ) as t)
+     ;
+end
 $body$
-  select array_to_string(
-           array['fishing_entity', 'year', 'fishing_sector', 'gear_type', 'length_class', 'kw_boat', 'number_boats', 'co2'],
-           ',');
-$body$
-language sql;
+language plpgsql;
