@@ -73,6 +73,7 @@ BEGIN
   PERFORM admin.grant_privilege('distribution', 'sau_reader', false, false);
   PERFORM admin.grant_privilege('allocation_partition', 'sau_reader', false, false);
   PERFORM admin.grant_privilege('allocation_data_partition', 'sau_reader', false, false);
+  PERFORM admin.grant_privilege('cmsy', 'sau_reader', false, false);
   
   RETURN;
 END
