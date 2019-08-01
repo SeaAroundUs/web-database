@@ -138,6 +138,12 @@ CREATE TABLE allocation.allocation_result_meow(
 	total_catch float null
 );
 
+CREATE TABLE allocation.allocation_result_ifa (
+    universal_data_id int4 NOT NULL,
+    rfmo_id int4 NULL,
+    total_catch float8 NULL
+);
+
 CREATE TABLE allocation.allocation_result_rfmo(
 	universal_data_id int not null,
 	rfmo_id int not null,            

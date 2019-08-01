@@ -54,7 +54,7 @@ begin
     case when i_measure = 'effort' then ',sum(f.effort)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
     ' from fishing_effort.v_fishing_effort f' ||
     additional_join_clause ||
-    ' where f.fishing_entity_id = any($1) group by f.year' || 
+    ' where f.fishing_entity_id = any($1) and f.sector_type_id != 4 group by f.year' || 
     case when coalesce(i_output_area_id, false) 
     then
       ',' || main_area_col_name
@@ -97,7 +97,7 @@ begin
     case when i_measure = 'effort' then ',sum(f.effort)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
     ' from fishing_effort.v_fishing_effort f' ||
     additional_join_clause ||
-    ' where f.fishing_entity_id = any($1) group by f.year' || 
+    ' where f.fishing_entity_id = any($1) and f.sector_type_id != 4 group by f.year' || 
     case when coalesce(i_output_area_id, false) 
     then
       ',' || main_area_col_name
@@ -140,7 +140,7 @@ begin
     case when i_measure = 'effort' then ',sum(f.effort)' when i_measure = 'boats' then ',sum(f.number_boats)::numeric' else ',sum(f.co2)::numeric' end ||  
     ' from fishing_effort.v_fishing_effort f' ||
     additional_join_clause ||
-    ' where f.fishing_entity_id = any($1) group by f.year' || 
+    ' where f.fishing_entity_id = any($1) and f.sector_type_id != 4 group by f.year' || 
     case when coalesce(i_output_area_id, false) 
     then
       ',' || main_area_col_name
