@@ -20,18 +20,21 @@ CREATE TABLE cmsy.stock_id (
 );
 
 --relative biomass table
+create sequence rel_biom_seq start 1;
 create table cmsy.rel_biom (
-	rel_biom_id int4 primary key,
+	rel_biom_id int4 not null default nextval('rel_biom_seq'::regclass),
 	rel_biom_meta_id int4,
 	stock_id varchar,
 	"year" int4,
-	value float8
+	value float8,
+	midlength float8
 );
 
 --relative biomass meta data table
+create sequence rel_biom_meta_seq start 1;
 create table cmsy.rel_biom_meta (
-	rel_biom_meta_id int4 primary key,
-	stock_id int4,
+	rel_biom_meta_id int4 not null default nextval('rel_biom_meta_seq'::regclass),
+	stock_id varchar,
 	data_type varchar,
 	units varchar,
 	year_start int4,
@@ -40,10 +43,11 @@ create table cmsy.rel_biom_meta (
 	region_description varchar,
 	gear_type_id int4,
 	gear_type varchar,
-	ref_id int4
+	ref_id int4,
+	"comments" text
 );
 
---relative reference table
+--reference table
 create table cmsy.reference (
 	ref_id int4 primary key,
 	author varchar,
@@ -59,9 +63,10 @@ create table cmsy.reference (
 	pdf_url text
 );
 	
---relative ref_content table
+--ref_content table
+create sequence ref_content_seq start 1;
 create table cmsy.ref_content (
-	ref_content_id int4 primary key,
+	ref_content_id int4 not null default nextval('ref_content_seq'::regclass),
 	ref_id int4,
 	stock_id int4,
 	page varchar,
@@ -71,13 +76,15 @@ create table cmsy.ref_content (
 );
 
 --priors table
+create sequence priors_seq start 1;
 create table cmsy.priors (
-	stock_id int4,
+	priors_id int4 not null default nextval('priors_seq'::regclass),
+	stock_id varchar,
 	min_of_year int4,
 	max_of_year int4,
 	start_year int4,
 	end_year int4,
-	main_ref_id int4 primary key,
+	main_ref_id int4,
 	max_catch float8,
 	last_catch float8,
 	b_bmsy_last_5_years float8,
@@ -174,4 +181,23 @@ create table cmsy.priors (
 	sel_b_bmsy float8,
 	sel_f float8,
 	sel_f_fmsy float8
+);
+	
+--catch_input table
+create sequence catch_input_seq start 1;
+create table cmsy.catch_input (
+	catch_input_id int4 not null default nextval('catch_input_seq'::regclass),
+	stock_id varchar,
+	"year" int4,
+	ct int4,
+	bt int4
+);
+
+--meow_oceans_combo
+create table geo.meow_oceans_combo (
+	meow_ocean_combo_id serial primary key,
+	meow_id int4,
+	meow varchar,
+	fao_area_id int4,
+	"name" varchar
 );
