@@ -89,11 +89,11 @@ CREATE TABLE allocation.allocation_data_eez_hs (
 );
 
 CREATE TABLE allocation.price(
+	fishing_entity int,
 	year int,
-	fishing_entity_id int,
 	taxon_key int,
-	price float null,
-    CONSTRAINT price_pkey PRIMARY KEY (year, fishing_entity_id, taxon_key)
+	end_use_type_id int,
+	price float null
 ); 
 
 CREATE TABLE allocation.allocation_simple_area (
