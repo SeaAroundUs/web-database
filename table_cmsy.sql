@@ -104,6 +104,7 @@ create table cmsy.priors (
 	r_hi float8,
 	r_expert int4,
 	r_modeled int4,
+	r_source varchar,
 	stb_low float8,
 	stb_hi float8,
 	stb_expert int4,
@@ -180,7 +181,11 @@ create table cmsy.priors (
 	sel_b float8,
 	sel_b_bmsy float8,
 	sel_f float8,
-	sel_f_fmsy float8
+	sel_f_fmsy float8,
+	input_date date not null default date,
+	comments varchar,
+	questionable bool not null,
+	to_be_used bool not null
 );
 	
 --catch_input table
