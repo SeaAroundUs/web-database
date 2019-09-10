@@ -354,3 +354,11 @@ CREATE TABLE geo.eez_fao (
   fao_area_id int NOT NULL,
   socio_economic_area_id int
 );
+
+CREATE TABLE geo.meow_oceans_combo (
+	meow_ocean_combo_id serial primary key,
+	meow_id int4,
+	meow varchar,
+	fao_area_id int4,
+	"name" varchar
+);
