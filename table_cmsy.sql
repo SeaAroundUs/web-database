@@ -1,4 +1,3 @@
-
 CREATE TABLE cmsy.assessment_summary (
 	eez_id int4 NULL,
 	eez varchar(50) NULL,
@@ -254,4 +253,3 @@ CREATE TABLE cmsy.stock_meow_reference (
 	meow_id int4 NULL,
 	pdf_url varchar(500) NULL,
 	graph_url varchar(500) NULL
-);
