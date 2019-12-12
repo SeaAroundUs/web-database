@@ -190,7 +190,7 @@ begin
       from web.f_catch_query_for_csv(i_entity_id, i_sub_entity_id, i_entity_layer_id, case when i_entity_layer_id = 200 then web.get_area_bucket_id_layer(i_entity_id) else 0 end, i_other_params) as c
   ),
   uncertainty as (
-    select ue.eez_id, ue.sector_type_id, ue.score, utp.year_range
+    select ue.eez_id, ue.sector_type_id, ue.score, utp.year_range, ue.layer
       from web.uncertainty_eez ue  
       join web.uncertainty_time_period utp on (utp.period_id = ue.period_id)
      where i_entity_layer_id = 1 
@@ -299,7 +299,7 @@ begin
      join web.lookup_entity_name_by_entity_layer(i_entity_layer_id, i_entity_id) as el on (el.entity_id = c.entity_id)
      join web.data_layer dl on (dl.data_layer_id = c.data_layer_id)
      join web.end_use_type eut on (eut.end_use_type_id = c.end_use_type_id)
-     left join uncertainty u on (u.eez_id = c.entity_id and u.sector_type_id = c.fishing_sector and u.year_range @> c.year and c.data_layer_id = 1)
+     left join uncertainty u on (u.eez_id = c.entity_id and u.sector_type_id = c.fishing_sector and u.year_range @> c.year and c.data_layer_id = 1 and u.layer = 1)
     where i_entity_layer_id = 1
     order by c.year, dl.data_layer_id, c.taxon, t.functional_group_id, t.commercial_group_id, c.fishing_entity, c.fishing_sector, c.catch_status, c.reporting_status, c.gear_type_id, c.end_use_type_id)
   union all
