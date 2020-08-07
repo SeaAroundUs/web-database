@@ -1,4 +1,64 @@
 /* standard views */
+create or replace view web.v_catch_type_catch
+as
+ select f.marine_layer_id,
+        f.main_area_id,
+        f.sub_area_id,
+        f.year,
+        c.catch_type_id,
+        f.catch_status,
+        f.reporting_status,
+        c.name AS catch_type_name,
+        f.catch_sum,
+        f.real_value
+   from web.v_fact_data f
+   join web.catch_type c on c.catch_type_id = f.catch_type_id;
+
+create or replace view web.v_commercial_group_catch
+as
+  select f.marine_layer_id,
+         f.main_area_id,
+         f.sub_area_id,
+         f.year,
+         cg.commercial_group_id,
+         cg.name as commercial_group_name,
+         f.catch_sum,
+         f.real_value
+    from web.v_fact_data f
+    join web.v_web_taxon wt on wt.taxon_key = f.taxon_key
+    join web.commercial_groups cg on cg.commercial_group_id = wt.commercial_group_id;
+
+create or replace view web.v_country_profile
+as
+  with cntry as (
+    select c.*, 
+           fp.fish_mgt_plan,fp.url_fish_mgt_plan,fp.gov_marine_fish,fp.major_law_plan,fp.url_major_law_plan,fp.gov_protect_marine_env,fp.url_gov_protect_marine_env,
+           array(select row_to_json(n.*) from web.country_ngo n where n.count_code = c.count_code) as ngo
+      from web.country c
+      left join web.country_fishery_profile fp on (fp.count_code = c.count_code)
+  )
+  select c.count_code, c.c_number, c.country, row_to_json(c.*) AS asjson
+    from cntry c;
+
+create or replace view web.v_eez_fao_rfb
+as
+  with ee(eez_id, a_country_iso3) as (
+    select e.eez_id, coalesce(c.fao_code, c.un_name)
+      from web.eez e
+      join web.geo_entity ge on (ge.geo_entity_id = e.geo_entity_id)
+      join web.country c on (c.c_number = ge.legacy_admin_c_number)
+  )
+  select ee.eez_id, ee.a_country_iso3 country_iso3,
+         (select json_agg(rf.*)
+            from (select r.fid, r.acronym, r.name, r.profile_url as url
+                    from fao.fao_country_rfb_membership fcrm
+                    join fao.fao_rfb r on (r.fid = fcrm.rfb_fid)
+                   where fcrm.country_iso3 = ee.a_country_iso3
+                     and fcrm.membership_type = 'Full'
+                   order by r.name) as rf
+         ) as rfb
+    from ee;
+
 create or replace view web.v_eez_info
 as                                     
   with eez_area_sum(main_area_id, total_area) as (
@@ -42,35 +102,35 @@ as
     left join web.fishing_entity fe3 on (fe3.geo_entity_id = ge.admin_geo_entity_id)
    where a.marine_layer_id = 1;
 
-create or replace view web.v_commercial_group_catch
-as
-  select f.marine_layer_id,
-         f.main_area_id,
-         f.sub_area_id,
-         f.year,
-         cg.commercial_group_id,
-         cg.name as commercial_group_name,
-         f.catch_sum,
-         f.real_value
-    from web.v_fact_data f
-    join web.v_web_taxon wt on wt.taxon_key = f.taxon_key
-    join web.commercial_groups cg on cg.commercial_group_id = wt.commercial_group_id;
+create or replace view web.v_eez_meow_combo as
+ select meow_eez_combo.eez_id,
+    json_agg(json_build_object('meow_id', meow_eez_combo.meow_id, 'meow', meow_eez_combo.meow, 'eez_id', meow_eez_combo.eez_id, 'eez', meow_eez_combo.eez)) as eez_meow_combo
+   from meow_eez_combo
+  group by meow_eez_combo.eez_id
+  order by meow_eez_combo.eez_id;
 
-create or replace view web.v_catch_type_catch
+create or replace view web.v_eez_vs_high_seas
 as
- select f.marine_layer_id,
-        f.main_area_id,
-        f.sub_area_id,
-        f.year,
-        c.catch_type_id,
-        f.catch_status,
-        f.reporting_status,
-        c.name AS catch_type_name,
-        f.catch_sum,
-        f.real_value
-   from web.v_fact_data f
-   join web.catch_type c on c.catch_type_id = f.catch_type_id;
-
+  with catch(time_key, catch_total, eez_catch_total, high_seas_catch_total, value_total, eez_value_total, high_seas_value_total) as (
+    select f.time_key, 
+           sum(f.catch_sum),
+           sum(case when f.sub_area_id = 1 then f.catch_sum else 0 end),
+           sum(case when f.sub_area_id = 2 then f.catch_sum else 0 end),
+           sum(f.real_value),
+           sum(case when f.sub_area_id = 1 then f.real_value else 0 end),
+           sum(case when f.sub_area_id = 2 then f.real_value else 0 end)
+      from web.v_fact_data f
+     where f.marine_layer_id = 6 and f.main_area_id = 1 
+     group by f.time_key
+  )
+  select dt.time_business_key::varchar as year, 
+         (100 * (c.eez_catch_total / c.catch_total))::numeric(3) as eez_percent_catch, 
+         (100 * (c.high_seas_catch_total / c.catch_total))::numeric(3) as high_seas_percent_catch,
+         (100 * (c.eez_value_total / c.value_total))::numeric(3) as eez_percent_value, 
+         (100 * (c.high_seas_value_total / c.value_total))::numeric(3) as high_seas_percent_value
+    from web.v_dim_time dt
+    join catch c on (c.time_key = dt.time_key)
+   order by dt.time_business_key;
 
 create or replace view web.v_fishing_entity_catch
 as
@@ -130,80 +190,45 @@ as
    from web.v_fact_data f
    join web.gear g on g.gear_id = f.gear_id;
 
+create or replace view web.v_geo_entity_with_eez as
+with admin(geo_entity_id) as (
+  select distinct ge.admin_geo_entity_id
+    from web.geo_entity ge     
+   where ge.geo_entity_id != 0
+), 
+ee(admin_geo_entity_id, admin_geo_name, eez) as (
+select a.geo_entity_id, gea.name, 
+       (select json_agg(g.*) 
+          from (select ge.geo_entity_id as geo_entity_id, ge.name geo_name, e.eez_id, e.name eez_name
+                  from web.geo_entity ge
+                  join web.eez e on (e.geo_entity_id = ge.geo_entity_id)
+                 where ge.admin_geo_entity_id = a.geo_entity_id
+                 order by ge.geo_entity_id) as g)
+  from admin a
+  join web.geo_entity gea on (gea.geo_entity_id = a.geo_entity_id)
+)
+select *
+  from ee
+ where ee.eez is not null
+ order by ee.admin_geo_entity_id;
 
-create or replace view web.v_taxon_catch
-as
-  select f.marine_layer_id,
-         f.main_area_id,
-         f.sub_area_id,
-         f.year,
-         wt.taxon_key,
-         wt.scientific_name,
-         wt.common_name,
-         f.catch_sum,
-         f.real_value
-    from web.v_fact_data f
-    join web.v_web_taxon wt on wt.taxon_key = f.taxon_key;
+create or replace view web.v_meow_eez_combo as
+ select meow_eez_combo.meow_id,
+    json_agg(json_build_object('meow_id', meow_eez_combo.meow_id, 'meow', meow_eez_combo.meow, 'eez_id', meow_eez_combo.eez_id, 'eez', meow_eez_combo.eez)) as meow_eez_combo
+   from meow_eez_combo
+  group by meow_eez_combo.meow_id
+  order by meow_eez_combo.meow_id;
 
-create or replace view web.v_eez_vs_high_seas
+create or replace view web.v_rfmo_fao_contracting_country
 as
-  with catch(time_key, catch_total, eez_catch_total, high_seas_catch_total, value_total, eez_value_total, high_seas_value_total) as (
-    select f.time_key, 
-           sum(f.catch_sum),
-           sum(case when f.sub_area_id = 1 then f.catch_sum else 0 end),
-           sum(case when f.sub_area_id = 2 then f.catch_sum else 0 end),
-           sum(f.real_value),
-           sum(case when f.sub_area_id = 1 then f.real_value else 0 end),
-           sum(case when f.sub_area_id = 2 then f.real_value else 0 end)
-      from web.v_fact_data f
-     where f.marine_layer_id = 6 and f.main_area_id = 1 
-     group by f.time_key
-  )
-  select dt.time_business_key::varchar as year, 
-         (100 * (c.eez_catch_total / c.catch_total))::numeric(3) as eez_percent_catch, 
-         (100 * (c.high_seas_catch_total / c.catch_total))::numeric(3) as high_seas_percent_catch,
-         (100 * (c.eez_value_total / c.value_total))::numeric(3) as eez_percent_value, 
-         (100 * (c.high_seas_value_total / c.value_total))::numeric(3) as high_seas_percent_value
-    from web.v_dim_time dt
-    join catch c on (c.time_key = dt.time_key)
-   order by dt.time_business_key;
-
-create or replace view web.v_country_profile
-as
-  with cntry as (
-    select c.*, 
-           fp.fish_mgt_plan,fp.url_fish_mgt_plan,fp.gov_marine_fish,fp.major_law_plan,fp.url_major_law_plan,fp.gov_protect_marine_env,fp.url_gov_protect_marine_env,
-           array(select row_to_json(n.*) from web.country_ngo n where n.count_code = c.count_code) as ngo
-      from web.country c
-      left join web.country_fishery_profile fp on (fp.count_code = c.count_code)
-  )
-  select c.count_code, c.c_number, c.country, row_to_json(c.*) AS asjson
-    from cntry c;
-
-create or replace view web.v_taxon_habitat_index
-as
-  select hi.taxon_key,
-         hi.taxon_name,
-         hi.common_name as name,
-         hi.sl_max,
-         hi.cla_code,
-         hi.ord_code,
-         hi.fam_code,
-         hi.gen_code,
-         hi.spe_code,
-         hi.habitat_diversity_index,
-         hi.effective_d as effective_distance,
-         hi.estuaries,
-         hi.coral,
-         hi.seagrass,
-         hi.seamount,
-         hi.others,
-         hi.shelf as c_shelf,
-         hi.slope as c_slope,
-         hi.abyssal,
-         hi.inshore,
-         hi.offshore
-    from web.habitat_index hi;
+  select r.rfmo_id, r.name, r.long_name,
+         (select json_agg(rf.*)
+            from (select fcrm.country_iso3 iso3, fcrm.country_name as name, fcrm.country_facp_url facp_url
+                    from fao.fao_country_rfmo_membership fcrm
+                   where fcrm.rfmo_id = r.rfmo_id
+                   order by fcrm.country_name) as rf
+         ) as contracting_country
+    from web.rfmo r;
 
 create or replace view web.v_subsidy
 as
@@ -359,88 +384,79 @@ as
     join web.geo_entity ge on (ge.geo_entity_id = sy.geo_entity_id)
     left join geo_to_srm gts on (gts.geo_entity_id = sy.geo_entity_id)
     left join web.subsidy_ref_mapping srm on (srm.geo_entity_id = gts.srm_geo_entity_id)
-    left join web.subsidy s on (s.geo_entity_id = sy.geo_entity_id and s.year = sy.year);
+    left join web.subsidy s on (s.geo_entity_id = sy.geo_entity_id and s.year = sy.year); 
 
-create or replace view web.v_geo_entity_with_eez as
-with admin(geo_entity_id) as (
-  select distinct ge.admin_geo_entity_id
-    from web.geo_entity ge     
-   where ge.geo_entity_id != 0
-), 
-ee(admin_geo_entity_id, admin_geo_name, eez) as (
-select a.geo_entity_id, gea.name, 
-       (select json_agg(g.*) 
-          from (select ge.geo_entity_id as geo_entity_id, ge.name geo_name, e.eez_id, e.name eez_name
-                  from web.geo_entity ge
-                  join web.eez e on (e.geo_entity_id = ge.geo_entity_id)
-                 where ge.admin_geo_entity_id = a.geo_entity_id
-                 order by ge.geo_entity_id) as g)
-  from admin a
-  join web.geo_entity gea on (gea.geo_entity_id = a.geo_entity_id)
-)
-select *
-  from ee
- where ee.eez is not null
- order by ee.admin_geo_entity_id;
- 
-create or replace view web.v_eez_fao_rfb
+create or replace view web.v_taxon_catch
 as
-  with ee(eez_id, a_country_iso3) as (
-    select e.eez_id, coalesce(c.fao_code, c.un_name)
-      from web.eez e
-      join web.geo_entity ge on (ge.geo_entity_id = e.geo_entity_id)
-      join web.country c on (c.c_number = ge.legacy_admin_c_number)
-  )
-  select ee.eez_id, ee.a_country_iso3 country_iso3,
-         (select json_agg(rf.*)
-            from (select r.fid, r.acronym, r.name, r.profile_url as url
-                    from fao.fao_country_rfb_membership fcrm
-                    join fao.fao_rfb r on (r.fid = fcrm.rfb_fid)
-                   where fcrm.country_iso3 = ee.a_country_iso3
-                     and fcrm.membership_type = 'Full'
-                   order by r.name) as rf
-         ) as rfb
-    from ee;
+  select f.marine_layer_id,
+         f.main_area_id,
+         f.sub_area_id,
+         f.year,
+         wt.taxon_key,
+         wt.scientific_name,
+         wt.common_name,
+         f.catch_sum,
+         f.real_value
+    from web.v_fact_data f
+    join web.v_web_taxon wt on wt.taxon_key = f.taxon_key;
 
-create or replace view web.v_rfmo_fao_contracting_country
+create or replace view web.v_taxon_habitat_index
 as
-  select r.rfmo_id, r.name, r.long_name,
-         (select json_agg(rf.*)
-            from (select fcrm.country_iso3 iso3, fcrm.country_name as name, fcrm.country_facp_url facp_url
-                    from fao.fao_country_rfmo_membership fcrm
-                   where fcrm.rfmo_id = r.rfmo_id
-                   order by fcrm.country_name) as rf
-         ) as contracting_country
-    from web.rfmo r;
+  select hi.taxon_key,
+         hi.taxon_name,
+         hi.common_name as name,
+         hi.sl_max,
+         hi.cla_code,
+         hi.ord_code,
+         hi.fam_code,
+         hi.gen_code,
+         hi.spe_code,
+         hi.habitat_diversity_index,
+         hi.effective_d as effective_distance,
+         hi.estuaries,
+         hi.coral,
+         hi.seagrass,
+         hi.seamount,
+         hi.others,
+         hi.shelf as c_shelf,
+         hi.slope as c_slope,
+         hi.abyssal,
+         hi.inshore,
+         hi.offshore
+    from web.habitat_index hi;
 
-create or replace view web.v_meow_pdf
-as 
-select meow_id, json_agg(json_build_object(
-'meow_id', meow_id,
-'meow', meow,
-'taxon_key', taxon_key,
-'scientific_name',scientific_name,
-'stock',stock,
-'url', pdf_url,
-'common_name', common_name,
-'group_type', group_type)) as pdf
-from meow_pdf
-group by meow_id
-order by meow_id
 
-create or replace view web.v_meow_eez_combo as
- select meow_eez_combo.meow_id,
-    json_agg(json_build_object('meow_id', meow_eez_combo.meow_id, 'meow', meow_eez_combo.meow, 'eez_id', meow_eez_combo.eez_id, 'eez', meow_eez_combo.eez)) as meow_eez_combo
-   from meow_eez_combo
-  group by meow_eez_combo.meow_id
-  order by meow_eez_combo.meow_id;
+--Additional views
+--M.Nevado
+--8.7.2020
 
- create or replace view web.v_eez_meow_combo as
- select meow_eez_combo.eez_id,
-    json_agg(json_build_object('meow_id', meow_eez_combo.meow_id, 'meow', meow_eez_combo.meow, 'eez_id', meow_eez_combo.eez_id, 'eez', meow_eez_combo.eez)) as eez_meow_combo
-   from meow_eez_combo
-  group by meow_eez_combo.eez_id
-  order by meow_eez_combo.eez_id;
+
+CREATE OR REPLACE VIEW web.v_eez_catchrelscore
+AS SELECT mrsm.main_area_id AS id,
+    array_accum(ARRAY[ARRAY[mrsm.year::numeric, mrsm.weighted_score::numeric(20,3)]] ORDER BY mrsm.year) AS "values"
+   FROM mv_reliability_score_ml mrsm
+  WHERE mrsm.marine_layer_id = 1
+  GROUP BY mrsm.main_area_id;
+
+CREATE OR REPLACE VIEW web.v_lme_catchrelscore
+AS SELECT mrsm.main_area_id AS id,
+    array_accum(ARRAY[ARRAY[mrsm.year::numeric, mrsm.weighted_score::numeric(20,3)]] ORDER BY mrsm.year) AS "values"
+   FROM mv_reliability_score_ml mrsm
+  WHERE mrsm.marine_layer_id = 3
+  GROUP BY mrsm.main_area_id;
+
+CREATE OR REPLACE VIEW web.v_meow_catchrelscore
+AS SELECT mrsm.main_area_id AS id,
+    array_accum(ARRAY[ARRAY[mrsm.year::numeric, mrsm.weighted_score::numeric(20,3)]] ORDER BY mrsm.year) AS "values"
+   FROM mv_reliability_score_ml mrsm
+  WHERE mrsm.marine_layer_id = 19
+  GROUP BY mrsm.main_area_id;
+
+
+
+
+
+
 /*
 The command below should be maintained as the last command in this entire script.
 */

@@ -434,3 +434,17 @@ $body$
      AND s.year = i_for_year;
 $body$
 language sql;
+
+
+--M.Nevado
+--8.7.2020
+
+create or replace function web.etl_validation_get_taxon_name 
+(
+  i_taxon_key int
+)
+returns varchar(50) as
+$body$
+  select ' [' || coalesce((select common_name from web.v_dim_taxon where taxon_key = i_taxon_key limit 1), '') || ']'; 
+$body$
+language sql;

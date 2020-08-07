@@ -348,12 +348,15 @@ CREATE TABLE geo.cell_grid (
     geom public.geometry(MultiPolygon,4326)
 );
 
+/* replaced with eez_fao_combo
 CREATE TABLE geo.eez_fao (
   eez_fao_area_id SERIAL PRIMARY KEY,
   reconstruction_eez_id int NOT NULL,
   fao_area_id int NOT NULL,
   socio_economic_area_id int
 );
+*/
+
 
 CREATE TABLE geo.meow_oceans_combo (
 	meow_ocean_combo_id serial primary key,
@@ -362,3 +365,108 @@ CREATE TABLE geo.meow_oceans_combo (
 	fao_area_id int4,
 	"name" varchar
 );
+
+
+
+--New tables
+--M.Nevado
+--8.7.2020
+
+
+CREATE TABLE geo.eez_fao_combo (
+	eez_fao_area_id int4 NOT NULL,
+	reconstruction_eez_id int4 NOT NULL,
+	fao_area_id int4 NOT NULL,
+	CONSTRAINT eez_fao_temp_pkey PRIMARY KEY (eez_fao_area_id)
+);
+
+CREATE TABLE geo.eezv9_x_rfmo_new (
+	gid int4 NOT NULL,
+	rfmo_name varchar(15) NULL,
+	rfmo_id numeric NULL,
+	id numeric NULL,
+	cat numeric NULL,
+	eez_id float8 NULL,
+	eez_name varchar(254) NULL,
+	layer varchar(100) NULL,
+	"path" varchar(200) NULL,
+	CONSTRAINT eezv9_x_rfmo_new_pkey PRIMARY KEY (gid)
+);
+
+CREATE TABLE geo.fao_oceans_combo (
+	fao_area_id int4 NOT NULL,
+	"name" varchar(50) NOT NULL,
+	alternate_name varchar(50) NOT NULL,
+	area_key _int4 NULL,
+	CONSTRAINT fao_oceans_combo_pkey PRIMARY KEY (fao_area_id)
+);
+
+CREATE TABLE geo.me_x_rfmo_new (
+	gid int4 NOT NULL,
+	"name" varchar(15) NULL,
+	rfmo_id int8 NULL,
+	meow_id int4 NULL,
+	eco_id int4 NULL,
+	ecoregion varchar(70) NULL,
+	prov_id int4 NULL,
+	province varchar(70) NULL,
+	realm_id int4 NULL,
+	realm varchar(70) NULL,
+	lat_zone varchar(70) NULL,
+	CONSTRAINT me_x_rfmo_new_pkey PRIMARY KEY (gid)
+);
+
+CREATE TABLE geo.meow_eez_combo (
+	meow_id int2 NULL,
+	meow varchar(128) NULL,
+	eez_id int2 NULL,
+	eez varchar(128) NULL,
+	intersection_area float8 NULL,
+	meow_area float8 NULL,
+	eez_area float8 NULL,
+	percentage_meow_in_eez float8 NULL,
+	percentage_eez_in_meow float8 NULL
+);
+
+CREATE TABLE geo.meow_fao_combo (
+	fao_area_id int2 NULL,
+	fao_name varchar(50) NULL,
+	meow_id int4 NULL,
+	meow_name varchar(70) NULL
+);
+
+CREATE TABLE geo.meow_rfmo_combo (
+	meow_id int4 NULL,
+	meow varchar(100) NULL,
+	rfmo_id int4 NULL,
+	rfmo varchar(50) NULL
+);
+
+CREATE TABLE geo.percent_eez_in_me (
+	eez_id int4 NULL,
+	eez_name varchar(32767) NULL,
+	meow_id int4 NULL,
+	eco_code int4 NULL,
+	ecoregion varchar(32767) NULL,
+	prov_code int4 NULL,
+	province varchar(32767) NULL,
+	rlm_code int4 NULL,
+	realm varchar(32767) NULL,
+	lat_zone varchar(32767) NULL,
+	eez_x_me_areakm2 float8 NULL,
+	meow_areakm2 float8 NULL,
+	percent_eez_in_me float8 NULL
+);
+
+CREATE TABLE geo.percent_eez_in_rfmo (
+	gid int4 NULL,
+	rfmo_name varchar(15) NULL,
+	rfmo_id numeric NULL,
+	eez_id float8 NULL,
+	eez_name varchar(254) NULL,
+	eez_area_km2 float8 NULL,
+	percent_eez_in_rfmo float8 NULL
+);
+
+
+

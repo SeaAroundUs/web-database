@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW fishing_effort.v_fishing_effort
+﻿CREATE OR REPLACE VIEW fishing_effort.v_fishing_effort
 AS WITH base_table(fishing_entity_id, year, sector_type_id, eez_id, gear_id ,effort_gear_id, length_code, m_um, motorisation, kw_boat, number_boats, days_fished, em_factor, sfr, fuel_coeff) AS (
          SELECT fe.fishing_entity_id,
             fe.year,
@@ -73,3 +73,43 @@ AS WITH base_table(fishing_entity_id, year, sector_type_id, eez_id, gear_id ,eff
     base_table.fuel_coeff,
     base_table.kw_boat * base_table.number_boats * base_table.motorisation::double precision * base_table.em_factor::double precision * base_table.sfr::double precision * base_table.fuel_coeff * base_table.days_fished::double precision AS co2
    FROM base_table
+
+
+
+--New views and materialized views
+--M.Nevado
+--8.7.2020
+
+CREATE OR REPLACE VIEW fishing_effort.bait_boat_types_calc
+AS SELECT fe.sector_type_id,
+    fe.effort_gear_code,
+    fe.motorisation,
+    fe.length_code,
+    "left"((((((fe.sector_type_id::character varying::text || '.'::character varying::text) || fe.effort_gear_code::text) || '.'::character varying::text) || fe.motorisation::character varying::text) || '.'::character varying::text) || fe.length_code::character varying::text, 12)::character varying AS boat_type,
+    fe.case_number
+   FROM fishing_effort.fishing_effort fe;
+
+CREATE OR REPLACE VIEW fishing_effort.bait_catch1
+AS SELECT fe.sector_type_id,
+    fe.effort_gear_code,
+    fe.motorisation,
+    fe.length_code,
+    "left"((((((fe.sector_type_id::character varying::text || '.'::character varying::text) || fe.effort_gear_code::text) || '.'::character varying::text) || fe.motorisation::character varying::text) || '.'::character varying::text) || fe.length_code::character varying::text, 12)::character varying AS boat_type,
+    fe.case_number
+   FROM fishing_effort.fishing_effort fe;
+
+CREATE MATERIALIZED VIEW fishing_effort.mv_by_fishent
+AS SELECT v_fact_data.fishing_entity_id,
+    v_fact_data.year,
+    sum(v_fact_data.catch_sum) AS sum
+   FROM v_fact_data
+  WHERE (v_fact_data.fishing_entity_id = ANY (ARRAY[1, 2])) AND v_fact_data.end_use_type_id = 3 AND (v_fact_data.marine_layer_id = ANY (ARRAY[1, 2]))
+  GROUP BY v_fact_data.fishing_entity_id, v_fact_data.year;
+
+CREATE MATERIALIZED VIEW fishing_effort.mv_by_fishentall
+AS SELECT v_fact_data.fishing_entity_id,
+    v_fact_data.year,
+    sum(v_fact_data.catch_sum) AS sum
+   FROM v_fact_data
+  WHERE v_fact_data.end_use_type_id = 3 AND (v_fact_data.marine_layer_id = ANY (ARRAY[1, 2]))
+  GROUP BY v_fact_data.fishing_entity_id, v_fact_data.year;

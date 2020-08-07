@@ -116,17 +116,6 @@ as
     join tax on (tax.taxon_key = t.taxon_key)
 with no data;
 
-  
-create or replace function web.etl_validation_get_taxon_name 
-(
-  i_taxon_key int
-)
-returns varchar(50) as
-$body$
-  select ' [' || coalesce((select common_name from web.v_dim_taxon where taxon_key = i_taxon_key limit 1), '') || ']'; 
-$body$
-language sql;
-
 
 create materialized view web.v_dim_time
 as
@@ -291,6 +280,66 @@ and ct.catch_type_id = vfd.catch_type_id
 and rs.reporting_status_id = vfd.reporting_status_id
 and st.sector_type_id = vfd.sector_type_id
 group by r.rfmo_id, year, fe.name, r.name,cdt.scientific_name, cdt.common_name, st.name , ct.name , rs.name , g.name, g.super_code;
+
+
+
+--New Materialized views
+--M.Nevado
+--8.7.2020
+
+CREATE MATERIALIZED VIEW web.mv_reliability_score_ml
+AS WITH base(marine_layer_id, main_area_id, year, score, total_catch) AS (
+         SELECT v_fact_data.marine_layer_id,
+            v_fact_data.main_area_id,
+            v_fact_data.year,
+            v_fact_data.score,
+            v_fact_data.catch_sum
+           FROM v_fact_data
+          WHERE v_fact_data.marine_layer_id = ANY (ARRAY[1, 19, 4, 3])
+          GROUP BY v_fact_data.marine_layer_id, v_fact_data.main_area_id, v_fact_data.year, v_fact_data.score, v_fact_data.catch_sum
+        ), main(marine_layer_id, main_area_id, year, sum_total_catch, total_catch_x_score, weighted_score) AS (
+         SELECT b.marine_layer_id,
+            b.main_area_id,
+            b.year,
+            sum(b.total_catch) AS sum,
+            sum(b.total_catch * b.score::numeric) AS sum,
+            sum(b.total_catch * b.score::numeric) / sum(b.total_catch)
+           FROM base b
+          GROUP BY b.marine_layer_id, b.main_area_id, b.year
+        ), uncert(marine_layer_id, main_area_id, year, total_catch_x_score, sum_total_catch, weighted_score) AS (
+         SELECT m.marine_layer_id,
+            m.main_area_id,
+            m.year,
+            m.total_catch_x_score,
+            m.sum_total_catch,
+            round(m.total_catch_x_score / m.sum_total_catch, 2) AS w_score
+           FROM main m
+          GROUP BY m.marine_layer_id, m.main_area_id, m.year, m.sum_total_catch, m.total_catch_x_score
+        ), time_series(marine_layer_id, main_area_id, year) AS (
+         SELECT v.marine_layer_id,
+            v.main_area_id,
+            generate_series(1950, 2016) AS year
+           FROM v_fact_data v
+          WHERE v.marine_layer_id = ANY (ARRAY[1, 19, 4, 3])
+          GROUP BY v.marine_layer_id, v.main_area_id
+          ORDER BY v.marine_layer_id, v.main_area_id, (generate_series(1950, 2016))
+        )
+ SELECT t.marine_layer_id,
+    t.main_area_id,
+    t.year,
+        CASE
+            WHEN u.total_catch_x_score IS NULL THEN 0::numeric
+            ELSE u.total_catch_x_score
+        END AS total_catch_x_score,
+    u.sum_total_catch,
+        CASE
+            WHEN u.weighted_score IS NULL THEN 1::numeric
+            ELSE u.weighted_score
+        END AS weighted_score
+   FROM time_series t
+     LEFT JOIN uncert u ON t.marine_layer_id = u.marine_layer_id AND t.main_area_id = u.main_area_id AND t.year = u.year
+  GROUP BY t.marine_layer_id, t.main_area_id, t.year, u.total_catch_x_score, u.sum_total_catch, u.weighted_score;
+
 
 
 /*
