@@ -849,12 +849,6 @@ CREATE TABLE web.habitat_index(
 );
 
 
-CREATE TABLE web.import_array (
-	id int4 NULL,
-	"array" int4 NULL
-);
-
-
 CREATE TABLE web.layer3gear (
 	gearname varchar(32767) NULL,
 	layer3gearid int4 NULL,
@@ -882,74 +876,4 @@ CREATE TABLE web.stock_meow_reference (
 	meow varchar(250) NULL,
 	pdf_url varchar(500) NULL,
 	graph_url varchar(500) NULL
-);
-
-
-CREATE TABLE web.taxon (
-	taxon_key int4 NOT NULL,
-	scientific_name varchar(255) NOT NULL,
-	common_name varchar(255) NOT NULL,
-	phylum varchar(255) NULL,
-	sub_phylum varchar(255) NULL,
-	super_class varchar(255) NULL,
-	"class" varchar(255) NULL,
-	super_order varchar(255) NULL,
-	"order" varchar(255) NULL,
-	suborder_infraorder varchar(255) NULL,
-	"family" varchar(255) NULL,
-	genus varchar(255) NULL,
-	species varchar(255) NULL,
-	comments_names text NULL,
-	is_retired bool NOT NULL,
-	taxon_group_id int4 NULL,
-	taxon_level_id int4 NULL,
-	functional_group_id int2 NOT NULL,
-	commercial_group_id int2 NOT NULL,
-	commercial int2 NULL,
-	isscaap_id int4 NULL,
-	cell_id int4 NULL,
-	super_target int2 NULL,
-	fb_spec_code int4 NULL,
-	slb_spec_code int4 NULL,
-	cla_code int4 NULL,
-	ord_code int4 NULL,
-	fam_code int4 NULL,
-	gen_code int4 NULL,
-	spe_code int4 NULL,
-	slb_cla_code int4 NULL,
-	slb_ord_code int4 NULL,
-	slb_fam_code int4 NULL,
-	slb_gen_code int4 NULL,
-	is_use bool NULL,
-	is_taxa_used bool NULL,
-	is_mariculture_only bool NULL,
-	is_baltic_only bool NOT NULL,
-	sl_max float8 NULL,
-	slbl_max_type varchar(10) NULL,
-	sl_max_2 float8 NULL,
-	comments_sl_max text NULL,
-	tl float8 NULL,
-	se_tl float8 NULL,
-	comments_tl text NULL,
-	lat_north int4 NULL,
-	lat_south int4 NULL,
-	min_depth int4 NULL,
-	max_depth int4 NULL,
-	loo float8 NULL,
-	woo float8 NULL,
-	k float8 NULL,
-	a float8 NULL,
-	b float8 NULL,
-	comments_growth text NULL,
-	has_habitat_index bool NOT NULL,
-	has_map bool NOT NULL,
-	map_year int2 NULL,
-	vulnerability text NULL,
-	resilience text NULL,
-	updated_by varchar(255) NULL,
-	date_updated date NULL,
-	lineage ltree NULL,
-	true_min_depth varchar(32767) NULL,
-	true_max_depth varchar(32767) NULL,
-	CONSTRAINT taxon_pkey PRIMARY KEY (taxon_key)
 );
