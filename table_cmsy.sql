@@ -183,6 +183,7 @@ CREATE TABLE cmsy.ref_content (
 	info_format varchar NULL,
 	info_drawn varchar NULL
 );
+CREATE UNIQUE INDEX ref_content_pkey ON cmsy.ref_content USING btree (ref_content_id);
 
 CREATE TABLE cmsy.reference (
 	ref_id int4 NOT NULL,
@@ -198,6 +199,7 @@ CREATE TABLE cmsy.reference (
 	pdf_file varchar NULL,
 	pdf_url text NULL
 );
+CREATE UNIQUE INDEX reference_pkey ON cmsy.reference USING btree (ref_id);
 
 CREATE TABLE cmsy.rel_biom (
 	rel_biom_id serial NOT NULL,
@@ -207,6 +209,7 @@ CREATE TABLE cmsy.rel_biom (
 	value float8 NULL,
 	midlength float8 NULL
 );
+CREATE UNIQUE INDEX rel_biom_pkey ON cmsy.rel_biom USING btree (rel_biom_id);
 
 CREATE TABLE cmsy.rel_biom_meta (
 	rel_biom_meta_id serial NOT NULL,
@@ -220,8 +223,9 @@ CREATE TABLE cmsy.rel_biom_meta (
 	gear_type_id int4 NULL,
 	gear_type varchar NULL,
 	ref_id int4 NULL,
-	comments text NULL
+	"comments" text NULL
 );
+CREATE UNIQUE INDEX rel_biom_meta_pkey ON cmsy.rel_biom_meta USING btree (rel_biom_meta_id);
 
 CREATE TABLE cmsy.stock (
 	stock_id varchar NOT NULL,
@@ -233,6 +237,7 @@ CREATE TABLE cmsy.stock (
 	is_active bool NULL,
 	date_modified timestamptz NULL DEFAULT now()
 );
+CREATE UNIQUE INDEX stock_new_stock_id_idx ON cmsy.stock USING btree (stock_id);
 
 CREATE TABLE cmsy.stock_marine_area (
 	stock_id varchar NULL,
