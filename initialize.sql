@@ -79,6 +79,9 @@ CREATE SCHEMA distribution;
 DROP SCHEMA IF EXISTS fao CASCADE;
 CREATE SCHEMA fao;
 
+DROP SCHEMA IF EXISTS fishing_effort CASCADE;
+CREATE SCHEMA fishing_effort;
+
 \i table_admin.sql
 \i grant.sql
 
@@ -93,6 +96,19 @@ CREATE SCHEMA fao;
 \echo Creating FAO DB Objects...
 \echo
 \i table_fao.sql
+
+\echo
+\echo Creating CMSY DB Objects...
+\echo
+\i table_cmsy.sql
+\i view_cmsy.sql
+
+\echo
+\echo Creating Fishing Effort DB Objects...
+\echo
+\i table_fishing_effort.sql
+\i view_effort.sql
+\i function_effort.sql
 
 \echo
 \echo Creating distribution DB Objects...

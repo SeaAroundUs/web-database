@@ -325,7 +325,12 @@ CREATE TABLE web.cube_dim_taxon(
   resilience text,
   updated_by varchar(255),
   date_updated date,
-  lineage ltree
+  lineage ltree,
+  true_min_depth varchar,
+  true_max_depth varchar,
+  original_taxon_name varchar(200),
+  synonyms_in_catch_reports varchar(255),
+  taxon_rank varchar(15)
 );
 
 
