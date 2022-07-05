@@ -210,7 +210,7 @@ begin
     when i_entity_layer_id = 300 then ' f.taxon_key = any($1) and'
     else ''
      end ||
-    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 1000) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 900, 1000) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
     ' group by f.year' || 
     case when coalesce(i_output_area_id, false)
@@ -423,7 +423,7 @@ begin
     else ''
      end ||
     
-    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 900) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
     ' group by f.year' ||
@@ -584,7 +584,7 @@ begin
     when i_entity_layer_id = 300 then ' f.taxon_key = any($1) and'
     else ''
      end ||
-    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 900) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
     ' group by f.year' || 
     case when coalesce(i_output_area_id, false) 
@@ -644,8 +644,7 @@ begin
             (select 'Others'::text as key, 
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
                        from web.time tm
-                       left join total tby on (tby.year = tm.time_business_key)
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
+                       left join total tby on (tby.year = tm.time_business_key)) as values
               where exists (select 1 from total t where t.mixed_total is distinct from 0 limit 1)
             )
            )                 
@@ -779,7 +778,7 @@ begin
     when i_entity_layer_id = 300 then ' f.taxon_key = any($1) and'
     else ''
      end ||
-    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 900) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
     ' group by f.year' || 
     case when coalesce(i_output_area_id, false) 
@@ -840,8 +839,7 @@ begin
             (select 'Others'::text as key,                                                           
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
                        from web.time tm
-                       left join total tby on (tby.year = tm.time_business_key)
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
+                       left join total tby on (tby.year = tm.time_business_key)) as values
               where exists (select 1 from total t where t.mixed_total is distinct from 0 limit 1)
             )
            )
@@ -975,7 +973,7 @@ begin
     when i_entity_layer_id = 300 then ' f.taxon_key = any($1) and'
     else ''
      end ||
-    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 900) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
     ' group by f.year' || 
     case when coalesce(i_output_area_id, false) 
@@ -1132,7 +1130,7 @@ begin
     when i_entity_layer_id = 300 then ' f.taxon_key = any($1) and'
     else ''
      end ||
-    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 900) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
     ' group by f.year' || 
     case when coalesce(i_output_area_id, false) 
@@ -1288,7 +1286,7 @@ begin
     when i_entity_layer_id = 300 then ' f.taxon_key = any($1) and'
     else ''
      end ||
-    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 900) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
     ' group by f.year' || 
     case when coalesce(i_output_area_id, false) 
@@ -1508,24 +1506,16 @@ select json_agg(fd.*)
             (select null::int, 'Other EEZs'::text as key, 
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
                        from web.time tm
-                       left join total tby on (tby.year = tm.time_business_key)
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
-               where exists (select 1 from total t where t.mixed_total is distinct from 0 limit 1)
-            )          
-            union all
-            (select null::int, 'Other EEZs'::text as key, 
-                    (select array_accum(array[array[tm.time_business_key, coalesce(tby.mixed_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
-                       from web.time tm
-                       left join total tby on (tby.year = tm.time_business_key)
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
+                       left join total tby on (tby.year = tm.time_business_key)) as values
+                     -- where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
                where exists (select 1 from total t where t.mixed_total is distinct from 0 limit 1)
             )
             union all
             (select null::int, 'High Seas'::text as key, 
                     (select array_accum(array[array[tm.time_business_key, coalesce(tby.non_eez_total::numeric(20, 2), 0)]] order by tm.time_business_key) 
                        from web.time tm
-                       left join total tby on (tby.year = tm.time_business_key)
-                      where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
+                       left join total tby on (tby.year = tm.time_business_key)) as values
+                    --  where tm.time_business_key >= (select min(ci.year) from catch ci)) as values
                where exists (select 1 from total t where t.non_eez_total is distinct from 0 limit 1)
                
             )
@@ -2566,7 +2556,7 @@ begin
     case when coalesce(i_output_area_id, false) then main_area_col_name else 'null::int' end ||
     ',g.super_code::text' ||
     case when i_measure = 'catch' then ',sum(f.catch_sum)' else ',sum(f.real_value)::numeric' end ||  
-    ' from web.v_fact_data f, web.gear g' ||
+    ' from web.v_fact_data f join web.gear g on g.gear_id = f.gear_id' ||
     additional_join_clause ||
     ' where f.gear_id = g.gear_id and' ||   
     case 
@@ -2575,7 +2565,7 @@ begin
     when i_entity_layer_id = 300 then ' f.taxon_key = any($1) and'
     else ''
      end ||
-    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 900) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
     ' group by f.year' || 
     case when coalesce(i_output_area_id, false) 
@@ -2807,7 +2797,7 @@ begin
     when i_entity_layer_id = 300 then ' f.taxon_key = any($1) and'
     else ''
      end ||
-    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800) then ' f.marine_layer_id in (1, 2) and' else '' end ||
+    case when i_entity_layer_id in (100, 300, 500, 600, 700, 800, 900) then ' f.marine_layer_id in (1, 2) and' else '' end ||
     ' (case when $2 is null then true else f.sub_area_id = any($2) end)' ||
     ' group by f.year' || 
     case when coalesce(i_output_area_id, false) 
