@@ -452,9 +452,55 @@ AS SELECT mrsm.main_area_id AS id,
   WHERE mrsm.marine_layer_id = 19
   GROUP BY mrsm.main_area_id;
 
+CREATE OR REPLACE VIEW web.v_rfmo_catchrelscore
+AS SELECT mrsm.main_area_id AS id,
+    array_accum(ARRAY[ARRAY[mrsm.year::numeric, mrsm.weighted_score::numeric(20,3)]] ORDER BY mrsm.year) AS "values"
+   FROM mv_reliability_score_ml mrsm
+  WHERE mrsm.marine_layer_id = 4
+  GROUP BY mrsm.main_area_id;
+  
 
+--03.1.2023
+CREATE OR REPLACE VIEW web.v_fishing_entity_continent_combo
+AS SELECT fe.fishing_entity_id,
+    fe.name,
+    ge.continent_code,
+    c.name AS continent
+   FROM fishing_entity fe
+     LEFT JOIN geo_entity ge ON fe.geo_entity_id = ge.geo_entity_id
+     LEFT JOIN continent c ON ge.continent_code = c.code;
 
-
+CREATE OR REPLACE VIEW web.v_mpa_names
+AS SELECT DISTINCT mq.mpa_id AS id,
+    mq.mpa_name
+   FROM mpa_quote mq
+  ORDER BY mq.mpa_id, mq.mpa_name;
+  
+CREATE OR REPLACE VIEW web.v_mpa_quote
+AS SELECT m.mpa_id AS id,
+    m.mpa_country_name AS mpa_cname,
+    mq.mpa_name,
+    mq.mpa_quote_category AS mpa_quotecat,
+    array_accum(ARRAY[mq.mpa_quote]) AS "values"
+   FROM mpa m
+     JOIN mpa_quote mq ON m.mpa_id = mq.mpa_id
+  GROUP BY m.mpa_id, mq.mpa_name, m.mpa_country_name, mq.mpa_quote_category
+  ORDER BY mq.mpa_name, mq.mpa_quote_category;
+  
+CREATE OR REPLACE VIEW web.v_nutrients
+AS SELECT t.taxon_key,
+    t.scientific_name,
+    n.nutrient_basis,
+    (n.calcium / 1000::numeric / 100::numeric / 1000000::numeric)::numeric(50,20) AS calcium,
+    (n.iron / 1000::numeric / 100::numeric / 1000000::numeric)::numeric(50,20) AS iron,
+    (n.selenium / 1000000::numeric / 100::numeric / 1000000::numeric)::numeric(50,20) AS selenium,
+    (n.zinc / 1000::numeric / 100::numeric / 1000000::numeric)::numeric(50,20) AS zinc,
+    (n.vitamina / 1000000::numeric / 100::numeric / 1000000::numeric)::numeric(50,20) AS vitamina,
+    (n.omega / 1000000::numeric / 100::numeric)::numeric(50,20) AS omega,
+    (n.protein / 100::numeric / 1000000::numeric)::numeric(50,20) AS protein
+   FROM nutrients n
+     JOIN cube_dim_taxon t ON t.fb_spec_code = n.fb_spec_code;
+     
 
 
 /*
